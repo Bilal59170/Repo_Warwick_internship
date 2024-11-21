@@ -13,7 +13,10 @@ from sklearn.linear_model import LinearRegression
 
 
 
-### SYSTEM SETTINGS### 
+######## SYSTEM SETTINGS ######
+
+
+
 ##VARIABLES: Physics & Mathematics (Values From Oscar's code)
 h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. NEED VERIFICATION
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
@@ -35,10 +38,14 @@ print("\n Nusselt velocity: ", U_N )
 print("Value of Re (check if O(1)):", Re)
 print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 
+
+
+
+
 ##VARIABLEs: steps & domain
 #Steps: 2 ways
 #Space, then time
-N_x = 1017 #To choose little at first and then, increase 
+N_x = 512 #To choose little at first and then, increase 
 dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
 dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 CFL_factor = 100 #take it big 
@@ -82,7 +89,9 @@ if True:#Plot of initial condition
 
 
 
-###SOLVING
+######## SOLVING #######
+
+###### Finite Difference & BDF Scheme ######
 ## Some useful functions
 def mat_FD_periodic(length_h, list_coef):
     '''Finite difference matrix with periodic boundary conditions. Cf matdiag notation in the "Finite difference" part 
@@ -202,9 +211,8 @@ if False: #Testing of the scipy.optimize.root function
 print("\n## SOLVING BENNEY EQ ##")
 #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
 t_i = time.time()
-if True:#main loop
+if False:#main loop
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
-    progress_percent, print_progress = 0, False
 
     for n_t in range(N_t-1):
         fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:]) + F_space(h_arr)
@@ -213,8 +221,10 @@ if True:#main loop
         root_method_CV_arr[n_t] = result["success"]
         root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
         
-        if np.floor(10*n_t/(N_t-1)) != np.floor(10*(n_t-1)/(N_t-1)): #displays the progress of the computation every 10%
-            print("Computation progress:", 100*np.floor(n_t/(N_t-1)) "%; time passed until start: ", (time.time()-t_i))
+        #Display of the computation progress
+        nb_percent = 5 #The step of percent at which we display the progress
+        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)): #displays the progress of the computation every nb_percent
+            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", time.time()-t_i)
 
     total_computation_time = time.time()-t_i
     print("Total computation time:", total_computation_time)
@@ -223,20 +233,18 @@ if True:#main loop
 
 
 ##Saving or loading the solution
-bool_save = True
+bool_save = False
 bool_load_solution = False
 
 if bool_load_solution:
-    h_mat= np.loadtxt('Benney_numerical_solution.txt')
+    h_mat= np.loadtxt('Benney_equation_code\\Benney_numerical_solution_Nx_128.txt')
     assert ((h_mat.shape[0]==N_t)and(h_mat.shape[1]==N_x)), "Solution loading: Problem of shape "
 elif bool_save: 
-    np.savetxt('Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x), h_mat)
-
+    np.savetxt('Benney_equation_code\\Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x), h_mat)
 
 
 ### VISUALISATION 
 ##animation function
-
 def round_fct(r, nb_decimal):
     '''Detect the power of 10 and round the number nb_decimal further'''
     if r==0:
@@ -295,7 +303,7 @@ def func_anim(_time_series, _anim_space_array, _anim_time_array, title, title_x_
     return FuncAnimation(fig, update, frames=len(_anim_time_array)-1)
 
 
-if True:#Animation of benney numerical solution
+if False:#Animation of benney numerical solution
     animation_Benney = func_anim(_time_series=np.array([h_mat]), _anim_space_array = domain_x,
                                         _anim_time_array = domain_t,
                                         title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=round_fct(Re,3), Ca=round_fct(Ca, 3)), 
@@ -306,66 +314,70 @@ if True:#Animation of benney numerical solution
     plt.show()
 
     if True:
-        animation_Benney.save('animation_Benney_Nx_{N_x}.mp4'.format(N_x=N_x)) #needs the program ffmpeg installed and in the PATH
+        animation_Benney.save('Benney_equation_code\\animation_Benney_Nx_{N_x}.mp4'.format(N_x=N_x)) #needs the program ffmpeg installed and in the PATH
 
 N_t_begin = 128
-space_steps_list = np.array([2**i*(N_t_begin-1)+1 for i in range(5)])
+space_steps_list = 2**np.arange(7,10)
 print((space_steps_list))
 
 
 ### VERIFICATION OF THE METHOD
-if False: #Difference in loglog graph
+if True: #Difference in loglog graph
     ##Make loglog graph of difference
 
     #Load the arrays
-    
     print("List of the tested space steps:", space_steps_list)
     arr_solutions = []
     for space_step in space_steps_list:
-        arr_solutions.append(np.loadtxt('Benney_numerical_solution_Nx_{element}'.format(element=space_step)))
+        print(space_step)
+        arr_solutions.append(np.loadtxt('Benney_equation_code\\Benney_numerical_solution_Nx_{element}.txt'.format(element=space_step)))
     
     #Compute the differences 
-    arr_L2_diff = np.zeros(len(space_steps_list)-1)
-    # for i in range(len(arr_L2_diff)):
-        # arr_L2_diff = 
-    diff_L2 = np.linalg.norm(x=h_mat[1:]-h_mat[:-1], axis=1)
-    diff_Linf = np.max(np.absolute(h_mat[1:]-h_mat[:-1]), axis=1)
-
-    #Linear regression of the differences
-    N_1, N_2 = 0, N_t-1
-    x_lin_reg_array = domain_t[N_1:N_2].reshape(-1,1) #Necessary reshape for sklearn
-
-    #L2 Case
-    y_lin_reg_array = np.log(diff_L2[N_1:N_2]).reshape(-1, 1)
-    reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
-    Reg_lin_coef_a_L2 , Reg_lin_coef_b_L2= reg.coef_[0][0], reg.intercept_[0]
-    print("Slope coefficient(s) ax+b, Determination coefficient R²:", Reg_lin_coef_a_L2, Reg_lin_coef_b_L2, reg.score(x_lin_reg_array, y_lin_reg_array))
-
-    #Linf case
-    y_lin_reg_array = np.log(diff_Linf[N_1:N_2]).reshape(-1, 1)
-    reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
-    Reg_lin_coef_a_Linf , Reg_lin_coef_b_Linf= reg.coef_[0][0], reg.intercept_[0]
-    print("Slope coefficient(s) ax+b, Determination coefficient R²:", Reg_lin_coef_a_Linf, Reg_lin_coef_b_Linf, reg.score(x_lin_reg_array, y_lin_reg_array))
+    arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_list)-1), np.zeros(len(space_steps_list)-1)
+    for i in range(len(space_steps_list)-1):
+        arr_L2_diff[i] = np.linalg.norm(arr_solutions[i+1][-1,0::2]-arr_solutions[i][-1])
+        arr_Linf_diff[i] = np.max(np.absolute((arr_solutions[i+1][-1,0::2]-arr_solutions[i][-1])))
 
 
+    # #Linear regression of the differences
+    # N_1, N_2 = 0, N_t-1
+    # x_lin_reg_array = domain_t[N_1:N_2].reshape(-1,1) #Necessary reshape for sklearn
+
+    # #L2 Case
+    # y_lin_reg_array = np.log(diff_L2[N_1:N_2]).reshape(-1, 1)
+    # reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+    # Reg_lin_coef_a_L2 , Reg_lin_coef_b_L2= reg.coef_[0][0], reg.intercept_[0]
+    # print("Slope coefficient(s) ax+b, Determination coefficient R²:", Reg_lin_coef_a_L2, Reg_lin_coef_b_L2, reg.score(x_lin_reg_array, y_lin_reg_array))
+
+    # #Linf case
+    # y_lin_reg_array = np.log(diff_Linf[N_1:N_2]).reshape(-1, 1)
+    # reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+    # Reg_lin_coef_a_Linf , Reg_lin_coef_b_Linf= reg.coef_[0][0], reg.intercept_[0]
+    # print("Slope coefficient(s) ax+b, Determination coefficient R²:", Reg_lin_coef_a_Linf, Reg_lin_coef_b_Linf, reg.score(x_lin_reg_array, y_lin_reg_array))
+
+
+    ##Plot
     fig, axs = plt.subplots(1,2, figsize=(10, 5))
-    axs[0].plot(domain_t[1:], diff_L2, label=r"$||h(t+dt)-h(t)||_{L^2}$")
-    axs[0].plot(domain_t[1:], np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+    axs[0].plot(space_steps_list[:-1], arr_L2_diff, label=r"$||h(t+dt)-h(t)||_{L^2}$")
+    # axs[0].plot(domain_t[1:], np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
     axs[0].set_xscale('log')
     axs[0].set_yscale('log')
     axs[0].set_xlabel("time t (begins at dt)")
     axs[0].legend()
-    axs[0].set_title(r"$L^2$ norm of h(t+dt})-h(t)")
+    axs[0].set_title(r"diff in $L^2$ norm of h for increasing dx")
 
-    axs[1].plot(domain_t[1:], diff_Linf, label=r"$||h(t+dt)-h(t)||_{L^{\infty}}$")
+    axs[1].plot(space_steps_list[:-1], arr_Linf_diff, label=r"$||h(t+dt)-h(t)||_{L^{\infty}}$")
     # axs[1].plot(domain_t[1:], Reg_lin_coef_b_Linf*(domain_t[1:]**Reg_lin_coef_a_Linf), label="Linear Regression")
     axs[1].set_xscale('log')
     axs[1].set_yscale('log')
     axs[1].set_xlabel("time t (begins at dt)")
     axs[1].legend()
-    axs[1].set_title(r"$L^{\infty}$ norm of h(t+dt})-h(t)")
+    axs[1].set_title(r"Diff in $L^{\infty}$ norm of h for increasing dx")
 
     plt.show()
 
-    #
-    ##Check the validity with linear theory (linearize the eq and do some Fourier stuff)
+    
+
+
+###### SPECTRAL METHOD #########
+
