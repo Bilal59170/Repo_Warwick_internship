@@ -40,13 +40,15 @@ print("Value of Re (check if O(1)):", Re)
 print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 
 
+
+
 ##VARIABLEs: steps & domain
 #Steps: 2 ways
 #Space, then time
 N_x = 128 #To choose little at first and then, increase 
 dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
 dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-CFL_factor = 100 #take it big 
+CFL_factor = 30 #take it big 
 dt = dx/U_N/CFL_factor #CFL conditions
 N_t = int(T/dt+1) #bcs (N_t-1)dt = T
 print("Nb of (space, time) points: ", (N_x, N_t) )
@@ -64,6 +66,7 @@ print("Nb of (space, time) points: ", (N_x, N_t) )
 #Time & space domains
 domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
 domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
+
 #test the boundaries of the domain (0 and L_x -dx if well initialised)
 print("First and last point of the domain:", domain_x[0], domain_x[-1]) 
 print("Lx-dx:", L_x-dx)
@@ -72,13 +75,13 @@ print("Lx-dx:", L_x-dx)
 ### Initial conditions 
 #Somes functions to use for Initial Condition
 def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
-    return _h_mean + _ampl_c*np.cos((2*np.pi/L_x)*_freq_c*x) + _ampl_s*np.sin((2*np.pi/L_x)*_freq_s*x) #Initial condition. (sinus, periodic on D)
+    return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) #Initial condition. (sinus, periodic on D)
 
 #initial condition
 # h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. Each line is for a given time from 0 to (N_t-1)*dt
 h_mean = 1
 ampl_c, ampl_s, freq_c, freq_s = 0.02, 0.01, 3, 1  #frequencies need to be a relative to have periodicity
-Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, freq_c, freq_s)
+Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
 if True:#Plot of initial condition
     plt.plot(domain_x, Initial_Conditions)
@@ -88,56 +91,72 @@ if True:#Plot of initial condition
 
 
 
+
 ######## SOLVING #######
 
+
+
 ###### Finite Difference & BDF Scheme ######
+
 ### Solving
-order_BDF_scheme = 2
-if True:
-    #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
-    h_mat = solver_BDF.solver_Benney_BDF_FD(N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-                                             theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
+order_BDF_scheme = 1
+bool_solve_FD, bool_save = True, True
+space_steps_list = 2**np.arange(7,9)
 
-    ##Saving the solution
-    bool_save = False
-    if bool_save: 
-        np.savetxt('Benney_equation_code\\Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x), h_mat)
+for i in range(len(space_steps_list)):
+    #Space, then time
+    N_x = space_steps_list[i] #To choose little at first and then, increase 
+    dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
+    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+    CFL_factor = 30 #take it big 
+    dt = dx/U_N/CFL_factor #CFL conditions
+    N_t = int(T/dt+1) #bcs (N_t-1)dt = T
+
+    #Time & space domains
+    domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
+    domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
+    Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+
+    if bool_solve_FD:
+        #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
+        h_mat_FD = solver_BDF.solver_Benney_BDF_FD(N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
+                                                theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1)
+
+        ##Saving the solution
+
+        if bool_save: 
+            np.savetxt('Benney_equation_code\\FD_method_Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x), h_mat_FD)
 
 
-##Loading the solution
-bool_load_solution = False
-if bool_load_solution:
-    h_mat= np.loadtxt('Benney_equation_code\\Benney_numerical_solution_Nx_128.txt')
-    assert ((h_mat.shape[0]==N_t)and(h_mat.shape[1]==N_x)), "Solution loading: Problem of shape "
-
-
-
-### VISUALISATION 
-##animation function
-
-if True:#Animation of benney numerical solution
-    animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat]), _anim_space_array = domain_x,
-                                        _anim_time_array = domain_t,
-                                        title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
-                                        title_x_axis=r"x axis: horizontal inclined by $\theta$",
-                                        title_y_axis= r"y-axis (inclined by $\theta$)",
-                                        _legend_list = ["height h(x,t)"])
-    plt.show()
-
-    if False:
-        animation_Benney.save('Benney_equation_code\\animation_Benney_Nx_{N_x}.mp4'.format(N_x=N_x)) #needs the program ffmpeg installed and in the PATH
-
-N_t_begin = 128
-space_steps_list = 2**np.arange(7,10)
-print((space_steps_list))
+    ##Loading the solution
+    bool_load_solution = False
+    if bool_load_solution:
+        h_mat_FD= np.loadtxt('Benney_equation_code\\FD_method_Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x))
+        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
 
 
 
+    ### VISUALISATION 
+    ##animation function
+
+    bool_anim, bool_save = True, True
+
+    if bool_anim:#Animation of benney numerical solution
+        animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), _anim_space_array = domain_x,
+                                            _anim_time_array = domain_t,
+                                            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+                                            title_x_axis=r"x axis: horizontal inclined by $\theta$",
+                                            title_y_axis= r"y-axis (inclined by $\theta$)",
+                                            _legend_list = ["height h(x,t) with FD method"])
+        # plt.show()
+
+    if bool_anim and bool_save:
+        animation_Benney.save('Benney_equation_code\\FD_method_animation_Benney_Nx_{N_x}.mp4'.format(N_x=N_x)) #needs the program ffmpeg installed and in the PATH
 
 
 
 ### VERIFICATION OF THE METHOD
-if True: #Difference in loglog graph
+if False: #Difference in loglog graph
     ##Make loglog graph of difference
 
     #Load the arrays
@@ -196,3 +215,98 @@ if True: #Difference in loglog graph
 
 ###### SPECTRAL METHOD #########
 
+##Test on DFT: to have the good normalization constant
+#Test of the differentiation with DFT 
+if False:
+    fq_tab = N_x*np.fft.rfftfreq(N_x) #to justify better after
+    print("\n Shape of the array of frequencies: ", fq_tab.shape)
+
+
+    h_test = sincos(domain_x, 0, 0, _ampl_s=1, _freq_c=0, _freq_s=1)
+    plt.plot(domain_x, h_test)
+    plt.show()
+
+    h_x = np.fft.irfft( (1j *fq_tab)*np.fft.rfft(h_test))
+    print(h_x.real)
+    plt.plot(domain_x, h_x.real)
+    plt.title("Derivative of h_0 (sin -> cos) \n with Fourier (Gibbs phenomenon ?)")
+    plt.show()
+
+    h_xx = np.fft.irfft( (1j *fq_tab)**2*np.fft.rfft(h_test))
+    print(h_xx)
+    plt.plot(domain_x, h_xx.real)
+    plt.title("2nd Derivative of u_0 (sin -> -sin) \n with Fourier (Gibbs phenomenon ?)")
+    plt.show()
+
+    h_xxxx = np.fft.irfft( (1j *fq_tab)**4*np.fft.rfft(h_test))
+    print(h_xxxx)
+    plt.plot(domain_x, h_xxxx.real)
+    plt.title("4th Derivative of u_0 (sin -> sin) \n with Fourier (Gibbs phenomenon ?)")
+    plt.show()
+    plt.plot(domain_x, np.absolute(h_xxxx-np.sin(domain_x*2*np.pi/L_x)))
+    plt.title("some difference")
+    plt.show()
+
+
+
+### Solving
+order_BDF_scheme = 1
+
+for i in range(len(space_steps_list)):
+    #Space, then time
+    N_x = space_steps_list[i] #To choose little at first and then, increase 
+    dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
+    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+    CFL_factor = 30 #take it big 
+    dt = dx/U_N/CFL_factor #CFL conditions
+    N_t = int(T/dt+1) #bcs (N_t-1)dt = T
+
+    #Time & space domains & IC
+    domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
+    domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
+    Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+
+    bool_solve_Spectral, bool_save = True, True
+    if bool_solve_Spectral:
+        #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
+        h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
+                                                theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
+
+        ##Saving the solution
+        if bool_solve_Spectral and bool_save: 
+            np.savetxt('Benney_equation_code\\Spectral_method_Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x), h_mat_spectral)
+
+    bool_load_solution = False
+    if bool_load_solution:
+        h_mat_spectral= np.loadtxt('Benney_equation_code\\Spectral_method_Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x))
+        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
+
+    ###Animation
+    bool_anim, bool_save = True, True
+    if bool_anim:#Animation of benney numerical solution
+        animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_spectral]), _anim_space_array = domain_x,
+                                            _anim_time_array = domain_t,
+                                            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+                                            title_x_axis=r"x axis: horizontal inclined by $\theta$",
+                                            title_y_axis= r"y-axis (inclined by $\theta$)",
+                                            _legend_list = ["height h(x,t) with spectral method"])
+        # plt.show()
+
+    if bool_anim and bool_save:
+        animation_Benney.save('Benney_equation_code\\Spectral_method_animation_Benney_Nx_{N_x}.mp4'.format(N_x=N_x)) #needs the program ffmpeg installed and in the PATH
+
+
+
+
+
+###### Comparison of the FD & Spectral methods  #####
+
+bool_anim = False
+if bool_anim:#Animation of benney numerical solution
+    animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_spectral-h_mat_FD]), _anim_space_array = domain_x,
+                                        _anim_time_array = domain_t,
+                                        title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+                                        title_x_axis=r"x axis: horizontal inclined by $\theta$",
+                                        title_y_axis= r"y-axis (inclined by $\theta$)",
+                                        _legend_list = ["|h_FD - h_spectral|"])
+    plt.show()
