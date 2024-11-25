@@ -1,4 +1,4 @@
-    ###### Solver of the Benney equation with BDF & Finite Difference ######
+###### Solver of the Benney equation & animation function ######
 
 ##Imports
 import numpy as np
@@ -9,6 +9,9 @@ from matplotlib.animation import FuncAnimation
 from IPython.display import HTML
 from sklearn.linear_model import LinearRegression
 
+
+
+#### Solver for the Benney equation with Finite DIfferences & BDF scheme
 
 def mat_FD_periodic(length_h, list_coef):
     '''Finite difference matrix with periodic boundary conditions. Cf matdiag notation in the "Finite difference" part 
@@ -31,10 +34,13 @@ print(mat_FD_periodic(5, [0, -1, 1, -2, 2]))
 # print(mat_FD_periodic(5, [0, -1, 1, -2, 2, 3])) #Case where the assert raises
 
 
-def solve_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, bool_save, nb_percent, Ca, Re):
+def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5):
     '''
     INPUTS:
-        - bool_save (bool): If we save or not the solution in a file
+        - N_x, N_t, dx, dt : space & time number of point and steps
+        - IC: Initial Condition; theta: slope angle of the plane
+        - order_BDF_Scheme: quite explicit name
+        - Ca & Re: Capillary & Reynolds numbers 
         - nb_percent (int): The step of percent at which we display the progress
     '''
 
@@ -43,6 +49,9 @@ def solve_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, bool_save, nb_percent, Ca, 
     h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. Each line is for a given time from 0 to (N_t-1)*dt
     h_mat[0,:] = IC 
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+
+
+
     ######## SOLVING #######
 
     ###### Finite Difference & BDF Scheme ######
@@ -56,9 +65,11 @@ def solve_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, bool_save, nb_percent, Ca, 
     print(mat_DF_x@h_mat[0, :])
 
     def F_space(h_arr):
-        '''Input: 
-            - h_arr: array of height at time t+dt; (N_x) float array
-            - h_arr_before: array of height at time t; (N_x) float array
+        '''
+        Input: 
+            - h_arr: array of height at time t+dt (Implicit method);
+        Output: 
+            - The Benney equation part with the space derivatives
         '''
         h_x = mat_DF_x@h_arr
         h_xx = mat_DF_xx@h_arr #no definition of h_xxx and h_xxxx bcs they are computed just once in the function
@@ -67,31 +78,34 @@ def solve_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, bool_save, nb_percent, Ca, 
                 + (1/3)*(h_arr**3)*(-(2/np.tan(theta))*h_xx + (1/Ca)*mat_DF_xxxx@h_arr) 
                 + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
 
-    def time_scheme_coef(_p):
-        '''give the coefficient of the numerical time method'''
+    def F_time(h_arr, h_arr_before, _p):
+        '''Output: 
+        - The Benney equation part with the time derivative with a BDF Scheme
+        Input: 
+        - h_arr: the height array at time t, shape (N_x)
+        -h_arr: the height arrays at previous time until t-_p*dt, shape (_p, N_x)
+        - _p: coefficient of the order BDF scheme'''
+        h_tot = np.concatenate((h_arr_before.reshape((_p, N_x)), h_arr.reshape((1, N_x))), axis=0)
         match _p:
-            case 1:
-                return (np.array([-1, 1]), np.array([1]))
+            case 1: #increasing order from left to right
+                return np.array([-1, 1])@h_tot/dt
             case 2:
-                return (np.array([1/2, -2, 3/2]), np.array([-1, 2]))
+                return np.array([1/2, -2, 3/2])@h_tot/dt
             case 3:
-                return (np.array([-1/3, 3/2, -3, 11/6]), np.array([1, -3, 3]))
+                return np.array([-1/3, 3/2, -3, 11/6])@h_tot/dt
             case 4:
-                return (np.array([1/4, -4/3, 3, -4, 25/12]), np.array([-1, 4, -6, 4]))
+                return np.array([1/4, -4/3, 3, -4, 25/12])@h_tot/dt
             case 5:
-                return (np.array([-1/5, 5/4, -10/3, 5, -5, 137/60]), np.array([1, -5, 10, -10, 5]))
+                return np.array([-1/5, 5/4, -10/3, 5, -5, 137/60])@h_tot/dt
             case 6:
-                return (np.array([1/6, -6/5, 15/4, -20/3, 15/2, -6, 147/60]), np.array([-1, 6, -15, 20, -15, 6]))
+                return np.array([1/6, -6/5, 15/4, -20/3, 15/2, -6, 147/60])@h_tot/dt
             case _:
-                raise Exception("Function alpha_gamma_coef: Error in the calculus, wrong p value.")
+                raise Exception("BDF Scheme function: Error in the calculus, wrong p value.")
             
-    def F_time(h_arr, h_arr_before):
-        '''Function to step the order of the time step method'''
-        return (h_arr-h_arr_before)/dt
 
 
     ## Testing the first time step
-    f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:]) + F_space(h_arr)
+    f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:], _p=order_BDF_scheme) + F_space(h_arr)
 
     if False: #Testing of Newton's method: scipy.optimize.newton
         ##Test of the newton method with 1st order implicit time scheme
@@ -144,15 +158,17 @@ def solve_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, bool_save, nb_percent, Ca, 
     ## Solving
     #1 order
     print("\n## SOLVING BENNEY EQ ##")
-    #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
-
-
     t_i = time.time()
+
     #main loop
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
 
     for n_t in range(N_t-1):
-        fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:]) + F_space(h_arr)
+        if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:], _p=1) + F_space(h_arr)
+        
+        else:
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:], _p=order_BDF_scheme) + F_space(h_arr)
         result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
         h_mat[n_t+1, :] = result["x"]
         root_method_CV_arr[n_t] = result["success"]
@@ -167,10 +183,68 @@ def solve_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, bool_save, nb_percent, Ca, 
     print("Number of time the method didn't converge & N_t", (np.sum(~root_method_CV_arr), N_t))
     print("Max error (evaluation on the supposed root) and its index", (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
 
-
-    ##Saving the solution
-    if bool_save: 
-        np.savetxt('Benney_equation_code\\Benney_numerical_solution_Nx_{N_x}.txt'.format(N_x=N_x), h_mat)
-
-
     return h_mat
+
+
+
+
+#### Animation Functions ####
+
+def round_fct(r, nb_decimal):
+    '''Detect the power of 10 and round the number nb_decimal further. 
+    Coded to have titles of animation not to big.
+    Expl: round_fct(0.000123456, 4) = 0.000123 (or 0.0001234 I don't remember)'''
+    if r==0:
+        return 0
+    else:
+        power_10 = int(np.log10(r))
+        factor = 10**(power_10)
+        return round(r/factor, nb_decimal)*factor
+
+def func_anim(_time_series, _anim_space_array, _anim_time_array, title, title_x_axis = None, title_y_axis= None, _legend_list = None):
+ 
+    #(Nb_tab, N_t, N_x) tab
+    Nb_time_series =  _time_series.shape[0]
+    gap = (_time_series.max()- _time_series.min())/10
+
+    #subplot initialisation
+    fig, axs = plt.subplots(1, 1, figsize=(10, 4))
+
+    # Initialise the plot ligns
+    array_line_analytical = Nb_time_series*[0]
+    for k in range(Nb_time_series):
+        if not(_legend_list is None):
+            array_line_analytical[k], = axs.plot([], [], label=_legend_list[k])
+        else:
+            array_line_analytical[k], = axs.plot([], [])
+
+    axs.set_xlim([_anim_space_array.min(), _anim_space_array.max()])
+    axs.set_ylim([_time_series.min()-gap, _time_series.max()+gap])
+
+    # if bool_grid:
+    #     if _x_ticks_major is None:
+    #         axs.set_xticks(_anim_space_array, minor=True)
+    #         axs.grid(which='both')  # Major ticks for x-axis, every 1 unit
+    #     else:
+    #         axs.set_xticks(_x_ticks_major) #Major xticks : the one which is showed on the x axis
+    #         axs.set_xticks(_anim_space_array, minor=True) #minor xticks
+    #         axs.grid(which='both') #grid for the minor tick
+
+    # Update the function in the animation
+    def update(frame):
+        t_1 = _anim_time_array[frame]
+        y = np.array([_time_series[k][frame] for k in range(Nb_time_series)])
+        for k in range(_time_series.shape[0]):
+            
+            array_line_analytical[k].set_data(_anim_space_array, y[k])
+            
+        axs.set_title(title + ' at t= {}'.format(round_fct(t_1, 5)))
+        axs.set_xlabel(title_x_axis)
+        axs.set_ylabel(title_y_axis)
+        if not(_legend_list is None):
+            axs.legend()
+        
+        return array_line_analytical,
+
+    # Create the animation
+    return FuncAnimation(fig, update, frames=len(_anim_time_array)-1)
