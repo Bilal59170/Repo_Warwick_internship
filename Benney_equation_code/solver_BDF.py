@@ -90,7 +90,7 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
     mat_DF_xx = mat_FD_periodic(N_x, [-2, 1, 1])/dx_2
     mat_DF_xxx = mat_FD_periodic(N_x, [3, -1, -3, 0, 1])/dx_3
     mat_DF_xxxx = mat_FD_periodic(N_x, [6, -4, -4, 1, 1])/dx_4
-    print(mat_DF_x@h_mat[0, :])
+    # print(mat_DF_x@h_mat[0, :])
 
     def F_space(h_arr):
         '''
