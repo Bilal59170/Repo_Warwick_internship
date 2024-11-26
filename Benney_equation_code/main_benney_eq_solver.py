@@ -213,8 +213,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
             xy=annotation['xy'],
             xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
     axs[0].set_xlabel("Differences of dx (e.g L_x/1024 - L_x/512)")
-    axs[0].legend()
-    axs[0].set_title(r"diff in $L^2$ norm of 2 computed h from 2 different dx")
+    axs[0].set_title(r"diff in $L^2$ norm of 2 computed h from 2 different dx at the final time T")
 
     axs[1].scatter(dx_array, arr_Linf_diff)
     # axs[1].plot(domain_t[1:], Reg_lin_coef_b_Linf*(domain_t[1:]**Reg_lin_coef_a_Linf), label="Linear Regression")
@@ -228,8 +227,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
             xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
     # axs[1].set_xticks(space_steps_list)
     axs[1].set_xlabel("Differences of dx (e.g L_x/1024 - L_x/512)")
-    axs[1].legend()
-    axs[1].set_title(r"Diff in $L^{\infty}$ norm of 2 computed h from 2 different dx")
+    axs[1].set_title(r"Diff in $L^{\infty}$ norm of 2 computed h from 2 different dx at the final time T")
 
     fig.suptitle(general_subplot_title)
 
@@ -238,7 +236,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
         plt.savefig(file_name)
     plt.show()
 
-# plot_difference_graph(list_h_mat_FD, "FD + BDF Scheme at final time", save_plot=True, file_name="Benney_equation_code\\BDF_order_1_FD_difference_graph")
+plot_difference_graph(list_h_mat_FD, "FD + BDF Scheme at final time", save_plot=True, file_name="Benney_equation_code\\BDF_order_1_FD_difference_graph")
 
 
 ###### SPECTRAL METHOD #########
@@ -341,7 +339,7 @@ for space_step in space_steps_list:
     print(space_step)
     list_h_mat_spectral.append(np.loadtxt('Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=space_step)))
 
-# plot_difference_graph(list_h_mat_spectral, "Spectral + BDF scheme at final time", save_plot=True, file_name="Benney_equation_code\\BDF_order_1_Spectral_difference_graph")
+plot_difference_graph(list_h_mat_spectral, "Spectral + BDF scheme at final time", save_plot=True, file_name="Benney_equation_code\\BDF_order_1_Spectral_difference_graph")
 
 
 
@@ -388,7 +386,7 @@ for annotation in annotations:
         xy=annotation['xy'],
         xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
 axs[0].set_xlabel("dx")
-axs[0].set_title(r"diff in $L^2$ norm ")
+axs[0].set_title(r"diff in $L^2$ norm at the final time T")
 
 axs[1].scatter(dx_array, arr_Linf_diff)
 # axs[0].plot(domain_t[1:], np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
@@ -401,7 +399,7 @@ for annotation in annotations:
         xy=annotation['xy'],
         xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
 axs[1].set_xlabel("dx")
-axs[1].set_title(r"diff in $L^{\infty}$ norm ")
+axs[1].set_title(r"diff in $L^{\infty}$ norm at the final time T")
 
 fig.suptitle("Comparison between the Spectral and FD methods with BDF of order 1")
 plt.savefig("Benney_equation_code\\Plot_Comparison_Spectral_FD_BDF_order_1")
