@@ -14,10 +14,13 @@ from sklearn.linear_model import LinearRegression
 ## Usefull functions for the solvers
 
 def mat_FD_periodic(length_h, list_coef):
-    '''Finite difference matrix with periodic boundary conditions. Cf matdiag notation in the "Finite difference" part 
-    in the solving of KS equation in the obsidian file
-    input: list_coef = [a, b, c, d, ..] list of coef (int)
-    output: returns a mat with diagonal a, subdiag b (with periodic extension), supdiag c (same), 2nd subdiag d etc..'''
+    '''Finite difference matrix with periodic boundary conditions. Cf matdiag notation
+     in the "Finite difference" part in the solving of KS equation in the obsidian file.
+    input: 
+    - list_coef = [a, b, c, d, ..] list of coef (int)
+    output: 
+    - returns a mat with diagonal a, subdiag b (with periodic extension), 
+    supdiag c (same), 2nd subdiag d etc..'''
 
     n = len(list_coef)
     assert (n<=length_h), "fct mat_FD_periodic: problem in the dimensions"
@@ -40,6 +43,7 @@ def F_time(h_arr, h_arr_before, _p, dt):
     - h_arr: the height array at time t, shape (N_x)
     -h_arr: the height arrays at previous time until t-_p*dt, shape (_p, N_x)
     - _p: coefficient of the order BDF scheme'''
+
     _N_x = h_arr.shape[0]
     h_tot = np.concatenate((h_arr_before.reshape((_p, _N_x)), h_arr.reshape((1, _N_x))), axis=0)
     match _p:
@@ -74,7 +78,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
 
     ##Initial conditions & steps
-    h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. Each line is for a given time from 0 to (N_t-1)*dt
+    h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. 
+    #Each line is for a given time from 0 to (N_t-1)*dt
     h_mat[0,:] = IC 
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 
@@ -112,7 +117,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
     ## Testing the first time step
     if False:
-        f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:], _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+        f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:],
+            _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
 
         if False: #Testing of Newton's method: scipy.optimize.newton
             ##Test of the newton method with 1st order implicit time scheme
@@ -172,23 +178,28 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
     for n_t in range(N_t-1):
         if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:], _p=1, dt=dt) + F_space(h_arr)
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                _p=1, dt=dt) + F_space(h_arr)
         
         else:
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:], _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                  _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
         result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
         h_mat[n_t+1, :] = result["x"]
         root_method_CV_arr[n_t] = result["success"]
         root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
         
         #Display of the computation progress
-        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)): #displays the progress of the computation every nb_percent
-            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", time.time()-t_i)
+        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+            #displays the progress of the computation every nb_percent
+            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), 
+                  "%; time passed until start: ", time.time()-t_i)
 
     total_computation_time = time.time()-t_i
     print("Total computation time:", total_computation_time)
     print("Number of time the method didn't converge & N_t", (np.sum(~root_method_CV_arr), N_t))
-    print("Max error (evaluation on the supposed root) and its index", (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
+    print("Max error (evaluation on the supposed root) and its index",
+           (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
 
     return h_mat
 
@@ -205,9 +216,9 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
     '''
 
     ##Initial conditions & steps
-    h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. Each line is for a given time from 0 to (N_t-1)*dt
+    h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. 
+    #Each line is for a given time from 0 to (N_t-1)*dt
     h_mat[0,:] = IC 
-    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 
 
     ######## SOLVING #######
@@ -236,11 +247,8 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
                 + (1/3)*(h_arr**3)*(-(2/np.tan(theta))*h_xx + (1/Ca)*h_xxxx) 
                 + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
 
-
-            
-
-
-    ## Testing the first time step
+    ## Test
+    # testing the first time step
     if False:
         f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:], _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
 
@@ -302,23 +310,28 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
 
     for n_t in range(N_t-1):
         if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:], _p=1, dt=dt) + F_space(h_arr)
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                  _p=1, dt=dt) + F_space(h_arr)
         
         else:
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:], _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                  _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
         result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
         h_mat[n_t+1, :] = result["x"]
         root_method_CV_arr[n_t] = result["success"]
         root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
         
         #Display of the computation progress
-        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)): #displays the progress of the computation every nb_percent
-            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", time.time()-t_i)
+        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+            #displays the progress of the computation every nb_percent
+            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", 
+                  time.time()-t_i)
 
     total_computation_time = time.time()-t_i
     print("Total computation time:", total_computation_time)
     print("Number of time the method didn't converge & N_t", (np.sum(~root_method_CV_arr), N_t))
-    print("Max error (evaluation on the supposed root) and its index", (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
+    print("Max error (evaluation on the supposed root) and its index",
+           (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
 
     return h_mat
 
@@ -338,7 +351,8 @@ def round_fct(r, nb_decimal):
         factor = 10**(power_10)
         return round(r/factor, nb_decimal)*factor
 
-def func_anim(_time_series, _anim_space_array, _anim_time_array, title, title_x_axis = None, title_y_axis= None, _legend_list = None):
+def func_anim(_time_series, _anim_space_array, _anim_time_array, 
+              title, title_x_axis = None, title_y_axis= None, _legend_list = None):
  
     #(Nb_tab, N_t, N_x) tab
     Nb_time_series =  _time_series.shape[0]

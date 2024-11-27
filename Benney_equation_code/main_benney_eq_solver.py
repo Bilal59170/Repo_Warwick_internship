@@ -2,7 +2,6 @@
 
 
 ###IMPORT
-##Imports
 import numpy as np
 import scipy.optimize 
 import matplotlib.pyplot as plt
@@ -19,7 +18,7 @@ import solver_BDF
 ######## SYSTEM SETTINGS ######
 
 ##VARIABLES: Physics & Mathematics (Values From Oscar's code)
-h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. NEED VERIFICATION
+h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. 
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
 epsilon = 1/L_x
 L_y = 10    # Dimensionless: vertical length/h_N
@@ -44,28 +43,37 @@ print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 
 ##VARIABLEs: steps & domain
 #Steps: 2 ways
-#Space, then time
+
+def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None):
+    """
+    Input: The name are explicit
+    Output: 2 Things possible
+    - If _N_x provided (usefull to control _N_x): (N_t, dx, dt (by using some CFL Conditions))
+    - If _N_t provided: (N_x, dx, dt (by using some CFL Conditions))"""
+
+    if _N_x is not None: #Space, then time
+        _dx = L_x/_N_x #not dx = L_x/(N_x-1): x-periodic so we don't count the last point so Lx-dx = (Nx-1)dx
+        _dt = _dx/U_N/_CFL_factor #CFL conditions
+        _N_t = int(T/_dt+1) #bcs (N_t-1)dt = T
+
+        
+    elif _N_t is not None: #Time, then space
+        _dt = T/(_N_t-1)
+        _dx = _dt*U_N*_CFL_factor #My own CFL conditions 
+        _N_x = int(L_x/_dx) #as it's periodic. no +1 
+    
+    #Time & space domains
+    domain_x = np.linspace(0, L_x, _N_x, endpoint=False) #Periodic domain: don't need the last point (endpoint=False)
+    domain_t = np.linspace(0, T, _N_t, endpoint=True) #Not periodic: we need last point
+
+    return _N_x, _N_t, _dx, _dt, domain_x, domain_t
+
+
 N_x = 128 #To choose little at first and then, increase 
-dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
-dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 CFL_factor = 30 #take it big 
-dt = dx/U_N/CFL_factor #CFL conditions
-N_t = int(T/dt+1) #bcs (N_t-1)dt = T
-print("Nb of (space, time) points: ", (N_x, N_t) )
-
-#Time, then space
-# N_t = 256 #To choose little at first and then, increase 
-# dt = T/(N_t-1)
-# CFL_factor = 100 #take it big 
-# dx = dt*U_N*CFL_factor #My own CFL conditions 
-# N_x = int(L_x/dx) #as it's periodic. no +1 
-# dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-
-print("Nb of (space, time) points: ", (N_x, N_t) )
-
-#Time & space domains
-domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
-domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
+N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=N_x, _CFL_factor = CFL_factor)
+dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+print("Nb of (space, time) points: ", (N_x, N_t))
 
 #test the boundaries of the domain (0 and L_x -dx if well initialised)
 print("First and last point of the domain:", domain_x[0], domain_x[-1]) 
@@ -73,15 +81,14 @@ print("Lx-dx:", L_x-dx)
 
 
 ### Initial conditions 
-#Somes functions to use for Initial Condition
 def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
-    return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) #Initial condition. (sinus, periodic on D)
+    '''Function to compute sinusoidal periodic initial condition'''
+    return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) 
 
-#initial condition
-# h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. Each line is for a given time from 0 to (N_t-1)*dt
 h_mean = 1
 ampl_c, ampl_s, freq_c, freq_s = 0.02, 0.01, 3, 1  #frequencies need to be a relative to have periodicity
-Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+Initial_Conditions = sincos(
+    domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
 if True:#Plot of initial condition
     plt.plot(domain_x, Initial_Conditions)
@@ -94,6 +101,9 @@ if True:#Plot of initial condition
 
 ######## SOLVING #######
 
+order_BDF_scheme = 1
+space_steps_array = 2**np.arange(7,11)
+print("Space steps: ", space_steps_array)
 
 
 ###### Finite Difference & BDF Scheme ######
@@ -102,81 +112,81 @@ if True:#Plot of initial condition
 bool_solve_FD, bool_save, bool_load_solution = False, False, True
 bool_anim, bool_save_anim = False, False
 
+
 ### Solving
-order_BDF_scheme = 1
-space_steps_list = 2**np.arange(7,11)
-print("Space steps: ", space_steps_list)
-
-for i in range(len(space_steps_list)):
-    #Space, then time
-    N_x = space_steps_list[i] #To choose little at first and then, increase 
-    dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
+for i in range(len(space_steps_array)):
+    N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
+        _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-    CFL_factor = 30 #take it big 
-    dt = dx/U_N/CFL_factor #CFL conditions
-    N_t = int(T/dt+1) #bcs (N_t-1)dt = T
-
-    #Time & space domains
-    domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
-    domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
-    Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+    Initial_Conditions = sincos(
+        domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
     if bool_solve_FD:
-        #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
-        h_mat_FD = solver_BDF.solver_Benney_BDF_FD(N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-                                                theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1)
+        #computation times : ((N_x, N_t), t computation): 
+        # [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
+        h_mat_FD = solver_BDF.solver_Benney_BDF_FD(
+            N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1)
 
         ##Saving the solution
-
         if bool_save: 
-            np.savetxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=N_x), h_mat_FD)
-
+            np.savetxt(
+                'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+                BDF_order=order_BDF_scheme, N_x=N_x), h_mat_FD)
 
     ##Loading the solution
     if bool_load_solution:
-        h_mat_FD= np.loadtxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=N_x))
-        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
+        h_mat_FD= np.loadtxt(
+            'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+                BDF_order=order_BDF_scheme, N_x=N_x))
+        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
 
 
     ### VISUALISATION 
     ##animation function
 
     if bool_anim:#Animation of benney numerical solution
-        animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), _anim_space_array = domain_x,
-                                            _anim_time_array = domain_t,
-                                            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
-                                            title_x_axis=r"x axis: horizontal inclined by $\theta$",
-                                            title_y_axis= r"y-axis (inclined by $\theta$)",
-                                            _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
+        animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
+            _anim_space_array = domain_x, _anim_time_array = domain_t,
+            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+                N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+
+            title_x_axis=r"x axis: horizontal inclined by $\theta$",
+            title_y_axis= r"y-axis (inclined by $\theta$)",
+            _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
         # plt.show()
 
     if bool_save_anim and bool_save:
-        animation_Benney.save('Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
+        animation_Benney.save(
+            'Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
+            order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
 
 
 
 ### VERIFICATION OF THE METHOD
 
-verification_FD_method = True
-
 #Load the arrays
-print("List of the tested space steps:", space_steps_list)
-list_h_mat_FD = [] #list of the FD & BDF numerical solution for different space steps
 
-for space_step in space_steps_list:
-    print(space_step)
-    list_h_mat_FD.append(np.loadtxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=space_step)))
+def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
+                          file_name= None, regression_lin=False): #Difference in loglog graph
+    '''
+    Output: Make a loglog (in log10 scale) graph of the difference of the same method
+        with different number of space points.The abscis is chosen to be the space bigger 
+        step (i.e dx) between the two method compared. 
+
+    Example: The comparison between (128, 256) would be at dx = L_x/128   
+    Input: 
+        - list_h_mat: list of the numerical solutions computed with INCREASING number of steps. 
+        Usually [128, 256, 512, 1024]'''
     
 
-def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, file_name= None, regression_lin=False): #Difference in loglog graph
-    ##Make loglog graph of difference
-
-    #Compute the differences 
-    arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_list)-1), np.zeros(len(space_steps_list)-1)
-    for i in range(len(space_steps_list)-1):
+    #Compute the differences : with increasing number of points
+    arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_array)-1), np.zeros(len(space_steps_array)-1)
+    for i in range(len(space_steps_array)-1):
         arr_L2_diff[i] = np.linalg.norm(list_h_mat[i+1][-1,0::2]-list_h_mat[i][-1])
         arr_Linf_diff[i] = np.max(np.absolute((list_h_mat[i+1][-1,0::2]-list_h_mat[i][-1])))
 
+    #Make a linear regression
     if regression_lin:
         #Linear regression of the differences
         N_1, N_2 = 0, N_t-1
@@ -197,36 +207,38 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
 
     ##Plot
     fig, axs = plt.subplots(1,2, figsize=(15, 5))
-    dx_array = L_x/space_steps_list[:-1] - L_x/space_steps_list[1:]
-    dx_array.sort()
+    dx_array = L_x/space_steps_array[:-1]
 
     axs[0].scatter(dx_array, arr_L2_diff)
-    # axs[0].plot(domain_t[1:], np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+    # np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
     axs[0].set_xscale('log')
     axs[0].set_yscale('log')
+
     # Adding annotations
-    text_steps = ['\"1024-512\"', '\"512-256\"', '\"256-128\"']
-    annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_L2_diff[i]), 'offset': (0, (max(arr_L2_diff)-min(arr_L2_diff))/50)} for i in range(len(text_steps))]
+    text_steps = ['\"256-128\"', '\"512-256\"', '\"1024-512\"' ] #increasing in the number of points
+
+    annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_L2_diff[i])} for i in range(len(dx_array))]
     for annotation in annotations:
         axs[0].annotate(
-            annotation['text'],
+            text=annotation['text'],
             xy=annotation['xy'],
-            xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
-    axs[0].set_xlabel("Differences of dx (e.g L_x/1024 - L_x/512)")
+            xytext=(0, 5),
+            textcoords= "offset pixels")
+    axs[0].set_xlabel("dx, the biggest step between 2 numerical solutions")
     axs[0].set_title(r"diff in $L^2$ norm of 2 computed h from 2 different dx at the final time T")
 
     axs[1].scatter(dx_array, arr_Linf_diff)
-    # axs[1].plot(domain_t[1:], Reg_lin_coef_b_Linf*(domain_t[1:]**Reg_lin_coef_a_Linf), label="Linear Regression")
+    # axs[1].plot(domain_t[1:], Reg_lin_coef_b_Linf*(domain_t[1:]**Reg_lin_coef_a_Linf), 
+    # label="Linear Regression")
     axs[1].set_xscale('log')
     axs[1].set_yscale('log')
-    annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i]), 'offset': (0, (max(arr_Linf_diff)-min(arr_Linf_diff))/50)} for i in range(len(text_steps))]
+    annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i])}
+                    for i in range(len(text_steps))]
     for annotation in annotations:
         axs[1].annotate(
-            annotation['text'],
-            xy=annotation['xy'],
-            xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
-    # axs[1].set_xticks(space_steps_list)
-    axs[1].set_xlabel("Differences of dx (e.g L_x/1024 - L_x/512)")
+            annotation['text'], xy=annotation['xy'], xytext=(0, 5), 
+            textcoords = "offset pixels")
+    axs[1].set_xlabel("dx, the biggest step between 2 numerical solutions")
     axs[1].set_title(r"Diff in $L^{\infty}$ norm of 2 computed h from 2 different dx at the final time T")
 
     fig.suptitle(general_subplot_title)
@@ -236,7 +248,15 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
         plt.savefig(file_name)
     plt.show()
 
-plot_difference_graph(list_h_mat_FD, "FD + BDF Scheme at final time", save_plot=True, file_name="Benney_equation_code\\BDF_order_1_FD_difference_graph")
+
+if False:
+    print("List of the tested space steps:", space_steps_array)
+    list_h_mat_FD = [] #list of the FD & BDF numerical solution for different space steps
+
+    for space_step in space_steps_array:
+        list_h_mat_FD.append(np.loadtxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=space_step)))
+        
+    plot_difference_graph(list_h_mat_FD, "FD + BDF Scheme at final time", save_plot=False, file_name="Benney_equation_code\\BDF_order_{}_FD_difference_graph".format(order_BDF_scheme))
 
 
 ###### SPECTRAL METHOD #########
@@ -280,12 +300,11 @@ bool_anim, bool_save_anim = False, False
 
 
 ### Solving
-list_h_mat_spectral = [] 
-order_BDF_scheme = 1
 
-for i in range(len(space_steps_list)):
+
+for i in range(len(space_steps_array)):
     #Space, then time
-    N_x = space_steps_list[i] #To choose little at first and then, increase 
+    N_x = space_steps_array[i] #To choose little at first and then, increase 
     dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
     CFL_factor = 30 #take it big 
@@ -310,7 +329,7 @@ for i in range(len(space_steps_list)):
  
     if bool_load_solution:
         h_mat_spectral= np.loadtxt('Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=N_x))
-        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
+        assert ((h_mat_spectral.shape[0]==N_t)and(h_mat_spectral.shape[1]==N_x)), "Solution loading: Problem of shape "
 
 
     ###Animation
@@ -333,13 +352,17 @@ for i in range(len(space_steps_list)):
 ### Verification of Spectral Method
 
 #Load the arrays
-print("List of the tested space steps:", space_steps_list)
+print("List of the tested space steps:", space_steps_array)
 list_h_mat_spectral = [] #list of the Spectral & BDF numerical solution for different space steps
-for space_step in space_steps_list:
-    print(space_step)
-    list_h_mat_spectral.append(np.loadtxt('Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=space_step)))
+for space_step in space_steps_array:
+    list_h_mat_spectral.append(
+        np.loadtxt(
+        'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+        BDF_order=order_BDF_scheme, N_x=space_step)))
 
-plot_difference_graph(list_h_mat_spectral, "Spectral + BDF scheme at final time", save_plot=True, file_name="Benney_equation_code\\BDF_order_1_Spectral_difference_graph")
+plot_difference_graph(list_h_mat_spectral, "Spectral + BDF scheme at final time",
+    save_plot=True, 
+    file_name="Benney_equation_code\\BDF_order_{}_Spectral_difference_graph".format(order_BDF_scheme))
 
 
 
@@ -358,50 +381,100 @@ if bool_anim:#Animation of benney numerical solution
                                         _legend_list = ["|h_FD - h_spectral|"])
     plt.show()
 
+
+
 ##Plot
 
-
-
-dx_array = L_x/space_steps_list
-dx_array.sort()
-
-arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_list)), np.zeros(len(space_steps_list))
-for i in range(len(space_steps_list)):
+arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_array)), np.zeros(len(space_steps_array))
+for i in range(len(space_steps_array)):
     arr_L2_diff[i] = np.linalg.norm(list_h_mat_FD[i][-1]-list_h_mat_spectral[i][-1])
     arr_Linf_diff[i] = np.max(np.absolute(list_h_mat_FD[i][-1]-list_h_mat_spectral[i][-1]))
 
 #plot
 fig, axs = plt.subplots(1,2, figsize=(15, 5))
 
+dx_array = L_x/space_steps_array
 axs[0].scatter(dx_array, arr_L2_diff)
-# axs[0].plot(domain_t[1:], np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+# axs[0].plot(domain_t[1:], 
+# np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
 axs[0].set_xscale('log')
 axs[0].set_yscale('log')
 # Adding annotations
-text_steps = ['N_x = 1024', 'N_x = 512', 'N_x = 256', 'N_x = 128']
-annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_L2_diff[i]), 'offset': (0, (max(arr_L2_diff)-min(arr_L2_diff))/50)} for i in range(len(text_steps))]
+text_steps = [ 'N_x = 128', 'N_x = 256', 'N_x = 512', 'N_x = 1024']
+annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_L2_diff[i])} for i in range(len(text_steps))]
 for annotation in annotations:
     axs[0].annotate(
         annotation['text'],
         xy=annotation['xy'],
-        xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
+        xytext=(0, 5),
+        textcoords= "offset pixels")
 axs[0].set_xlabel("dx")
 axs[0].set_title(r"diff in $L^2$ norm at the final time T")
 
 axs[1].scatter(dx_array, arr_Linf_diff)
-# axs[0].plot(domain_t[1:], np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+# axs[0].plot(domain_t[1:], 
+# np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
 axs[1].set_xscale('log')
 axs[1].set_yscale('log')
-annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i]), 'offset': (0, (max(arr_Linf_diff)-min(arr_Linf_diff))/50)} for i in range(len(text_steps))]
+annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i])} for i in range(len(text_steps))]
 for annotation in annotations:
     axs[1].annotate(
         annotation['text'],
         xy=annotation['xy'],
-        xytext=(annotation['xy'][0] + annotation["offset"][0], annotation['xy'][1] + annotation['offset'][1]))
+        xytext=(0, 5),
+        textcoords= "offset pixels")
+
 axs[1].set_xlabel("dx")
 axs[1].set_title(r"diff in $L^{\infty}$ norm at the final time T")
 
-fig.suptitle("Comparison between the Spectral and FD methods with BDF of order 1")
-plt.savefig("Benney_equation_code\\Plot_Comparison_Spectral_FD_BDF_order_1")
+fig.suptitle("Comparison between the Spectral and FD methods with BDF of order {}".format(order_BDF_scheme))
+plt.savefig("Benney_equation_code\\Plot_Comparison_Spectral_FD_BDF_order_{}".format(order_BDF_scheme))
 plt.show()
+
+
+
+
+### Linear Analysis
+
+bool_linear_analysis = False
+
+if bool_linear_analysis:
+    #Space, then time
+    N_x = 256 #To choose little at first and then, increase 
+    dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
+    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+    CFL_factor = 30 #take it big 
+    dt = dx/U_N/CFL_factor #CFL conditions
+    N_t = int(T/dt+1) #bcs (N_t-1)dt = T
+
+    #Time & space domains
+    domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
+    domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
+    freq_s = 1
+    Initial_Conditions = sincos(domain_x, h_mean, _ampl_c=0, _ampl_s=1, _freq_c=0, _freq_s= (2*np.pi/L_x)*freq_s)
+
+
+
+    if bool_solve_FD:
+        #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
+        h_mat_FD = solver_BDF.solver_Benney_BDF_FD(N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
+                                            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1)
+
+        h_Fourier_mat = np.zeros(h_mat_FD.shape)
+        for i in range(N_t):
+            h_Fourier_mat[i, :] = np.fft.rfft(h_mat_FD[i,:], norm="forward")
+
+        H_c = 2*h_Fourier_mat.real  
+        H_s = -2*h_Fourier_mat.imag 
+
+        ##Saving the solution
+        if bool_save: 
+            np.savetxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=N_x), h_mat_FD)
+
+
+    ##Loading the solution
+    if bool_load_solution:
+        h_mat_FD= np.loadtxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=N_x))
+        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
+
 
