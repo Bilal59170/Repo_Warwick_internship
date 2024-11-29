@@ -47,7 +47,7 @@ def F_time(h_arr, h_arr_before, _p, dt):
     _N_x = h_arr.shape[0]
     h_tot = np.concatenate((h_arr_before.reshape((_p, _N_x)), h_arr.reshape((1, _N_x))), axis=0)
     match _p:
-        case 1: #increasing order from left to right
+        case 1: #increasing time from left to right
             return np.array([-1, 1])@h_tot/dt
         case 2:
             return np.array([1/2, -2, 3/2])@h_tot/dt
@@ -66,7 +66,7 @@ def F_time(h_arr, h_arr_before, _p, dt):
 
 ### Solver for the Benney equation with Finite DIfferences & BDF scheme
 
-def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5):
+def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5, other_method=False):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -176,24 +176,44 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
     #main loop
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
 
-    for n_t in range(N_t-1):
-        if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
-                                                _p=1, dt=dt) + F_space(h_arr)
-        
-        else:
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
-                                                  _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
-        result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
-        h_mat[n_t+1, :] = result["x"]
-        root_method_CV_arr[n_t] = result["success"]
-        root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
-        
-        #Display of the computation progress
-        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
-            #displays the progress of the computation every nb_percent
-            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), 
-                  "%; time passed until start: ", time.time()-t_i)
+    if other_method: 
+        for n_t in range(N_t-1):
+            if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
+                fct_objective = lambda h_arr: h_arr + F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                    _p=1, dt=dt) + F_space(h_arr) - h_mat[n_t,:]
+            
+            else:
+                fct_objective = lambda h_arr: h_arr + F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                    _p=order_BDF_scheme, dt=dt) + F_space(h_arr) - h_mat[n_t,:]
+            result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
+            h_mat[n_t+1, :] = result["x"]
+            root_method_CV_arr[n_t] = result["success"]
+            root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
+            
+            #Display of the computation progress
+            if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+                #displays the progress of the computation every nb_percent
+                print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), 
+                    "%; time passed until start: ", time.time()-t_i)
+    else:
+        for n_t in range(N_t-1):
+            if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
+                fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                    _p=1, dt=dt) + F_space(h_arr)
+            
+            else:
+                fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                    _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+            result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
+            h_mat[n_t+1, :] = result["x"]
+            root_method_CV_arr[n_t] = result["success"]
+            root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
+            
+            #Display of the computation progress
+            if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+                #displays the progress of the computation every nb_percent
+                print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), 
+                    "%; time passed until start: ", time.time()-t_i)
 
     total_computation_time = time.time()-t_i
     print("Total computation time:", total_computation_time)
@@ -205,7 +225,7 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
 
 ### Solver for the Spectral method
-def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5):
+def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5, other_method=False):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -308,24 +328,44 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
     #main loop
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
 
-    for n_t in range(N_t-1):
-        if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
-                                                  _p=1, dt=dt) + F_space(h_arr)
-        
-        else:
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
-                                                  _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
-        result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
-        h_mat[n_t+1, :] = result["x"]
-        root_method_CV_arr[n_t] = result["success"]
-        root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
-        
-        #Display of the computation progress
-        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
-            #displays the progress of the computation every nb_percent
-            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", 
-                  time.time()-t_i)
+    if other_method: 
+        for n_t in range(N_t-1):
+            if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
+                fct_objective = lambda h_arr: h_arr+F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                    _p=1, dt=dt) + F_space(h_arr)-h_mat[n_t,:]
+            
+            else:
+                fct_objective = lambda h_arr: h_arr + F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                    _p=order_BDF_scheme, dt=dt) + F_space(h_arr) - h_mat[n_t, :]
+            result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
+            h_mat[n_t+1, :] = result["x"]
+            root_method_CV_arr[n_t] = result["success"]
+            root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
+            
+            #Display of the computation progress
+            if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+                #displays the progress of the computation every nb_percent
+                print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", 
+                    time.time()-t_i)
+    else:
+        for n_t in range(N_t-1):
+            if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
+                fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                    _p=1, dt=dt) + F_space(h_arr)
+            
+            else:
+                fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                    _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+            result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
+            h_mat[n_t+1, :] = result["x"]
+            root_method_CV_arr[n_t] = result["success"]
+            root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
+            
+            #Display of the computation progress
+            if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+                #displays the progress of the computation every nb_percent
+                print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", 
+                    time.time()-t_i)
 
     total_computation_time = time.time()-t_i
     print("Total computation time:", total_computation_time)
