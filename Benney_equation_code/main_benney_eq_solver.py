@@ -106,8 +106,8 @@ if True:#Plot of initial condition
 
 ######## SOLVING #######
 
-order_BDF_scheme = 3
-space_steps_array = np.array([1024])
+order_BDF_scheme = 2
+space_steps_array = np.array([128, 256, 512, 1024])
 print("Space steps: ", space_steps_array)
 
 
@@ -224,6 +224,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False,
     text_steps = ['\"1024-128\"', '\"1024-256\"', '\"1024-512\"' ] #increasing in the number of points
 
     annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_L2_diff[i])} for i in range(len(dx_array))]
+    #annotate on a pixel from a certain pixel distance from the xy point
     for annotation in annotations:
         axs[0].annotate(
             text=annotation['text'],
@@ -319,12 +320,12 @@ for i in range(len(space_steps_array)):
     if bool_solve_Spectral:
         h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, other_method=True)
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
 
         ##Saving the solution
         if bool_solve_Spectral and bool_save: 
             np.savetxt(
-                'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_other_method.txt'.format(
+                'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x), h_mat_spectral)
 
  
@@ -374,7 +375,7 @@ if False: #Animation & Graph Spectral method: Fixed BDF order, compare the diffe
         file_name="Benney_equation_code\\BDF_order_{}_Spectral_difference_graph".format(order_BDF_scheme))
 
 
-if True: #Spectral method Animation & Graph: Fixed step,  Compare the different BDF Orders
+if False: #Spectral method Animation & Graph: Fixed step,  Compare the different BDF Orders
     #Plot
     N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=1024, _CFL_factor=CFL_factor)
     list_result_BDF_spectral_N_x_1024, order_BDF_list = [], [1, 2, 3]
@@ -518,46 +519,97 @@ if False:
 
 bool_linear_analysis = False
 
+def coef_dispersion(k):
+    return (8*Re/15-(2/3)*np.cos(theta)/np.sin(theta)-k**2/(3*Ca))*k**2 + (-2*k)*(1j)
+
+k_0_squared = Ca*(8/5*Re - 2*np.cos(theta)/np.sin(theta))
+print("k_0**2:", k_0_squared)
+
+absciss = np.arange(0, 1, 1/100)
+plt.plot(absciss, coef_dispersion(absciss).real)
+
+plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
+
+
+        # axs[0].annotate(
+        #     text=annotation['text'],
+        #     xy=annotation['xy'],
+        #     xytext=(0, 5),
+        #     textcoords= "offset pixels")
+
+#r"k_0 = +\sqrt{Ca\(\frac{8}{5}Re -2cot(\theta)) \)}"
+if k_0_squared >0:
+    k_0 = np.sqrt(k_0_squared)
+    plt.axvline(x=k_0, color='b')
+    plt.annotate(text=r"$k_0 = +\sqrt{Ca\left(\frac{8}{5}Re -2cot(\theta)) \right)}$",
+                xy=(k_0/1, 0.12),
+                xycoords= "figure fraction",
+                xytext= (0.25, 0.20),
+                textcoords="figure fraction",
+                arrowprops=dict(facecolor='black', width=1, shrink=0.1)
+                )
+    
+plt.title("Real part of the dispersion coefficient")
+plt.show()
+
 if bool_linear_analysis:
-    #Space, then time
-    N_x = 256 #To choose little at first and then, increase 
-    dx = L_x/N_x #and not  dx = L_x/(N_x-1) as it periodic along x-axis so we don't count the last point so Lx-dx = (Nx-1)dx
-    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-    CFL_factor = 30 #take it big 
-    dt = dx/U_N/CFL_factor #CFL conditions
-    N_t = int(T/dt+1) #bcs (N_t-1)dt = T
+    N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
+    _N_x=128, _CFL_factor = CFL_factor)
+    Initial_Conditions = sincos(domain_x, _h_mean=1, _ampl_c=0.01, _ampl_s=0, _freq_c=(2*np.pi/L_x)*1, _freq_s= 0)
 
-    #Time & space domains
-    domain_x = np.linspace(0, L_x, N_x, endpoint=False) #Periodic domain: we don't need the last point (endpoint=False)
-    domain_t = np.linspace(0, T, N_t, endpoint=True) #Not periodic: we need last point
-    freq_s = 1
-    Initial_Conditions = sincos(domain_x, h_mean, _ampl_c=0, _ampl_s=1, _freq_c=0, _freq_s= (2*np.pi/L_x)*freq_s)
-
-
-
-    if bool_solve_FD:
+    if False:
         ##Loading the solution
-        if bool_load_solution:
-            h_mat_FD= np.loadtxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                BDF_order=order_BDF_scheme, N_x=N_x)) 
-            assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
+        h_mat_spectral= np.loadtxt('Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_scheme, N_x=N_x)) 
+        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
 
-        #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
-        h_mat_FD = solver_BDF.solver_Benney_BDF_FD(N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-                                            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1)
+    if True:
+        h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
+            N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
+    
 
-        
-        h_Fourier_mat = np.fft.rfft(h_mat_FD, norm="forward", axis=0)
-        assert ((h_Fourier_mat.shape[0]==h_mat_FD.shape[0]) 
-                and (h_Fourier_mat.shape[1]==h_mat_FD.shape[1])), "Shape of the Fourier matrix: Problem"
+    #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
+    
+    h_Fourier_mat = np.fft.rfft(h_mat_spectral, norm="forward", axis=1)
+    print("Shape FOurier mat", h_Fourier_mat.shape)
+    print("Shape h matrix", h_mat_spectral.shape)
+    assert ((h_Fourier_mat.shape[0]==h_mat_spectral.shape[0])), "Shape of the Fourier matrix: Problem"
 
-        H_c = 2*h_Fourier_mat.real  
-        H_s = -2*h_Fourier_mat.imag 
+    # H_c = 2*h_Fourier_mat.real  
+    # H_s = -2*h_Fourier_mat.imag 
+
+    if True:
+        animation_Benney = solver_BDF.func_anim(
+            _time_series=np.array([h_mat_spectral]),
+                _anim_space_array = domain_x, _anim_time_array = domain_t,
+            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+                N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+
+            title_x_axis=r"x axis: horizontal inclined by $\theta$",
+            title_y_axis= r"y-axis (inclined by $\theta$)",
+            _legend_list = ["height with Spectral method"]
+            )
+        plt.close()
+        # plt.show()
+
+        if True:
+            animation_Benney.save(
+                'Benney_equation_code\\Linear_theory_FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
+                order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
+    
+    plt.plot(domain_t, h_Fourier_mat[:, 1].real, label="real part")
+    # plt.plot(domain_t, h_Fourier_mat[:, 1].imag, label="imaginary part")
+    plt.xlabel("time t")
+    plt.title("1st fourier mode")
+    plt.legend()
+    plt.show()
 
 
-        ##Saving the solution
-        if bool_save: 
-            np.savetxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=N_x), h_mat_FD)
+    ##Saving the solution
+    if True: 
+        np.savetxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_scheme, N_x=N_x), h_mat_spectral)
 
 
     
