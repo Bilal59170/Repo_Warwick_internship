@@ -92,7 +92,8 @@ Initial_Conditions = sincos(
 
 if True:#Plot of initial condition
     plt.plot(domain_x, Initial_Conditions)
-    plt.title("Initial conditions for the normalized height h ")
+    plt.title("IC (t=0) for the normalized height h (Ac, As, fc, fs)"+
+    "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
     plt.show()
 
 
@@ -106,8 +107,8 @@ if True:#Plot of initial condition
 
 ######## SOLVING #######
 
-order_BDF_scheme = 2
-space_steps_array = np.array([128, 256, 512, 1024])
+order_BDF_scheme = 6
+space_steps_array = np.array([128])
 print("Space steps: ", space_steps_array)
 
 
@@ -140,39 +141,42 @@ for i in range(len(space_steps_array)):
                 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
                 BDF_order=order_BDF_scheme, N_x=N_x), h_mat_FD)
 
-    ##Loading the solution
-    if bool_load_solution:
-        h_mat_FD= np.loadtxt(
-            'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                BDF_order=order_BDF_scheme, N_x=N_x))
-        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
 
 
-    ### VISUALISATION 
-    ##animation function
+##Loading the solution
+if bool_load_solution:
+    h_mat_FD= np.loadtxt(
+        'Benney_equation_code\\Saved_numerical_solutions\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_scheme, N_x=N_x))
+    assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
 
-    if bool_anim:#Animation of benney numerical solution
-        animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
-            _anim_space_array = domain_x, _anim_time_array = domain_t,
-            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
-                N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
 
-            title_x_axis=r"x axis: horizontal inclined by $\theta$",
-            title_y_axis= r"y-axis (inclined by $\theta$)",
-            _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
-        # plt.show()
+### VISUALISATION 
+##animation function
 
-    if bool_save_anim and bool_save:
-        animation_Benney.save(
-            'Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
-            order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
+if bool_anim:#Animation of benney numerical solution
+    animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
+        _anim_space_array = domain_x, _anim_time_array = domain_t,
+        title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+            N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+
+        title_x_axis=r"x axis: horizontal inclined by $\theta$",
+        title_y_axis= r"y-axis (inclined by $\theta$)",
+        _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
+    # plt.show()
+
+if bool_save_anim and bool_save:
+    animation_Benney.save(
+        'Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
+        order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
 
 
 ### VERIFICATION OF THE METHOD
 
 #Load the arrays
 
-def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False, 
+def plot_difference_graph(list_h_mat, general_subplot_title, title_left_graph=None, 
+                          title_right_graph=None, save_plot = False, 
                           file_name= None, regression_lin=False): #Difference in loglog graph
     '''
     Output: Make a loglog (in log10 scale) graph of the difference of the same method
@@ -192,37 +196,44 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False,
         arr_L2_diff[i] = np.linalg.norm(list_h_mat[-1][-1,0::(2**(3-i))]-list_h_mat[i][-1])
         arr_Linf_diff[i] = np.max(np.absolute((list_h_mat[-1][-1,0::(2**(3-i))]-list_h_mat[i][-1])))
 
-    #Make a linear regression
-    if regression_lin:
-        #Linear regression of the differences
-        N_1, N_2 = 0, N_t-1
-        x_lin_reg_array = domain_t[N_1:N_2].reshape(-1,1) #Necessary reshape for sklearn
-
-        #L2 Case
-        y_lin_reg_array = np.log(diff_L2[N_1:N_2]).reshape(-1, 1)
-        reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
-        Reg_lin_coef_a_L2 , Reg_lin_coef_b_L2= reg.coef_[0][0], reg.intercept_[0]
-        print("Slope coefficient(s) ax+b, Determination coefficient R²:", Reg_lin_coef_a_L2, Reg_lin_coef_b_L2, reg.score(x_lin_reg_array, y_lin_reg_array))
-
-        #Linf case
-        y_lin_reg_array = np.log(diff_Linf[N_1:N_2]).reshape(-1, 1)
-        reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
-        Reg_lin_coef_a_Linf , Reg_lin_coef_b_Linf= reg.coef_[0][0], reg.intercept_[0]
-        print("Slope coefficient(s) ax+b, Determination coefficient R²:", Reg_lin_coef_a_Linf, Reg_lin_coef_b_Linf, reg.score(x_lin_reg_array, y_lin_reg_array))
-
-
-    ##Plot
+    ###Plot
     fig, axs = plt.subplots(1,2, figsize=(15, 5))
     dx_array = L_x/space_steps_array[:-1]
 
-    axs[0].scatter(dx_array, arr_L2_diff)
-    # np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+
+    #Make a linear regression
+    if regression_lin:
+        #Linear regression of the differences
+        x_lin_reg_array = np.log10(dx_array).reshape(-1,1) #Necessary reshape for sklearn
+
+        #L2 Case
+        y_lin_reg_array = np.log10(arr_L2_diff).reshape(-1, 1)
+        reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+        #slope a, intercept b and  Determination coefficient R²
+        Reg_lin_coef_a_L2 , Reg_lin_coef_b_L2= reg.coef_[0][0], reg.intercept_[0]
+        Reg_lin_coef_r2_L2 = reg.score(x_lin_reg_array, y_lin_reg_array)
+
+        #Linf case
+        y_lin_reg_array = np.log10(arr_Linf_diff).reshape(-1, 1)
+        reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+        #slope a, intercept b and  Determination coefficient R²
+        Reg_lin_coef_a_Linf , Reg_lin_coef_b_Linf= reg.coef_[0][0], reg.intercept_[0]
+        Reg_lin_coef_r2_Linf = reg.score(x_lin_reg_array, y_lin_reg_array) 
+
+
+
+
+    axs[0].scatter(dx_array, arr_L2_diff, label="Scheme differences")
+    rescaled_lin_reg_L2 = 10**(Reg_lin_coef_b_L2)*(dx_array**Reg_lin_coef_a_L2)
+    axs[0].plot(dx_array,rescaled_lin_reg_L2, 
+                label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+                a=solver_BDF.round_fct(Reg_lin_coef_a_L2, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_L2, 2)
+                , R2=solver_BDF.round_fct(Reg_lin_coef_r2_L2, 4)),
+                color='r')
     axs[0].set_xscale('log')
     axs[0].set_yscale('log')
-
     # Adding annotations
     text_steps = ['\"1024-128\"', '\"1024-256\"', '\"1024-512\"' ] #increasing in the number of points
-
     annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_L2_diff[i])} for i in range(len(dx_array))]
     #annotate on a pixel from a certain pixel distance from the xy point
     for annotation in annotations:
@@ -232,11 +243,16 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False,
             xytext=(0, 5),
             textcoords= "offset pixels")
     axs[0].set_xlabel("dx, the biggest step between 2 numerical solutions")
-    axs[0].set_title(r"diff in $L^2$ norm of 2 computed h from 2 different dx at the final time T")
-
-    axs[1].scatter(dx_array, arr_Linf_diff)
-    # axs[1].plot(domain_t[1:], Reg_lin_coef_b_Linf*(domain_t[1:]**Reg_lin_coef_a_Linf), 
-    # label="Linear Regression")
+    axs[0].set_title(r"diff in $L^2$ norm in loglog graph")
+    axs[0].legend(loc='upper left', fontsize="small")
+ 
+    axs[1].scatter(dx_array, arr_Linf_diff, label="Scheme differences")
+    rescaled_lin_reg_Linf = 10**(Reg_lin_coef_b_Linf)*(dx_array**Reg_lin_coef_a_Linf)
+    axs[1].plot(dx_array,rescaled_lin_reg_Linf, 
+            label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+            a=solver_BDF.round_fct(Reg_lin_coef_a_Linf, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_Linf, 2)
+            , R2=solver_BDF.round_fct(Reg_lin_coef_r2_Linf, 4)),
+            color='r')
     axs[1].set_xscale('log')
     axs[1].set_yscale('log')
     annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i])}
@@ -246,7 +262,8 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False,
             annotation['text'], xy=annotation['xy'], xytext=(0, 5), 
             textcoords = "offset pixels")
     axs[1].set_xlabel("dx, the biggest step between 2 numerical solutions")
-    axs[1].set_title(r"Diff in $L^{\infty}$ norm of 2 computed h from 2 different dx at the final time T")
+    axs[1].set_title(r"Diff in $L^{\infty}$ norm in loglog graph")
+    axs[1].legend(loc='upper left', fontsize="small")
 
     fig.suptitle(general_subplot_title)
 
@@ -255,15 +272,73 @@ def plot_difference_graph(list_h_mat, general_subplot_title, save_plot = False,
         plt.savefig(file_name)
     plt.show()
 
+
+list_h_mat_FD = [] 
+for space_step in space_steps_array:
+    list_h_mat_FD.append(
+        np.loadtxt(
+            'Benney_equation_code\\Saved_numerical_solutions\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'
+            .format(BDF_order=order_BDF_scheme, N_x=space_step)))
+    
 if False: #Plot the difference Graph
     print("List of the tested space steps:", space_steps_array)
-    list_h_mat_FD = [] #list of the FD & BDF numerical solution for different space steps
 
-    for space_step in space_steps_array:
-        list_h_mat_FD.append(np.loadtxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(BDF_order=order_BDF_scheme, N_x=space_step)))
+    #list of the FD & BDF numerical solution for different space steps
+  
+    
+    #plot the difference graph
+    plot_difference_graph(
+        list_h_mat_FD, 
+        general_subplot_title=
+        "FD + order {} BDF Scheme: Difference of 2 computed h from 2 different dx at the final time T."
+        .format(order_BDF_scheme),
+        save_plot=True,
+        regression_lin=True,
+        file_name="Benney_equation_code\\BDF_order_{}_FD_difference_graph".format(order_BDF_scheme))
+
+if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF Orders
+    #Plot
+    N_x_plot = 128
+    N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=N_x_plot, _CFL_factor=CFL_factor)
+    list_result_BDF_FD_N_x, order_BDF_list = [], [1, 2, 3,6]
+    index_eval_time = int(N_t)-1
+
+    for i in range( len(order_BDF_list)):
         
-    plot_difference_graph(list_h_mat_FD, "FD + BDF Scheme at final time", save_plot=False, file_name="Benney_equation_code\\BDF_order_{}_FD_difference_graph".format(order_BDF_scheme))
+        list_result_BDF_FD_N_x.append(
+            np.loadtxt(
+            'Benney_equation_code\\Saved_numerical_solutions'
+            '\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_list[i], N_x=N_x))
+        )
 
+        plt.plot(domain_x, list_result_BDF_FD_N_x[i][index_eval_time,:], 
+                 label="BDF {}".format(order_BDF_list[i]))
+        
+
+    plt.xlabel("inclined plane"), plt.ylabel("height h(x, t)")
+    plt.legend()
+    plt.title("FD with BDF 1, 2, 3 at final time with N_x = {}".format(N_x_plot))
+    plt.savefig("Benney_equation_code\\FD_BDF_comparison_order_1236_Nx_{}.png".format(N_x_plot))
+    plt.show()
+
+    # Animation
+
+
+    animation_BDF_FD = solver_BDF.func_anim(
+        _time_series=np.array(list_result_BDF_FD_N_x), _anim_space_array = domain_x,
+        _anim_time_array = domain_t,
+        title="Benney height with FD method and BDF for (N_x, CFL, Re, Ca)"
+          +"=({N_x}, {CFL}, {Re}, {Ca})".format(
+        N_x=1024, CFL=30, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+
+        title_x_axis=r"x axis: horizontal inclined by $\theta$",
+        title_y_axis= r"y-axis (inclined by $\theta$)",
+        _legend_list = ["BDF order {}".format(BDF_order) for BDF_order in order_BDF_list])
+    # plt.show()
+
+    animation_BDF_FD.save(
+        'Benney_equation_code\\FD_BDF_order_comparison_order_1236_Nx_{}.mp4'.format(N_x_plot))  
 
 
 
@@ -365,45 +440,55 @@ list_h_mat_spectral = [] #list of the Spectral & BDF numerical solution for diff
 for space_step in space_steps_array:
     list_h_mat_spectral.append(
         np.loadtxt(
-        'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+        'Benney_equation_code\\Saved_numerical_solutions\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
         BDF_order=order_BDF_scheme, N_x=space_step)))
 
 
 if False: #Animation & Graph Spectral method: Fixed BDF order, compare the different steps
-    plot_difference_graph(list_h_mat_spectral, "Spectral + BDF scheme at final time",
-        save_plot=False, 
+    plot_difference_graph(
+        list_h_mat_spectral, 
+        general_subplot_title=
+        "Spectral + order {} BDF Scheme: Difference of 2 computed h from 2 different dx at the final time T."
+        .format(order_BDF_scheme),
+        save_plot=True,
+        regression_lin=True,
         file_name="Benney_equation_code\\BDF_order_{}_Spectral_difference_graph".format(order_BDF_scheme))
 
 
 if False: #Spectral method Animation & Graph: Fixed step,  Compare the different BDF Orders
     #Plot
-    N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=1024, _CFL_factor=CFL_factor)
-    list_result_BDF_spectral_N_x_1024, order_BDF_list = [], [1, 2, 3]
+    N_x_plot = 1024
+    N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=N_x_plot, _CFL_factor=CFL_factor)
+    list_result_BDF_spectral_N_x, order_BDF_list = [], [1, 2, 3,6]
     index_eval_time = int(N_t)-1
 
     for i in range( len(order_BDF_list)):
         
-        list_result_BDF_spectral_N_x_1024.append(
+        list_result_BDF_spectral_N_x.append(
             np.loadtxt(
-            'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_other_method.txt'.format(
-            BDF_order=order_BDF_list[i], N_x=1024))
+            'Benney_equation_code\\Saved_numerical_solutions'
+            '\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_list[i], N_x=N_x))
         )
 
-        plt.plot(domain_x, list_result_BDF_spectral_N_x_1024[i][index_eval_time,:], 
+        plt.plot(domain_x, list_result_BDF_spectral_N_x[i][index_eval_time,:], 
                  label="BDF {}".format(order_BDF_list[i]))
+        
 
     plt.xlabel("inclined plane"), plt.ylabel("height h(x, t)")
     plt.legend()
-    plt.title("Spectral with BDF 1, 2, 3 at final time")
+    plt.title("Spectral with BDF 1, 2, 3 at final time with N_x = {}".format(N_x_plot))
+    plt.savefig("Benney_equation_code\\Spectral_BDF_comparison_order_1236_Nx_{}.png".format(N_x_plot))
     plt.show()
 
-    #Animation
+    Animation
 
 
     animation_BDF_Spectral = solver_BDF.func_anim(
-        _time_series=np.array(list_result_BDF_spectral_N_x_1024), _anim_space_array = domain_x,
+        _time_series=np.array(list_result_BDF_spectral_N_x), _anim_space_array = domain_x,
         _anim_time_array = domain_t,
-        title="Benney height with Spectral method and BDF for (N_x, CFL, Re, Ca) =({N_x}, {CFL}, {Re}, {Ca})".format(
+        title="Benney height with Spectral method and BDF for (N_x, CFL, Re, Ca)"
+          +"=({N_x}, {CFL}, {Re}, {Ca})".format(
         N_x=1024, CFL=30, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
 
         title_x_axis=r"x axis: horizontal inclined by $\theta$",
@@ -412,9 +497,10 @@ if False: #Spectral method Animation & Graph: Fixed step,  Compare the different
     # plt.show()
 
     animation_BDF_Spectral.save(
-        'Benney_equation_code\\Spectral_BDForder_comparison_other_123.mp4')  
+        'Benney_equation_code\\Spectral_BDF_order_comparison_order_1236_Nx_{}.mp4'.format(N_x_plot))  
 
-if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 22 methods
+
+if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 2 methods
     #Plot
     N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=1024, _CFL_factor=CFL_factor)
     list_result_BDF_1_spectral_N_x_1024, order_BDF_list = [], [1, 2, 3, 6]
@@ -448,34 +534,83 @@ if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 2
     animation_BDF_Spectral.save(
         'Benney_equation_code\\Spectral_BDForder_1_comparison_nrm_with_other.mp4')  
 
+
+
+
 ###### Comparison of the FD & Spectral methods  #####
 
 bool_anim = False
 if bool_anim:#Animation of benney numerical solution
-    animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_spectral-h_mat_FD]), _anim_space_array = domain_x,
-                                        _anim_time_array = domain_t,
-                                        title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
-                                        title_x_axis=r"x axis: horizontal inclined by $\theta$",
-                                        title_y_axis= r"y-axis (inclined by $\theta$)",
-                                        _legend_list = ["|h_FD - h_spectral|"])
-    plt.show()
+
+    N_x_plot = 128
+    _ , N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=N_x_plot, _CFL_factor=CFL_factor)
+
+    h_mat_FD = np.loadtxt(
+            'Benney_equation_code\\Saved_numerical_solutions'
+            + '\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_scheme, N_x=N_x_plot))
+    h_mat_spectral = np.loadtxt(
+            'Benney_equation_code\\Saved_numerical_solutions'
+            +'\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+            BDF_order=order_BDF_scheme, N_x=N_x_plot))
+    
+    animation_FD_Spectral = solver_BDF.func_anim(
+        _time_series=np.array([h_mat_spectral-h_mat_FD]), _anim_space_array = domain_x,
+        _anim_time_array = domain_t,
+        title="Spectral-FD BDF order {}".format(order_BDF_scheme) +
+             "and (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+            N_x=N_x_plot, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), 
+            Ca=solver_BDF.round_fct(Ca, 3)),
+
+        title_x_axis=r"x axis: horizontal inclined by $\theta$",
+        title_y_axis= r"y-axis (inclined by $\theta$)",
+        _legend_list = ["h_spectral-h_FD"])
+    # plt.show()
+    animation_FD_Spectral.save(
+        'Benney_equation_code\\Spectral-FD_anim_BDF_order{order_BDF}_1236_Nx_{N_x}.mp4'.format(
+            order_BDF=order_BDF_scheme, N_x=N_x_plot))
 
 
 ##Plot of the Difference between Spectral and FD Method with BDF
-
+bool_linear_reg = False
 if False: 
     arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_array)), np.zeros(len(space_steps_array))
     for i in range(len(space_steps_array)):
         arr_L2_diff[i] = np.linalg.norm(list_h_mat_FD[i][-1]-list_h_mat_spectral[i][-1])
         arr_Linf_diff[i] = np.max(np.absolute(list_h_mat_FD[i][-1]-list_h_mat_spectral[i][-1]))
 
-    #plot
-    fig, axs = plt.subplots(1,2, figsize=(15, 5))
 
+
+    ##plot
+    fig, axs = plt.subplots(1,2, figsize=(15, 5))
     dx_array = L_x/space_steps_array
-    axs[0].scatter(dx_array, arr_L2_diff)
-    # axs[0].plot(domain_t[1:], 
-    # np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+
+    #Make a linear regression
+    if bool_linear_reg:
+        #Linear regression of the differences
+        x_lin_reg_array = np.log10(dx_array).reshape(-1,1) #Necessary reshape for sklearn
+
+        #L2 Case
+        y_lin_reg_array = np.log10(arr_L2_diff).reshape(-1, 1)
+        reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+        #slope a, intercept b and  Determination coefficient R²
+        Reg_lin_coef_a_L2 , Reg_lin_coef_b_L2= reg.coef_[0][0], reg.intercept_[0]
+        Reg_lin_coef_r2_L2 = reg.score(x_lin_reg_array, y_lin_reg_array)
+
+        #Linf case
+        y_lin_reg_array = np.log10(arr_Linf_diff).reshape(-1, 1)
+        reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+        #slope a, intercept b and  Determination coefficient R²
+        Reg_lin_coef_a_Linf , Reg_lin_coef_b_Linf= reg.coef_[0][0], reg.intercept_[0]
+        Reg_lin_coef_r2_Linf = reg.score(x_lin_reg_array, y_lin_reg_array) 
+
+    axs[0].scatter(dx_array, arr_L2_diff,label="Difference between Spectral & FD")
+    rescaled_lin_reg_L2 = 10**(Reg_lin_coef_b_L2)*(dx_array**Reg_lin_coef_a_L2)
+    axs[0].plot(dx_array,rescaled_lin_reg_L2, 
+            label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+            a=solver_BDF.round_fct(Reg_lin_coef_a_L2, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_L2, 2)
+            , R2=solver_BDF.round_fct(Reg_lin_coef_r2_L2, 4)),
+            color='r')
     axs[0].set_xscale('log')
     axs[0].set_yscale('log')
     # Adding annotations
@@ -489,10 +624,15 @@ if False:
             textcoords= "offset pixels")
     axs[0].set_xlabel("dx")
     axs[0].set_title(r"diff in $L^2$ norm at the final time T")
+    axs[0].legend(fontsize="small")
 
-    axs[1].scatter(dx_array, arr_Linf_diff)
-    # axs[0].plot(domain_t[1:], 
-    # np.exp(Reg_lin_coef_b_L2)*(domain_t[1:]**Reg_lin_coef_a_L2), label="Linear Regression")
+    axs[1].scatter(dx_array, arr_Linf_diff, label="Difference between FD & Spectral")
+    rescaled_lin_reg_Linf = 10**(Reg_lin_coef_b_Linf)*(dx_array**Reg_lin_coef_a_Linf)
+    axs[1].plot(dx_array,rescaled_lin_reg_Linf, 
+            label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+            a=solver_BDF.round_fct(Reg_lin_coef_a_Linf, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_Linf, 2)
+            , R2=solver_BDF.round_fct(Reg_lin_coef_r2_Linf, 4)),
+            color='r')
     axs[1].set_xscale('log')
     axs[1].set_yscale('log')
     annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i])} for i in range(len(text_steps))]
@@ -505,11 +645,11 @@ if False:
 
     axs[1].set_xlabel("dx")
     axs[1].set_title(r"diff in $L^{\infty}$ norm at the final time T")
+    axs[1].legend(fontsize="small")
 
     fig.suptitle("Comparison between the Spectral and FD methods with BDF of order {}".format(order_BDF_scheme))
-    plt.savefig("Benney_equation_code\\Plot_Comparison_Spectral_FD_BDF_order_{}".format(order_BDF_scheme))
+    plt.savefig("Benney_equation_code\\Plot_Comparison_Spectral_FD_BDF_order_{}.png".format(order_BDF_scheme))
     plt.show()
-
 
 
 
@@ -519,38 +659,32 @@ if False:
 
 bool_linear_analysis = False
 
-def coef_dispersion(k):
-    return (8*Re/15-(2/3)*np.cos(theta)/np.sin(theta)-k**2/(3*Ca))*k**2 + (-2*k)*(1j)
+if False:
+    def coef_dispersion(k):
+        return (8*Re/15-(2/3)*np.cos(theta)/np.sin(theta)-k**2/(3*Ca))*k**2 + (-2*k)*(1j)
 
-k_0_squared = Ca*(8/5*Re - 2*np.cos(theta)/np.sin(theta))
-print("k_0**2:", k_0_squared)
+    k_0_squared = Ca*(8/5*Re - 2*np.cos(theta)/np.sin(theta))
+    print("k_0**2:", k_0_squared)
 
-absciss = np.arange(0, 1, 1/100)
-plt.plot(absciss, coef_dispersion(absciss).real)
+    absciss = np.arange(0, 1, 1/100)
+    plt.plot(absciss, coef_dispersion(absciss).real)
+    plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
+    if k_0_squared >0:
+        k_0 = np.sqrt(k_0_squared)
+        plt.axvline(x=k_0, color='b')
+        plt.annotate(
+            text=r"$k_0 = +\sqrt{Ca\left(\frac{8}{5}Re -2cot(\theta)) \right)}\approx$ "
+            +str(solver_BDF.round_fct(k_0, 3)),
 
-plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
-
-
-        # axs[0].annotate(
-        #     text=annotation['text'],
-        #     xy=annotation['xy'],
-        #     xytext=(0, 5),
-        #     textcoords= "offset pixels")
-
-#r"k_0 = +\sqrt{Ca\(\frac{8}{5}Re -2cot(\theta)) \)}"
-if k_0_squared >0:
-    k_0 = np.sqrt(k_0_squared)
-    plt.axvline(x=k_0, color='b')
-    plt.annotate(text=r"$k_0 = +\sqrt{Ca\left(\frac{8}{5}Re -2cot(\theta)) \right)}$",
-                xy=(k_0/1, 0.12),
-                xycoords= "figure fraction",
-                xytext= (0.25, 0.20),
-                textcoords="figure fraction",
-                arrowprops=dict(facecolor='black', width=1, shrink=0.1)
-                )
-    
-plt.title("Real part of the dispersion coefficient")
-plt.show()
+            xy=(k_0/1, 0.12),
+            xycoords= "figure fraction",
+            xytext= (0.25, 0.20),
+            textcoords="figure fraction",
+            arrowprops=dict(facecolor='black', width=1, shrink=0.1)
+                    )
+        
+    plt.title("Real part of the dispersion coefficient")
+    plt.show()
 
 if bool_linear_analysis:
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(

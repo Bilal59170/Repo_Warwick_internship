@@ -220,7 +220,7 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
 
     L_x = N_x*dx
     nu = (2*np.pi)/L_x
-    fq_tab = nu*N_x*np.fft.rfftfreq(N_x) #to justify better after
+    fq_tab = nu*N_x*np.fft.rfftfreq(N_x) # or 2*np.pi*np.fft.rfftfreq(N_x, d=dx) ?
     print("\n Shape of the array of frequencies: ", fq_tab.shape)
 
     def F_space(h_arr):
@@ -339,7 +339,8 @@ def round_fct(r, nb_decimal):
     if r==0:
         return 0
     else:
-        power_10 = int(np.log10(r))
+        # print("NUMBER R", r)
+        power_10 = int(np.log10(abs(r)))
         factor = 10**(power_10)
         return round(r/factor, nb_decimal)*factor
 
