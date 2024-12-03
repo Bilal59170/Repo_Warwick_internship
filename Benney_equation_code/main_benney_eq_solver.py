@@ -44,7 +44,7 @@ print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 ##VARIABLEs: steps & domain
 #Steps: 2 ways
 
-def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None):
+def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     """
     Input: The name are explicit
     Output:(_N_x, _N_t, _dx, _dt, domain_x, domain_t) 
@@ -90,7 +90,7 @@ ampl_c, ampl_s, freq_c, freq_s = 0.02, 0.01, 3, 1  #frequencies need to be a rel
 Initial_Conditions = sincos(
     domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
-if True:#Plot of initial condition
+if False:#Plot of initial condition
     plt.plot(domain_x, Initial_Conditions)
     plt.title("IC (t=0) for the normalized height h (Ac, As, fc, fs)"+
     "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
@@ -393,7 +393,7 @@ for i in range(len(space_steps_array)):
         domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
     
     if bool_solve_Spectral:
-        h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
+        h_mat_lin = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
             theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
 
@@ -538,7 +538,6 @@ if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 2
 
 
 ###### Comparison of the FD & Spectral methods  #####
-
 bool_anim = False
 if bool_anim:#Animation of benney numerical solution
 
@@ -655,67 +654,88 @@ if False:
 
 
 
-### Linear Analysis
+##### Linear Analysis
+bool_linear_analysis = True
 
-bool_linear_analysis = False
-
-if False:
+print("\n LINEAR ANALYSIS")
+if True:
+    nu = 2*np.pi/L_x
     def coef_dispersion(k):
-        return (8*Re/15-(2/3)*np.cos(theta)/np.sin(theta)-k**2/(3*Ca))*k**2 + (-2*k)*(1j)
+        '''Cf Oscar's paper for the formula. He does it on a 2pi-per function whereas I'm doing it
+        on a L-per function. So I scale by 2pi/L as derive in L-per case <=> multiply
+         by k2pi/L '''
+        k_L = k*nu
+        return (8*Re/15-(2/3)*np.cos(theta)/np.sin(theta)-k_L**2/(3*Ca))*k_L**2 + (-2*k_L)*(1j)
 
-    k_0_squared = Ca*(8/5*Re - 2*np.cos(theta)/np.sin(theta))
+    k_0_squared = (Ca*(8/5*Re - 2*np.cos(theta)/np.sin(theta)))/(nu**2) #scaling in the L-per dommain
     print("k_0**2:", k_0_squared)
 
-    absciss = np.arange(0, 1, 1/100)
-    plt.plot(absciss, coef_dispersion(absciss).real)
-    plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
-    if k_0_squared >0:
+    if k_0_squared <=0:
+        absciss = np.linspace(k_0_squared-1, 0, 100, endpoint=True)
+        plt.plot(absciss, coef_dispersion(absciss).real)
+        plt.title("k_0**2 <0")
+        plt.axvline(x=k_0_squared, color='b')
+        plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
+    else:
         k_0 = np.sqrt(k_0_squared)
+        print("k_0", k_0)
+        absciss = np.linspace(0, k_0+1, 100, endpoint=True)
+        plt.plot(absciss, coef_dispersion(absciss).real)
+        plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
         plt.axvline(x=k_0, color='b')
+        (y_min_plot, _) = plt.ylim()
         plt.annotate(
-            text=r"$k_0 = +\sqrt{Ca\left(\frac{8}{5}Re -2cot(\theta)) \right)}\approx$ "
+            text=r"$k_0 = +\sqrt{Ca\left(\frac{8}{5}Re -2cot(\theta)) \right)}/\nu\approx$ "
             +str(solver_BDF.round_fct(k_0, 3)),
 
-            xy=(k_0/1, 0.12),
-            xycoords= "figure fraction",
-            xytext= (0.25, 0.20),
-            textcoords="figure fraction",
-            arrowprops=dict(facecolor='black', width=1, shrink=0.1)
+            xy=(k_0,y_min_plot),
+            xycoords= "data",
+            xytext= (0.1, 0.1),
+            textcoords="axes fraction",
+            arrowprops=dict(facecolor='black', width=1, shrink=0.05)
                     )
         
     plt.title("Real part of the dispersion coefficient")
     plt.show()
 
+
 if bool_linear_analysis:
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
-    _N_x=128, _CFL_factor = CFL_factor)
-    Initial_Conditions = sincos(domain_x, _h_mean=1, _ampl_c=0.01, _ampl_s=0, _freq_c=(2*np.pi/L_x)*1, _freq_s= 0)
+    _N_x=256, _CFL_factor = CFL_factor, T=100)
 
-    if False:
-        ##Loading the solution
-        h_mat_spectral= np.loadtxt('Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-            BDF_order=order_BDF_scheme, N_x=N_x)) 
-        assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape "
+    #IC and order of the Fourier decomposition that we are interested in
+    order_fourier_mode = 3
+    IC_amplitude = 0.01
+    Initial_Conditions = sincos(
+        domain_x, _h_mean=1, _ampl_c=0, _ampl_s=IC_amplitude, _freq_c=0, _freq_s= (2*np.pi/L_x)*order_fourier_mode)
+    
 
-    if True:
-        h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
+    #loading or computing solutions
+    if True: ##Loading the solution. Be carefull to take the relevant IC
+        h_mat_lin= np.loadtxt(
+            'Benney_equation_code\\Linear_verif_Sp_method_BDF_order{BDF_order}_Nx_{N_x}.txt'
+            .format( BDF_order=order_BDF_scheme, N_x=N_x)) 
+        assert ((h_mat_lin.shape[0]==N_t)and(h_mat_lin.shape[1]==N_x)), "Solution loading: Problem of shape "
+    if False: #Computing
+        h_mat_lin = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
             theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
-    
+        if True:
+            np.savetxt(
+                'Benney_equation_code\\Linear_verif_Sp_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+                    BDF_order=order_BDF_scheme, N_x=N_x), h_mat_lin)
 
-    #computation times :  ((N_x, N_t), t computation): [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
-    
-    h_Fourier_mat = np.fft.rfft(h_mat_spectral, norm="forward", axis=1)
+    #Fourier matrix 
+    h_Fourier_mat = np.fft.rfft(h_mat_lin, norm="forward", axis=1)
     print("Shape FOurier mat", h_Fourier_mat.shape)
-    print("Shape h matrix", h_mat_spectral.shape)
-    assert ((h_Fourier_mat.shape[0]==h_mat_spectral.shape[0])), "Shape of the Fourier matrix: Problem"
-
+    print("Shape h matrix", h_mat_lin.shape)
+    assert ((h_Fourier_mat.shape[0]==h_mat_lin.shape[0])), "Shape of the Fourier matrix: Problem"
     # H_c = 2*h_Fourier_mat.real  
     # H_s = -2*h_Fourier_mat.imag 
 
-    if True:
+    if False: #VIsualisation of the behavior (amplify, reduces)
         animation_Benney = solver_BDF.func_anim(
-            _time_series=np.array([h_mat_spectral]),
+            _time_series=np.array([h_mat_lin]),
                 _anim_space_array = domain_x, _anim_time_array = domain_t,
             title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
                 N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
@@ -732,20 +752,71 @@ if bool_linear_analysis:
                 'Benney_equation_code\\Linear_theory_FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
                 order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
     
-    plt.plot(domain_t, h_Fourier_mat[:, 1].real, label="real part")
-    # plt.plot(domain_t, h_Fourier_mat[:, 1].imag, label="imaginary part")
-    plt.xlabel("time t")
-    plt.title("1st fourier mode")
-    plt.legend()
-    plt.show()
+    #Theoretical Fourier coefficient in Linear theory
+    lambda_k = coef_dispersion(order_fourier_mode)
+    print("lambda 1:", lambda_k)
+    c_1 = 0.01/(2j)*np.exp(lambda_k*domain_t)
+
+    if True: #Plot of the FOurier coef
+        plt.plot(domain_t, h_Fourier_mat[:, order_fourier_mode].real, label="real part")
+        plt.plot(domain_t, h_Fourier_mat[:, order_fourier_mode].imag, label="imaginary part")
+        plt.plot(domain_t, c_1.real, label="Linear th real")
+        plt.plot(domain_t, c_1.imag, label="Linear th imag")
+        plt.xlabel("time t")
+        plt.title("1st fourier mode")
+        plt.legend()
+        plt.show()
+
+    if False: #Plot of h_max
+        plt.plot(domain_t, np.max(np.absolute(h_mat_lin), axis=1))
+        plt.xlabel('time t')
+        # plt.yscale('log')
+        # plt.xscale('log')
+        plt.title("max_x |h(x, t)|")
+        plt.show()
+
+    if True: #measurement of Oscilation and dampening rate for the k>k_0 monochromatic case
+        ##find the main frequency
+        fft_Fourier_coef = np.array( [np.fft.fft(h_Fourier_mat[:, order_fourier_mode].real),
+                            np.fft.fft(h_Fourier_mat[:, order_fourier_mode])] )
+        freq_time = np.array( [np.fft.fftfreq(len(fft_Fourier_coef[0])),
+                             np.fft.fftfreq(len(fft_Fourier_coef[1])) ])
+        #Find the peak in the coefficient
+        freq_max = np.array([freq_time[0][np.argmax(np.abs(fft_Fourier_coef[0]))],
+                              freq_time[0][np.argmax(np.abs(fft_Fourier_coef[1]))]]
+                              )
+        freq_exp, freq_theory = np.abs(freq_max)/dt, np.abs(lambda_k.imag/(2*np.pi))
+        error_oscilation = max(np.abs(freq_exp-freq_theory)/freq_theory)
+        print("freq for Re(c_k) and Img(c_k) and linear th freq:", freq_exp, freq_theory )
+        print("max relative error:", error_oscilation*100, "%")
+
+        ##Find dampening rate
+        #The exponential is 'hidden' by the cos/sin so I just take the max points of the absolute value
+        #and I measure its decay. If not enough point, maybe do a exponential regression on these points.
+        tab = [abs(h_Fourier_mat[:, order_fourier_mode].real), 
+               abs(h_Fourier_mat[:, order_fourier_mode].imag)]
+        list_time_maxima, list_maxima = [[], []], [[], []]
+        find_rate = [False, False]
+        idx_decay_time = -1*np.ones(2)
+        for i in range(2):
+            for n_t in range(1, N_t-1):#Don't consider the extreme parts
+                if tab[i][n_t]>tab[i][n_t-1] and tab[i][n_t] > tab[i][n_t+1]:
+                    list_time_maxima[i].append(dt*n_t)
+                    list_maxima[i].append(tab[i][n_t])
+                    if not(find_rate[i]) and (tab[i][n_t]< 0.01*IC_amplitude/2):
+                        idx_decay_time[i] = n_t
+                        find_rate[i]=True
 
 
-    ##Saving the solution
-    if True: 
-        np.savetxt('Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-            BDF_order=order_BDF_scheme, N_x=N_x), h_mat_spectral)
+            plt.plot(domain_t, tab[i])
+            plt.plot(np.array(list_time_maxima[i]), np.array(list_maxima[i]))
+        plt.show()
 
+        decay_time_exp, decay_time_th = dt*idx_decay_time/5, abs(1/lambda_k.real)
+        error_decay_rate = max(abs(decay_time_exp-decay_time_th)/decay_time_th)
+        print("carac times, exp & th:", decay_time_exp, decay_time_th)
+        print("error for the exponential decay:", error_decay_rate*100, "%")
+        
 
-    
 
 
