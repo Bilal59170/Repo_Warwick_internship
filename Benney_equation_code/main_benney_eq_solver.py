@@ -22,11 +22,12 @@ h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's cod
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
 epsilon = 1/L_x
 L_y = 10    # Dimensionless: vertical length/h_N
-T = 35     # Dimensionless: end time of the simulation
+T = 200   # Dimensionless: end time of the simulation
 theta = 1.047197551  #Slope angle: in rad
+print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
 
 mu_l = 1.0e-3   #fluid viscosity
-rho_l = 10000   #fluid volumic mass
+rho_l = 1000   #fluid volumic mass
 gamma = 0.00015705930063439097934322589390558 #
 g = 9.81        #gravity acceleration
 U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
@@ -70,7 +71,7 @@ def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     return _N_x, _N_t, _dx, _dt, domain_x, domain_t
 
 N_x = 128 #To choose little at first and then, increase 
-CFL_factor = 30 #take it big 
+CFL_factor = 150 #take it big 
 N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=N_x, _CFL_factor = CFL_factor)
 dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 print("Nb of (space, time) points: ", (N_x, N_t))
@@ -86,7 +87,7 @@ def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
     return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) 
 
 h_mean = 1
-ampl_c, ampl_s, freq_c, freq_s = 0.02, 0.01, 3, 1  #frequencies need to be a relative to have periodicity
+ampl_c, ampl_s, freq_c, freq_s = 0.001, 0.003, 3, 1  #frequencies need to be a relative to have periodicity
 Initial_Conditions = sincos(
     domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
@@ -110,6 +111,12 @@ if False:#Plot of initial condition
 order_BDF_scheme = 2
 space_steps_array = np.array([128])
 print("Space steps: ", space_steps_array)
+#IC
+h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
+#Gaussian external pressure parameters 
+A_Ns, mu_Ns, sigma_Ns = None, None, None
+A_Ns, mu_Ns, sigma_Ns = -0.05, L_x/2, 0.1 #Controlled gaussian external pressure
+
 
 
 
@@ -117,10 +124,15 @@ print("Space steps: ", space_steps_array)
 ###### Finite Difference & BDF Scheme ######
 
 #Boolean variables to control what action to do
-bool_solve_FD, bool_save, bool_load_solution = False, False, False
-bool_anim, bool_save_anim = False, False
+bool_solve_FD, bool_save, bool_load_solution = True, False, False
+bool_anim, bool_save_anim = True, True
 
 ### Solving & animation
+title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
+                BDF_order=order_BDF_scheme, N_x=N_x)
+title_anim = 'Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}_A_Ns{A_Ns}.mp4'.format(
+        order_BDF = order_BDF_scheme, N_x=N_x, A_Ns=A_Ns)
+
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
         _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
@@ -133,21 +145,17 @@ for i in range(len(space_steps_array)):
         # [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
         h_mat_FD = solver_BDF.solver_Benney_BDF_FD(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1)
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1, 
+            _A_Ns=A_Ns, _mu_Ns=mu_Ns, _sigma_Ns=sigma_Ns)
 
         ##Saving the solution
         if bool_save: 
-            np.savetxt(
-                'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                BDF_order=order_BDF_scheme, N_x=N_x), h_mat_FD)
-
+            np.savetxt(title_file, h_mat_FD)
 
 
 ##Loading the solution
 if bool_load_solution:
-    h_mat_FD= np.loadtxt(
-        'Benney_equation_code\\Saved_numerical_solutions\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-            BDF_order=order_BDF_scheme, N_x=N_x))
+    h_mat_FD= np.loadtxt(title_file)
     assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
 
 
@@ -165,10 +173,8 @@ if bool_anim:#Animation of benney numerical solution
         _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
     # plt.show()
 
-if bool_save_anim and bool_save:
-    animation_Benney.save(
-        'Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
-        order_BDF = order_BDF_scheme, N_x=N_x))  #needs the program ffmpeg installed and in the PATH
+if bool_save_anim:
+    animation_Benney.save(title_anim)  #needs the program ffmpeg installed and in the PATH
 
 
 ### VERIFICATION OF THE METHOD
@@ -272,14 +278,14 @@ def plot_difference_graph(list_h_mat, general_subplot_title, title_left_graph=No
         plt.savefig(file_name)
     plt.show()
 
-
-list_h_mat_FD = [] 
-for space_step in space_steps_array:
-    list_h_mat_FD.append(
-        np.loadtxt(
-            'Benney_equation_code\\Saved_numerical_solutions\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'
-            .format(BDF_order=order_BDF_scheme, N_x=space_step)))
-    
+if False:
+    list_h_mat_FD = [] 
+    for space_step in space_steps_array:
+        list_h_mat_FD.append(
+            np.loadtxt(
+                'Benney_equation_code\\Saved_numerical_solutions\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'
+                .format(BDF_order=order_BDF_scheme, N_x=space_step)))
+        
 if False: #Plot the difference Graph
     print("List of the tested space steps:", space_steps_array)
 
@@ -343,6 +349,7 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 
 
 
+
 ###### SPECTRAL METHOD #########
 
 ##Test on DFT: to have the good normalization constant
@@ -384,30 +391,34 @@ bool_anim, bool_save_anim = False, False
 
 
 ### Solving
+A_Ns, mu_Ns, sigma_Ns = None, None, None
+A_Ns, mu_Ns, sigma_Ns = -0.05, L_x/2, 0.1 #Controlled gaussian external pressure
+title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_pres.txt'.format(
+                    BDF_order=order_BDF_scheme, N_x=N_x)
+title_anim = ('Benney_equation_code\\Spectral_method_animation_Ns{A_Ns}_{sigma}'+
+              '_BDF_order{BDF_order}_Nx_{N_x}_for_pres.mp4'.format(
+                    BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns, sigma= sigma_Ns))
 
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
         _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-    Initial_Conditions = sincos(
-        domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+    Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+    
     
     if bool_solve_Spectral:
-        h_mat_lin = solver_BDF.solver_Benney_BDF_Spectral(
+        h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re,
+            _A_Ns=A_Ns, _mu_Ns=mu_Ns, _sigma_Ns=sigma_Ns)
 
         ##Saving the solution
         if bool_solve_Spectral and bool_save: 
-            np.savetxt(
-                'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                    BDF_order=order_BDF_scheme, N_x=N_x), h_mat_spectral)
+            np.savetxt(title_file, h_mat_spectral)
 
  
     if bool_load_solution:
-        h_mat_spectral= np.loadtxt(
-            'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                BDF_order=order_BDF_scheme, N_x=N_x))
+        h_mat_spectral= np.loadtxt(title_file)
         assert ((h_mat_spectral.shape[0]==N_t)
                 and(h_mat_spectral.shape[1]==N_x)),"Solution loading: Problem of shape "
 
@@ -417,18 +428,17 @@ for i in range(len(space_steps_array)):
         animation_Benney = solver_BDF.func_anim(
             _time_series=np.array([h_mat_spectral]), _anim_space_array = domain_x,
             _anim_time_array = domain_t,
-            title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+            title= "Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
             N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
 
             title_x_axis=r"x axis: horizontal inclined by $\theta$",
             title_y_axis= r"y-axis (inclined by $\theta$)",
             _legend_list = ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme)])
-        # plt.show()
+        plt.show()
 
     if bool_anim and bool_save_anim:
-        animation_Benney.save(
-            'Benney_equation_code\\Spectral_method_animation_BDF_order{order_BDF}_Nx_{N_x}.mp4'.format(
-            order_BDF = order_BDF_scheme, N_x=N_x)) #needs the program ffmpeg installed and in the PATH
+        animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
+
 
 
 
@@ -537,7 +547,12 @@ if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 2
 
 
 
-###### Comparison of the FD & Spectral methods  #####
+
+
+
+
+
+###### Comparison of the FD & Spectral methods  #######
 bool_anim = False
 if bool_anim:#Animation of benney numerical solution
 
@@ -653,9 +668,9 @@ if False:
 
 
 
-
+##### All sort of different Verifications #####
 ##### Linear Analysis
-bool_linear_analysis = True
+bool_linear_analysis = False
 
 print("\n LINEAR ANALYSIS")
 if True:
@@ -668,14 +683,16 @@ if True:
         return (8*Re/15-(2/3)*np.cos(theta)/np.sin(theta)-k_L**2/(3*Ca))*k_L**2 + (-2*k_L)*(1j)
 
     k_0_squared = (Ca*(8/5*Re - 2*np.cos(theta)/np.sin(theta)))/(nu**2) #scaling in the L-per dommain
-    print("k_0**2:", k_0_squared)
-
+    print("k_0**2 is:", k_0_squared)
+    print("bool: ", k_0_squared <=0)
     if k_0_squared <=0:
+        print("bite")
         absciss = np.linspace(k_0_squared-1, 0, 100, endpoint=True)
         plt.plot(absciss, coef_dispersion(absciss).real)
         plt.title("k_0**2 <0")
         plt.axvline(x=k_0_squared, color='b')
         plt.axhline(y=0, color='r', linestyle='-') #draws a line at x=0 to see more clearly the sign of the points
+        plt.show()
     else:
         k_0 = np.sqrt(k_0_squared)
         print("k_0", k_0)
@@ -695,8 +712,8 @@ if True:
             arrowprops=dict(facecolor='black', width=1, shrink=0.05)
                     )
         
-    plt.title("Real part of the dispersion coefficient")
-    plt.show()
+        plt.title("Real part of the dispersion coefficient")
+        plt.show()
 
 
 if bool_linear_analysis:
@@ -852,5 +869,12 @@ if bool_linear_analysis:
         array_err_oscilation = np.array([13.415033612929134,  5.884803310469058])
         
 
+##### Mass conservation check
+#We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume)
+print("\n\nMASSE CONSERVATION CHECK\n")
+
+integral_height = np.trapz(h_mat_FD, axis=1)
+print(N_t, integral_height.shape)
+print("Mean and variance of the the spatial integral of h during time: ", np.mean(integral_height), np.std(integral_height))
 
 

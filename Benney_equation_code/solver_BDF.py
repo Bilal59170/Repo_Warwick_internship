@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 
 ## Usefull functions for the solvers
 
-def mat_FD_periodic(length_h, list_coef):
+def mat_FD_periodic(length_h, list_coef):#FD mat with periodic Boundary conditions
     '''Finite difference matrix with periodic boundary conditions. Cf matdiag notation
      in the "Finite difference" part in the solving of KS equation in the obsidian file.
     input: 
@@ -32,11 +32,12 @@ def mat_FD_periodic(length_h, list_coef):
             mat_FD[(j+nb_diag)%length_h, j%length_h] = list_coef[i]
 
     return mat_FD
+if False:
+    print(mat_FD_periodic(5, [0, -1, 1, -2, 2]))
+    print(mat_FD_periodic(5, [0, -1, 1, -2, 2, 3])) #Case where the assert raises
 
-print(mat_FD_periodic(5, [0, -1, 1, -2, 2]))
-# print(mat_FD_periodic(5, [0, -1, 1, -2, 2, 3])) #Case where the assert raises
 
-def F_time(h_arr, h_arr_before, _p, dt):
+def F_time(h_arr, h_arr_before, _p, dt):#COmputes BDF scheme
     '''Output: 
     - The Benney equation part with the time derivative with a BDF Scheme
     Input: 
@@ -63,106 +64,143 @@ def F_time(h_arr, h_arr_before, _p, dt):
             raise Exception("BDF Scheme function: Error in the calculus, wrong p value.")
 
 
-
-### Solver for the Benney equation with Finite DIfferences & BDF scheme
-
-def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5):
+def N_s_derivatives(x, A_Ns, mu_Ns, sigma_Ns): #Gaussian pressure profile
+    '''Computes the Gaussian Normal pressure profile.
+    Input: 
+        x:points, (A, mu, sigma): quite explicit
+    Remark:
+        - Watch out: a compressive air jet as modelled with A_Ns <0 as the liquid-gas 
+        interface is modelled with a normal from the liquid to the gas. 
     '''
-    INPUTS:
-        - N_x, N_t, dx, dt : space & time number of point and steps
-        - IC: Initial Condition; theta: slope angle of the plane
-        - order_BDF_Scheme: quite explicit name
-        - Ca & Re: Capillary & Reynolds numbers 
-        - nb_percent (int): The step of percent at which we display the progress
-    '''
+    e = np.exp(-(x-mu_Ns)**2/(2*sigma_Ns**2))
+    return A_Ns*e, A_Ns*e*((x-mu_Ns)/(sigma_Ns**2)), A_Ns*e*(1/(sigma_Ns**2)+((x-mu_Ns)/(sigma_Ns))**2)
+if False:
+    plt.plot(np.linspace(0, 5, 100), N_s_derivatives(np.linspace(0, 5, 100), 2, 0, 1)[0])
+    plt.show()
+
+
+
+
+### Some tests of the solving methods with Fd & Spectral methods: Newton and scipy.optimize.            
+## Testing the first time step for FD equation
+if False:
+    f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:],
+        _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+
+    if False: #Testing of Newton's method: scipy.optimize.newton
+        ##Test of the newton method with 1st order implicit time scheme
+        print("\n#### TEST TO SET THE NEWTON METHOD ####")
+
+        print("len(h_mat[0, :]) = N_x:", len(h_mat[0, :]) == N_x)
+
+        '''One loop of Newton's method on the Initial Condition. 
+        - Returns (root, converged, derivative). root: root of the function, converged: array of the converged dimensions,
+        derivative: say if a derivative is 0 (means that the method struggles to CV)
+        - Used previous height as starting point as the next one should be nearby'''
+        t_i = time.time()
+        root_one_loop, converged_one_loop, newton_derivatives = scipy.optimize.newton(f_objective, x0=h_mat[0, :]
+                                                ,maxiter=50, full_output=True) 
+        calculus_time = time.time()-t_i
+
+        print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
+        print("Number of converged coordinates, ratio/N_x ", np.sum(converged_one_loop), np.sum(converged_one_loop)/N_x)
+        print("Number of derivatives = 0 (not good for the method):", np.sum(newton_derivatives))
+        print("maximum of the error", np.max(np.absolute(f_newton(root_one_loop) )), "\n") 
+
+        #See the overall physical validity of the computed height
+        print("minimum new height (see if it's <0):", np.min(root_one_loop))
+        print("maximum new height (see if it's too big):", np.max(root_one_loop))
+        plt.plot(domain_x, root_one_loop)
+        plt.title("height at t=dt with Newton method")
+        plt.show()
+
+    if False: #Testing of the scipy.optimize.root function 
+        ##Test of the newton method with 1st order implicit time scheme
+        print("\n#### TEST of the scipy.optimize.root function ####")
+
+        t_i = time.time()
+        result = scipy.optimize.root(f_objective, x0=h_mat[0, :]) 
+        calculus_time = time.time()-t_i
+        root_2, converged_2, msg_2 = result["x"], result["success"], result["message"]
+
+        print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
+        print("Method root converged: ",converged_2)
+        print("maximum of the error", np.max(np.absolute(f_objective(root_2))))
+
+        #See the overall physical validity of the computed height
+        print("minimum new height (see if it's <0):", np.min(root_2))
+        print("maximum new height (see if it's too big):", np.max(root_2))
+        plt.plot(domain_x, root_2)
+        plt.title("height at t=dt with root method")
+        plt.show()
+
+# testing the first time step For Spectral eq
+if False:
+    f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:], _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+
+    if False: #Testing of Newton's method: scipy.optimize.newton
+        ##Test of the newton method with 1st order implicit time scheme
+        print("\n#### TEST TO SET THE NEWTON METHOD ####")
+
+        print("len(h_mat[0, :]) = N_x:", len(h_mat[0, :]) == N_x)
+
+        '''One loop of Newton's method on the Initial Condition. 
+        - Returns (root, converged, derivative). root: root of the function, converged: array of the converged dimensions,
+        derivative: say if a derivative is 0 (means that the method struggles to CV)
+        - Used previous height as starting point as the next one should be nearby'''
+        t_i = time.time()
+        root_one_loop, converged_one_loop, newton_derivatives = scipy.optimize.newton(f_objective, x0=h_mat[0, :]
+                                                ,maxiter=50, full_output=True) 
+        calculus_time = time.time()-t_i
+
+        print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
+        print("Number of converged coordinates, ratio/N_x ", np.sum(converged_one_loop), np.sum(converged_one_loop)/N_x)
+        print("Number of derivatives = 0 (not good for the method):", np.sum(newton_derivatives))
+        print("maximum of the error", np.max(np.absolute(f_newton(root_one_loop) )), "\n") 
+
+        #See the overall physical validity of the computed height
+        print("minimum new height (see if it's <0):", np.min(root_one_loop))
+        print("maximum new height (see if it's too big):", np.max(root_one_loop))
+        plt.plot(domain_x, root_one_loop)
+        plt.title("height at t=dt with Newton method")
+        plt.show()
+
+    if False: #Testing of the scipy.optimize.root function 
+        ##Test of the newton method with 1st order implicit time scheme
+        print("\n#### TEST of the scipy.optimize.root function ####")
+
+        t_i = time.time()
+        result = scipy.optimize.root(f_objective, x0=h_mat[0, :]) 
+        calculus_time = time.time()-t_i
+        root_2, converged_2, msg_2 = result["x"], result["success"], result["message"]
+
+        print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
+        print("Method root converged: ",converged_2)
+        print("maximum of the error", np.max(np.absolute(f_objective(root_2))))
+
+        #See the overall physical validity of the computed height
+        print("minimum new height (see if it's <0):", np.min(root_2))
+        print("maximum new height (see if it's too big):", np.max(root_2))
+        plt.plot(domain_x, root_2)
+        plt.title("height at t=dt with root method")
+        plt.show()
+
+
+
+
+
+###### Solver for the Benney equation with Finite DIfferences & BDF scheme
+
+def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, nb_percent=5):
 
     ##Initial conditions & steps
     h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. 
     #Each line is for a given time from 0 to (N_t-1)*dt
+    L_x=N_x*dx
     h_mat[0,:] = IC 
-    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-
-
-    ######## SOLVING #######
-
-    #Finite Difference matrices
-    mat_DF_x = mat_FD_periodic(N_x, [0, -1, 1])/(2*dx)
-    mat_DF_xx = mat_FD_periodic(N_x, [-2, 1, 1])/dx_2
-    mat_DF_xxx = mat_FD_periodic(N_x, [3, -1, -3, 0, 1])/dx_3
-    mat_DF_xxxx = mat_FD_periodic(N_x, [6, -4, -4, 1, 1])/dx_4
-    # print(mat_DF_x@h_mat[0, :])
-
-    def F_space(h_arr):
-        '''
-        Input: 
-            - h_arr: array of height at time t+dt (Implicit method);
-        Output: 
-            - The Benney equation part with the space derivatives
-        '''
-        h_x = mat_DF_x@h_arr
-        h_xx = mat_DF_xx@h_arr #no definition of h_xxx and h_xxxx bcs they are computed just once in the function
-
-        return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-2*h_x/np.tan(theta) + (1/Ca)*mat_DF_xxx@h_arr) 
-                + (1/3)*(h_arr**3)*(-(2/np.tan(theta))*h_xx + (1/Ca)*mat_DF_xxxx@h_arr) 
-                + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
-
-
-            
-    ## Testing the first time step
-    if False:
-        f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:],
-            _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
-
-        if False: #Testing of Newton's method: scipy.optimize.newton
-            ##Test of the newton method with 1st order implicit time scheme
-            print("\n#### TEST TO SET THE NEWTON METHOD ####")
-
-            print("len(h_mat[0, :]) = N_x:", len(h_mat[0, :]) == N_x)
-
-            '''One loop of Newton's method on the Initial Condition. 
-            - Returns (root, converged, derivative). root: root of the function, converged: array of the converged dimensions,
-            derivative: say if a derivative is 0 (means that the method struggles to CV)
-            - Used previous height as starting point as the next one should be nearby'''
-            t_i = time.time()
-            root_one_loop, converged_one_loop, newton_derivatives = scipy.optimize.newton(f_objective, x0=h_mat[0, :]
-                                                    ,maxiter=50, full_output=True) 
-            calculus_time = time.time()-t_i
-
-            print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
-            print("Number of converged coordinates, ratio/N_x ", np.sum(converged_one_loop), np.sum(converged_one_loop)/N_x)
-            print("Number of derivatives = 0 (not good for the method):", np.sum(newton_derivatives))
-            print("maximum of the error", np.max(np.absolute(f_newton(root_one_loop) )), "\n") 
-
-            #See the overall physical validity of the computed height
-            print("minimum new height (see if it's <0):", np.min(root_one_loop))
-            print("maximum new height (see if it's too big):", np.max(root_one_loop))
-            plt.plot(domain_x, root_one_loop)
-            plt.title("height at t=dt with Newton method")
-            plt.show()
-
-        if False: #Testing of the scipy.optimize.root function 
-            ##Test of the newton method with 1st order implicit time scheme
-            print("\n#### TEST of the scipy.optimize.root function ####")
-
-            t_i = time.time()
-            result = scipy.optimize.root(f_objective, x0=h_mat[0, :]) 
-            calculus_time = time.time()-t_i
-            root_2, converged_2, msg_2 = result["x"], result["success"], result["message"]
-
-            print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
-            print("Method root converged: ",converged_2)
-            print("maximum of the error", np.max(np.absolute(f_objective(root_2))))
-
-            #See the overall physical validity of the computed height
-            print("minimum new height (see if it's <0):", np.min(root_2))
-            print("maximum new height (see if it's too big):", np.max(root_2))
-            plt.plot(domain_x, root_2)
-            plt.title("height at t=dt with root method")
-            plt.show()
 
 
     ## Solving
-    #main loop
     print("\n## SOLVING BENNEY EQ ##")
     t_i = time.time()
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
@@ -196,8 +234,54 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
     return h_mat
 
 
-### Solver for the Spectral method
-def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5):
+def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5,
+                          _A_Ns=None, _mu_Ns=None, _sigma_Ns=None):
+    '''
+    INPUTS:
+        - N_x, N_t, dx, dt : space & time number of point and steps
+        - IC: Initial Condition; theta: slope angle of the plane
+        - order_BDF_Scheme: quite explicit name
+        - Ca & Re: Capillary & Reynolds numbers 
+        - nb_percent (int): The step of percent at which we display the progress
+        - _A_Ns, _mu_Ns, _sigma_Ns: amplitude, mean and std of the gaussian
+    '''
+
+    ##Steps
+    L_x=N_x*dx
+    domain_x = np.linspace(0, L_x, N_x, endpoint=False) 
+    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+
+    #Finite Difference matrices
+    mat_DF_x = mat_FD_periodic(N_x, [0, -1, 1])/(2*dx)
+    mat_DF_xx = mat_FD_periodic(N_x, [-2, 1, 1])/dx_2
+    mat_DF_xxx = mat_FD_periodic(N_x, [3, -1, -3, 0, 1])/dx_3
+    mat_DF_xxxx = mat_FD_periodic(N_x, [6, -4, -4, 1, 1])/dx_4
+    # print(mat_DF_x@h_mat[0, :])
+
+    def F_space_FD(h_arr):
+        '''
+        Input: 
+            - h_arr: array of height at time t+dt (Implicit method);
+        Output: 
+            - The Benney equation part with the space derivatives
+        '''
+        h_x = mat_DF_x@h_arr
+        h_xx = mat_DF_xx@h_arr #no definition of h_xxx and h_xxxx bcs they are computed just once in the function
+        if _A_Ns is None:
+            N_s_der = 0, 0, 0
+        else:
+            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns)
+
+        return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*mat_DF_xxx@h_arr) 
+                - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*mat_DF_xxxx@h_arr) 
+                + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
+
+
+    return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_FD, nb_percent=nb_percent)
+
+ 
+def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5, 
+                               _A_Ns=None, _mu_Ns=None, _sigma_Ns=None):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -207,23 +291,15 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
         - nb_percent (int): The step of percent at which we display the progress
     '''
 
-    ##Initial conditions & steps
-    h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. 
-    #Each line is for a given time from 0 to (N_t-1)*dt
-    h_mat[0,:] = IC 
-
-
-    ######## SOLVING #######
-
-    ###### Finite Difference & BDF Scheme ######
-    ## Some useful functions
-
     L_x = N_x*dx
     nu = (2*np.pi)/L_x
     fq_tab = nu*N_x*np.fft.rfftfreq(N_x) # or 2*np.pi*np.fft.rfftfreq(N_x, d=dx) ?
+    domain_x = np.linspace(0, L_x, N_x, endpoint=False)
     print("\n Shape of the array of frequencies: ", fq_tab.shape)
 
-    def F_space(h_arr):
+    
+   
+    def F_space_Spectral(h_arr):
         '''
         Input: 
             - h_arr: array of height at time t+dt (Implicit method);
@@ -234,98 +310,17 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
         h_xx = np.fft.irfft( (1j *fq_tab)**2*np.fft.rfft(h_arr))
         h_xxx= np.fft.irfft( (1j *fq_tab)**3*np.fft.rfft(h_arr))
         h_xxxx= np.fft.irfft( (1j *fq_tab)**4*np.fft.rfft(h_arr))
+        if _A_Ns is None:
+            N_s_der = 0, 0, 0
+        else:
+            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns)
 
-        return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-2*h_x/np.tan(theta) + (1/Ca)*h_xxx) 
-                + (1/3)*(h_arr**3)*(-(2/np.tan(theta))*h_xx + (1/Ca)*h_xxxx) 
+        return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*h_xxx) 
+                - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*h_xxxx) 
                 + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
 
-    ## Test
-    # testing the first time step
-    if False:
-        f_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[0,:], _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
 
-        if False: #Testing of Newton's method: scipy.optimize.newton
-            ##Test of the newton method with 1st order implicit time scheme
-            print("\n#### TEST TO SET THE NEWTON METHOD ####")
-
-            print("len(h_mat[0, :]) = N_x:", len(h_mat[0, :]) == N_x)
-
-            '''One loop of Newton's method on the Initial Condition. 
-            - Returns (root, converged, derivative). root: root of the function, converged: array of the converged dimensions,
-            derivative: say if a derivative is 0 (means that the method struggles to CV)
-            - Used previous height as starting point as the next one should be nearby'''
-            t_i = time.time()
-            root_one_loop, converged_one_loop, newton_derivatives = scipy.optimize.newton(f_objective, x0=h_mat[0, :]
-                                                    ,maxiter=50, full_output=True) 
-            calculus_time = time.time()-t_i
-
-            print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
-            print("Number of converged coordinates, ratio/N_x ", np.sum(converged_one_loop), np.sum(converged_one_loop)/N_x)
-            print("Number of derivatives = 0 (not good for the method):", np.sum(newton_derivatives))
-            print("maximum of the error", np.max(np.absolute(f_newton(root_one_loop) )), "\n") 
-
-            #See the overall physical validity of the computed height
-            print("minimum new height (see if it's <0):", np.min(root_one_loop))
-            print("maximum new height (see if it's too big):", np.max(root_one_loop))
-            plt.plot(domain_x, root_one_loop)
-            plt.title("height at t=dt with Newton method")
-            plt.show()
-
-        if False: #Testing of the scipy.optimize.root function 
-            ##Test of the newton method with 1st order implicit time scheme
-            print("\n#### TEST of the scipy.optimize.root function ####")
-
-            t_i = time.time()
-            result = scipy.optimize.root(f_objective, x0=h_mat[0, :]) 
-            calculus_time = time.time()-t_i
-            root_2, converged_2, msg_2 = result["x"], result["success"], result["message"]
-
-            print("Computation time for one loop with N_x = {N_x}:".format(N_x=N_x), calculus_time)
-            print("Method root converged: ",converged_2)
-            print("maximum of the error", np.max(np.absolute(f_objective(root_2))))
-
-            #See the overall physical validity of the computed height
-            print("minimum new height (see if it's <0):", np.min(root_2))
-            print("maximum new height (see if it's too big):", np.max(root_2))
-            plt.plot(domain_x, root_2)
-            plt.title("height at t=dt with root method")
-            plt.show()
-
-
-    ## Solving
-    #1 order
-    print("\n## SOLVING BENNEY EQ: Spectral method ##")
-    t_i = time.time()
-
-    #main loop
-    root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
-
-    for n_t in range(N_t-1):
-        if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
-                                                _p=1, dt=dt) + F_space(h_arr)
-        
-        else:
-            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
-                                                _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
-        result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
-        h_mat[n_t+1, :] = result["x"]
-        root_method_CV_arr[n_t] = result["success"]
-        root_method_errors_arr[n_t]= np.max(np.absolute(fct_objective(result["x"])))
-        
-        #Display of the computation progress
-        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
-            #displays the progress of the computation every nb_percent
-            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), "%; time passed until start: ", 
-                time.time()-t_i)
-
-    total_computation_time = time.time()-t_i
-    print("Total computation time:", total_computation_time)
-    print("Number of time the method didn't converge & N_t", (np.sum(~root_method_CV_arr), N_t))
-    print("Max error (evaluation on the supposed root) and its index",
-           (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
-
-    return h_mat
+    return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_Spectral, nb_percent=nb_percent)
 
 
 
