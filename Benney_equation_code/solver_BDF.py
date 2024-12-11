@@ -65,7 +65,7 @@ def F_time(h_arr, h_arr_before, _p, dt):#COmputes BDF scheme
             raise Exception("BDF Scheme function: Error in the calculus, wrong p value.")
 
 
-def N_s_derivatives_2(x, A_Ns, mu_Ns, sigma_Ns, L): #Gaussian pressure profile
+def N_s_derivatives_gaussian(x, A_Ns, mu_Ns, sigma_Ns, L): #Gaussian pressure profile
     '''Computes the Gaussian Normal pressure profile.
     Input: 
         x:points, (A, mu, sigma): quite explicit
@@ -75,22 +75,22 @@ def N_s_derivatives_2(x, A_Ns, mu_Ns, sigma_Ns, L): #Gaussian pressure profile
         interface is modelled with a normal from the liquid to the gas. 
     '''
     sigma_L=sigma_Ns*L #equivalent to have -((x-mu)/L)**2/(2sigma**2)
-    e = np.exp(-(x-mu_Ns)**2/(2*sigma_L**2))
+    N_s = A_Ns*np.exp(-(x-mu_Ns)**2/(2*sigma_L**2))
 
-    return A_Ns*e, -A_Ns*e*((x-mu_Ns)/(sigma_L**2)), A_Ns*e*(((x-mu_Ns)/(sigma_L**2))**2-1/(sigma_L**2))
+    return N_s, -N_s*((x-mu_Ns)/(sigma_L**2)), N_s*(((x-mu_Ns)/(sigma_L**2))**2-1/(sigma_L**2))
 if False:
     plt.plot(np.linspace(0, 5, 100), N_s_derivativesugaussian(np.linspace(0, 5, 100), 2, 0, 1, L=30)[0])
     plt.show()
 
-def N_s_derivatives(x, A_Ns, mu_Ns, sigma_Ns,  L): #Gaussian pressure profile
+def N_s_derivatives_cos_gaussian(x, A_Ns, mu_Ns, omega,  L): #Gaussian pressure profile
     
     nu = 2*np.pi/L
     x = x-mu_Ns
-    e = np.exp((np.cos(nu*x)-1)/(sigma_Ns**2))
+    Ns = A_Ns*np.exp((np.cos(nu*x)-1)/(omega**2))
  
 
-    return A_Ns*e, A_Ns*e*(-nu*np.sin(nu*x)/(sigma_Ns**2)), A_Ns*e*nu**2*(
-        np.sin(nu*x)**2/(sigma_Ns**4)-np.cos(nu*x)/(sigma_Ns**2))
+    return Ns, Ns*(-nu*np.sin(nu*x)/(omega**2)), Ns*nu**2*(
+        np.sin(nu*x)**2/(omega**4)-np.cos(nu*x)/(omega**2))
 if False:
     plt.plot(np.linspace(0, 5, 100), N_s_derivatives(np.linspace(0, 5, 100), 2, 0, 1, L=30)[0])
     plt.show()
@@ -248,8 +248,7 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, nb_perce
     return h_mat
 
 
-def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5,
-                          _A_Ns=None, _mu_Ns=None, _sigma_Ns=None):
+def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -281,10 +280,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
         '''
         h_x = mat_DF_x@h_arr
         h_xx = mat_DF_xx@h_arr #no definition of h_xxx and h_xxxx bcs they are computed just once in the function
-        if _A_Ns is None:
-            N_s_der = 0, 0, 0
-        else:
-            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns, L=L_x)
+
+        N_s_der=N_s_function(domain_x)
 
         return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*mat_DF_xxx@h_arr) 
                 - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*mat_DF_xxxx@h_arr) 
@@ -294,8 +291,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
     return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_FD, nb_percent=nb_percent)
 
  
-def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, nb_percent=5, 
-                               _A_Ns=None, _mu_Ns=None, _sigma_Ns=None):
+def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
+                               nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -303,6 +300,8 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
         - order_BDF_Scheme: quite explicit name
         - Ca & Re: Capillary & Reynolds numbers 
         - nb_percent (int): The step of percent at which we display the progress
+        - N_s_function: it has to be a function with just one input and 3 output which are 
+            the 0, 1st, 2nd derivatives of the normal tangential stress.
     '''
 
     L_x = N_x*dx
@@ -324,10 +323,8 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
         h_xx = np.fft.irfft( (1j *fq_tab)**2*np.fft.rfft(h_arr))
         h_xxx= np.fft.irfft( (1j *fq_tab)**3*np.fft.rfft(h_arr))
         h_xxxx= np.fft.irfft( (1j *fq_tab)**4*np.fft.rfft(h_arr))
-        if _A_Ns is None:
-            N_s_der = 0, 0, 0
-        else:
-            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns, L=L_x)
+
+        N_s_der = N_s_function(domain_x)
 
         return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*h_xxx) 
                 - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*h_xxxx) 

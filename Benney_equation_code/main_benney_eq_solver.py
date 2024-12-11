@@ -12,7 +12,7 @@ from sklearn.linear_model import LinearRegression
 
 import solver_BDF 
 
-
+print("\n\n#### BEGINING OF THE PRINT ###")
 
 
 ######## SYSTEM SETTINGS ######
@@ -34,7 +34,7 @@ U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
 Ca = mu_l*U_N/gamma #O(epsilon^2)
 Re = rho_l*U_N*h_N/mu_l  #O(1)
 
-print("\n\n#### BEGINING OF THE PRINT ###")
+
 print("\n Nusselt velocity: ", U_N )
 print("Value of Re (check if O(1)):", Re)
 print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
@@ -109,23 +109,29 @@ if False:#Plot of initial condition
 ######## SOLVING #######
 
 order_BDF_scheme = 2
-space_steps_array = np.array([256])
+space_steps_array = np.array([128])
 print("Space steps: ", space_steps_array)
 #IC
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
-#Gaussian external pressure parameters 
-A_Ns, mu_Ns, sigma_Ns = None, None, None
-A_Ns, mu_Ns, sigma_Ns = -5, L_x/2, 1 #Controlled gaussian external pressure
+#Gaussian external pressure parameters and external normal pressure function
+A_Ns, mu_Ns, sigma_Ns = -50, L_x/2, 0.01 
+N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
+    x, A_Ns=A_Ns, mu_Ns=mu_Ns, sigma_Ns=sigma_Ns, L=L_x)
+
+
+#Boolean variables to control what action to do with FD method
+bool_solve_FD, bool_save_FD, bool_load_FD = False, False, False
+bool_anim_FD, bool_save_anim_FD = False, False
+
+#Boolean variables to control what action to do with Spectral method
+bool_solve_Spectral, bool_save_spectral, bool_load_spectral = True, False, False
+bool_anim_spectral, bool_save_anim_spectral = True, False
 
 
 
 
 
 ###### Finite Difference & BDF Scheme ######
-
-#Boolean variables to control what action to do
-bool_solve_FD, bool_save, bool_load_FD = False, False, False
-bool_anim, bool_save_anim = False, False
 
 ### Solving & animation
 title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
@@ -145,11 +151,11 @@ for i in range(len(space_steps_array)):
         # [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
         h_mat_FD = solver_BDF.solver_Benney_BDF_FD(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, nb_percent=1, 
-            _A_Ns=A_Ns, _mu_Ns=mu_Ns, _sigma_Ns=sigma_Ns)
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, N_s_function=N_s_function,
+            nb_percent=1)
 
         ##Saving the solution
-        if bool_save: 
+        if bool_save_FD: 
             np.savetxt(title_file, h_mat_FD)
 
 
@@ -162,7 +168,7 @@ if bool_load_FD:
 ### VISUALISATION 
 ##animation function
 
-if bool_anim:#Animation of benney numerical solution
+if bool_anim_FD:#Animation of benney numerical solution
     animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
         _anim_space_array = domain_x, _anim_time_array = domain_t,
         title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
@@ -173,7 +179,7 @@ if bool_anim:#Animation of benney numerical solution
         _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
     # plt.show()
 
-if bool_save_anim:
+if bool_save_anim_FD:
     animation_Benney.save(title_anim)  #needs the program ffmpeg installed and in the PATH
 
 
@@ -385,11 +391,6 @@ if False:
     plt.show()
 
 
-#Boolean variables to control what action to do
-bool_solve_Spectral, bool_save, bool_load_spectral = True, False, False
-bool_anim, bool_save_anim = True, False
-
-
 ### Solving
 title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_mass M.txt'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x)
@@ -408,10 +409,10 @@ for i in range(len(space_steps_array)):
         h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
             theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re,
-            _A_Ns=A_Ns, _mu_Ns=mu_Ns, _sigma_Ns=sigma_Ns)
+            N_s_function=N_s_function)
 
         ##Saving the solution
-        if bool_solve_Spectral and bool_save: 
+        if bool_solve_Spectral and bool_save_spectral: 
             np.savetxt(title_file, h_mat_spectral)
 
  
@@ -422,7 +423,7 @@ for i in range(len(space_steps_array)):
 
 
     ###Animation
-    if bool_anim:#Animation of benney numerical solution
+    if bool_anim_spectral:#Animation of benney numerical solution
         animation_Benney = solver_BDF.func_anim(
             _time_series=np.array([h_mat_spectral]), _anim_space_array = domain_x,
             _anim_time_array = domain_t,
@@ -434,7 +435,7 @@ for i in range(len(space_steps_array)):
             _legend_list = ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme)])
         plt.show()
 
-    if bool_anim and bool_save_anim:
+    if bool_anim_spectral and bool_save_anim_spectral:
         animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
 
 
@@ -734,7 +735,7 @@ if bool_linear_analysis:
     if True: #Computing
         h_mat_lin = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re)
+            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, N_s_function=N_s_function)
         if True:
             np.savetxt(title_simulation, h_mat_lin)
 
@@ -872,16 +873,15 @@ if bool_linear_analysis:
 #For more details, see the Obsidian document.
 print("\n\nMASSE CONSERVATION CHECK\n")
 
-print("Parameters of the gaussian:", A_Ns, mu_Ns, sigma_Ns)
-plt.plot(domain_x, solver_BDF.N_s_derivatives(domain_x,  A_Ns, mu_Ns, sigma_Ns, L_x)[0])
+print("Parameters of the external pressure function:", A_Ns, mu_Ns, sigma_Ns)
+plt.plot(domain_x, N_s_function(domain_x)[0])
 plt.show()
 if bool_solve_Spectral or bool_load_spectral:
     M_0 = np.trapz(h_mat_spectral[0, :])
 
     #Analytical variation rate of the total mass M for the Controled Benney eq
-    M_variation = (h_mat_spectral[:, 0]**3)/3*(solver_BDF.N_s_derivatives(L_x, A_Ns, mu_Ns, sigma_Ns, L_x)[1]-
-                                                   solver_BDF.N_s_derivatives(0, A_Ns, mu_Ns, sigma_Ns, L_x)[1])
-    print(solver_BDF.N_s_derivatives(L_x, A_Ns, mu_Ns, sigma_Ns, L_x)[1])
+    M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_function(L_x)[1]- N_s_function(0)[1])
+    print(N_s_function(L_x)[1])
     #Analytical total mass at each time
     M_analytics = M_0 + np.array([1]+[np.trapz(M_variation[:n_t]) for n_t in range(1, N_t)])
 
