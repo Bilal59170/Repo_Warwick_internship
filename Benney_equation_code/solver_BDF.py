@@ -10,6 +10,7 @@ from IPython.display import HTML
 from sklearn.linear_model import LinearRegression
 
 
+##Some variables
 
 ## Usefull functions for the solvers
 
@@ -64,22 +65,35 @@ def F_time(h_arr, h_arr_before, _p, dt):#COmputes BDF scheme
             raise Exception("BDF Scheme function: Error in the calculus, wrong p value.")
 
 
-def N_s_derivatives(x, A_Ns, mu_Ns, sigma_Ns): #Gaussian pressure profile
+def N_s_derivatives_2(x, A_Ns, mu_Ns, sigma_Ns, L): #Gaussian pressure profile
     '''Computes the Gaussian Normal pressure profile.
     Input: 
         x:points, (A, mu, sigma): quite explicit
+        L (float): Length of the plane. Used to normalize the gaussian
     Remark:
         - Watch out: a compressive air jet as modelled with A_Ns <0 as the liquid-gas 
         interface is modelled with a normal from the liquid to the gas. 
     '''
-    e = np.exp(-(x-mu_Ns)**2/(2*sigma_Ns**2))
-    return A_Ns*e, A_Ns*e*((x-mu_Ns)/(sigma_Ns**2)), A_Ns*e*(1/(sigma_Ns**2)+((x-mu_Ns)/(sigma_Ns))**2)
+    sigma_L=sigma_Ns*L #equivalent to have -((x-mu)/L)**2/(2sigma**2)
+    e = np.exp(-(x-mu_Ns)**2/(2*sigma_L**2))
+
+    return A_Ns*e, -A_Ns*e*((x-mu_Ns)/(sigma_L**2)), A_Ns*e*(((x-mu_Ns)/(sigma_L**2))**2-1/(sigma_L**2))
 if False:
-    plt.plot(np.linspace(0, 5, 100), N_s_derivatives(np.linspace(0, 5, 100), 2, 0, 1)[0])
+    plt.plot(np.linspace(0, 5, 100), N_s_derivativesugaussian(np.linspace(0, 5, 100), 2, 0, 1, L=30)[0])
     plt.show()
 
+def N_s_derivatives(x, A_Ns, mu_Ns, sigma_Ns,  L): #Gaussian pressure profile
+    
+    nu = 2*np.pi/L
+    x = x-mu_Ns
+    e = np.exp((np.cos(nu*x)-1)/(sigma_Ns**2))
+ 
 
-
+    return A_Ns*e, A_Ns*e*(-nu*np.sin(nu*x)/(sigma_Ns**2)), A_Ns*e*nu**2*(
+        np.sin(nu*x)**2/(sigma_Ns**4)-np.cos(nu*x)/(sigma_Ns**2))
+if False:
+    plt.plot(np.linspace(0, 5, 100), N_s_derivatives(np.linspace(0, 5, 100), 2, 0, 1, L=30)[0])
+    plt.show()
 
 ### Some tests of the solving methods with Fd & Spectral methods: Newton and scipy.optimize.            
 ## Testing the first time step for FD equation
@@ -270,7 +284,7 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
         if _A_Ns is None:
             N_s_der = 0, 0, 0
         else:
-            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns)
+            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns, L=L_x)
 
         return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*mat_DF_xxx@h_arr) 
                 - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*mat_DF_xxxx@h_arr) 
@@ -313,7 +327,7 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
         if _A_Ns is None:
             N_s_der = 0, 0, 0
         else:
-            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns)
+            N_s_der = N_s_derivatives(domain_x, A_Ns=_A_Ns, mu_Ns=_mu_Ns, sigma_Ns=_sigma_Ns, L=L_x)
 
         return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*h_xxx) 
                 - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*h_xxxx) 

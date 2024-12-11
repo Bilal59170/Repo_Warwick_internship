@@ -109,13 +109,13 @@ if False:#Plot of initial condition
 ######## SOLVING #######
 
 order_BDF_scheme = 2
-space_steps_array = np.array([128])
+space_steps_array = np.array([256])
 print("Space steps: ", space_steps_array)
 #IC
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
 #Gaussian external pressure parameters 
 A_Ns, mu_Ns, sigma_Ns = None, None, None
-A_Ns, mu_Ns, sigma_Ns = -0.05, L_x/2, 0.1 #Controlled gaussian external pressure
+A_Ns, mu_Ns, sigma_Ns = -5, L_x/2, 1 #Controlled gaussian external pressure
 
 
 
@@ -124,8 +124,8 @@ A_Ns, mu_Ns, sigma_Ns = -0.05, L_x/2, 0.1 #Controlled gaussian external pressure
 ###### Finite Difference & BDF Scheme ######
 
 #Boolean variables to control what action to do
-bool_solve_FD, bool_save, bool_load_solution = True, False, False
-bool_anim, bool_save_anim = True, True
+bool_solve_FD, bool_save, bool_load_FD = False, False, False
+bool_anim, bool_save_anim = False, False
 
 ### Solving & animation
 title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
@@ -154,7 +154,7 @@ for i in range(len(space_steps_array)):
 
 
 ##Loading the solution
-if bool_load_solution:
+if bool_load_FD:
     h_mat_FD= np.loadtxt(title_file)
     assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
 
@@ -386,17 +386,15 @@ if False:
 
 
 #Boolean variables to control what action to do
-bool_solve_Spectral, bool_save, bool_load_solution = False, False, False
-bool_anim, bool_save_anim = False, False
+bool_solve_Spectral, bool_save, bool_load_spectral = True, False, False
+bool_anim, bool_save_anim = True, False
 
 
 ### Solving
-A_Ns, mu_Ns, sigma_Ns = None, None, None
-A_Ns, mu_Ns, sigma_Ns = -0.05, L_x/2, 0.1 #Controlled gaussian external pressure
-title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_pres.txt'.format(
+title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_mass M.txt'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x)
 title_anim = ('Benney_equation_code\\Spectral_method_animation_Ns{A_Ns}_{sigma}'+
-              '_BDF_order{BDF_order}_Nx_{N_x}_for_pres.mp4'.format(
+              '_BDF_order{BDF_order}_Nx_{N_x}_for_mass_M.mp4'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns, sigma= sigma_Ns))
 
 for i in range(len(space_steps_array)):
@@ -417,7 +415,7 @@ for i in range(len(space_steps_array)):
             np.savetxt(title_file, h_mat_spectral)
 
  
-    if bool_load_solution:
+    if bool_load_spectral:
         h_mat_spectral= np.loadtxt(title_file)
         assert ((h_mat_spectral.shape[0]==N_t)
                 and(h_mat_spectral.shape[1]==N_x)),"Solution loading: Problem of shape "
@@ -673,7 +671,7 @@ if False:
 bool_linear_analysis = False
 
 print("\n LINEAR ANALYSIS")
-if True:
+if False:
     nu = 2*np.pi/L_x
     def coef_dispersion(k):
         '''Cf Oscar's paper for the formula. He does it on a 2pi-per function whereas I'm doing it
@@ -870,11 +868,31 @@ if bool_linear_analysis:
         
 
 ##### Mass conservation check
-#We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume)
+#We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume). 
+#For more details, see the Obsidian document.
 print("\n\nMASSE CONSERVATION CHECK\n")
 
-integral_height = np.trapz(h_mat_FD, axis=1)
-print(N_t, integral_height.shape)
-print("Mean and variance of the the spatial integral of h during time: ", np.mean(integral_height), np.std(integral_height))
+print("Parameters of the gaussian:", A_Ns, mu_Ns, sigma_Ns)
+plt.plot(domain_x, solver_BDF.N_s_derivatives(domain_x,  A_Ns, mu_Ns, sigma_Ns, L_x)[0])
+plt.show()
+if bool_solve_Spectral or bool_load_spectral:
+    M_0 = np.trapz(h_mat_spectral[0, :])
+
+    #Analytical variation rate of the total mass M for the Controled Benney eq
+    M_variation = (h_mat_spectral[:, 0]**3)/3*(solver_BDF.N_s_derivatives(L_x, A_Ns, mu_Ns, sigma_Ns, L_x)[1]-
+                                                   solver_BDF.N_s_derivatives(0, A_Ns, mu_Ns, sigma_Ns, L_x)[1])
+    print(solver_BDF.N_s_derivatives(L_x, A_Ns, mu_Ns, sigma_Ns, L_x)[1])
+    #Analytical total mass at each time
+    M_analytics = M_0 + np.array([1]+[np.trapz(M_variation[:n_t]) for n_t in range(1, N_t)])
+
+    #Numerical total mass M
+    M_numerics = np.trapz(h_mat_spectral, axis=1)
+    print(N_t, M_numerics.shape)
+    print("Max difference between M_analytics and M_numerics : ", np.max(M_analytics-M_numerics))
+    #Supposed to be very small. 
+    print("Max diff in percent of mean(M_analytics): ",
+           np.max(M_analytics-M_numerics)/np.mean(M_analytics)*100, "%")
+    print("Mean and variance of the the spatial integral of h during time: ", 
+          np.mean(M_numerics), np.std(M_numerics))
 
 
