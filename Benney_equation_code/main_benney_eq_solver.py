@@ -17,6 +17,32 @@ print("\n\n#### BEGINING OF THE PRINT ###")
 
 ######## SYSTEM SETTINGS ######
 
+# ##VARIABLES: Physics & Mathematics (Values From Oscar's code)
+# h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. 
+# L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
+# epsilon = 1/L_x
+# L_y = 10    # Dimensionless: vertical length/h_N
+# T = 200   # Dimensionless: end time of the simulation
+# theta = np.pi/3  #Slope angle: in rad
+# print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
+# # Ca, Re = 0.01, 0.03
+# # U_N= 1
+
+# mu_l = 1.0e-3   #fluid viscosity
+# rho_l = 1000   #fluid volumic mass
+# gamma = 0.00015705930063439097934322589390558 #
+# g = 9.81        #gravity acceleration
+
+# U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
+# Ca = mu_l*U_N/gamma #O(epsilon^2)
+# Re = rho_l*U_N*h_N/mu_l  #O(1)
+
+
+# print("\n Nusselt velocity: ", U_N )
+# print("Value of Re (check if O(1)):", Re)
+# print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
+
+
 ##VARIABLES: Physics & Mathematics (Values From Oscar's code)
 h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. 
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
@@ -34,12 +60,10 @@ U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
 Ca = mu_l*U_N/gamma #O(epsilon^2)
 Re = rho_l*U_N*h_N/mu_l  #O(1)
 
-
+print("\n\n#### BEGINING OF THE PRINT ###")
 print("\n Nusselt velocity: ", U_N )
 print("Value of Re (check if O(1)):", Re)
 print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
-
-
 
 
 ##VARIABLEs: steps & domain
@@ -71,7 +95,7 @@ def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     return _N_x, _N_t, _dx, _dt, domain_x, domain_t
 
 N_x = 128 #To choose little at first and then, increase 
-CFL_factor = 150 #take it big 
+CFL_factor = 150
 N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=N_x, _CFL_factor = CFL_factor)
 dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 print("Nb of (space, time) points: ", (N_x, N_t))
@@ -109,14 +133,15 @@ if False:#Plot of initial condition
 ######## SOLVING #######
 
 order_BDF_scheme = 2
-space_steps_array = np.array([128])
+space_steps_array = np.array([256])
 print("Space steps: ", space_steps_array)
 #IC
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
 #Gaussian external pressure parameters and external normal pressure function
-A_Ns, mu_Ns, sigma_Ns = -50, L_x/2, 0.01 
+# A_Ns, mu_Ns, sigma_Ns = 50, L_x/2, 0.01
+A_Ns, mu_Ns, sigma_Ns = -5, L_x/2, 1 #Controlled gaussian external pressure
 N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
-    x, A_Ns=A_Ns, mu_Ns=mu_Ns, sigma_Ns=sigma_Ns, L=L_x)
+    x, A_Ns, mu_Ns, sigma_Ns, L_x)
 
 
 #Boolean variables to control what action to do with FD method
@@ -124,7 +149,7 @@ bool_solve_FD, bool_save_FD, bool_load_FD = False, False, False
 bool_anim_FD, bool_save_anim_FD = False, False
 
 #Boolean variables to control what action to do with Spectral method
-bool_solve_Spectral, bool_save_spectral, bool_load_spectral = True, False, False
+bool_solve_Spectral, bool_save_spectral, bool_load_spectral = False, False, True
 bool_anim_spectral, bool_save_anim_spectral = True, False
 
 
@@ -136,7 +161,7 @@ bool_anim_spectral, bool_save_anim_spectral = True, False
 ### Solving & animation
 title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
                 BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = 'Benney_equation_code\\FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}_A_Ns{A_Ns}.mp4'.format(
+title_anim = 'Benney_equation_code\\anim_FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}_A_Ns{A_Ns}.mp4'.format(
         order_BDF = order_BDF_scheme, N_x=N_x, A_Ns=A_Ns)
 
 for i in range(len(space_steps_array)):
@@ -392,11 +417,12 @@ if False:
 
 
 ### Solving
-title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_mass M.txt'.format(
+title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_massM.txt'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = ('Benney_equation_code\\Spectral_method_animation_Ns{A_Ns}_{sigma}'+
-              '_BDF_order{BDF_order}_Nx_{N_x}_for_mass_M.mp4'.format(
-                    BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns, sigma= sigma_Ns))
+title_anim = (('Benney_equation_code\\Anim_Spectral_Ns{A_Ns}_sigma{sigma}'+
+              '_BDF{BDF_order}_Nx{N_x}_theta{theta}_no_mass_cons.mp4').format(
+                    BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns, 
+                    sigma= sigma_Ns, theta=solver_BDF.round_fct(theta, 3)))
 
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
@@ -881,18 +907,20 @@ if bool_solve_Spectral or bool_load_spectral:
 
     #Analytical variation rate of the total mass M for the Controled Benney eq
     M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_function(L_x)[1]- N_s_function(0)[1])
-    print(N_s_function(L_x)[1])
+    print("extremal values N_s_function:", N_s_function(0)[0], N_s_function(L_x)[0])
     #Analytical total mass at each time
-    M_analytics = M_0 + np.array([1]+[np.trapz(M_variation[:n_t]) for n_t in range(1, N_t)])
+    M_analytics = M_0 + np.array([1]+[np.trapz(M_variation[:n_t+1]) for n_t in range(1, N_t)])
 
     #Numerical total mass M
     M_numerics = np.trapz(h_mat_spectral, axis=1)
     print(N_t, M_numerics.shape)
-    print("Max difference between M_analytics and M_numerics : ", np.max(M_analytics-M_numerics))
-    #Supposed to be very small. 
+    print("Max difference between M_analytics and M_numerics : ", np.max(np.absolute(M_analytics-M_numerics)))
+    #Supposed to be small. 
     print("Max diff in percent of mean(M_analytics): ",
-           np.max(M_analytics-M_numerics)/np.mean(M_analytics)*100, "%")
+           np.max(np.absolute(M_analytics-M_numerics))/np.mean(M_analytics)*100, "%")
     print("Mean and variance of the the spatial integral of h during time: ", 
           np.mean(M_numerics), np.std(M_numerics))
+    print(M_numerics)
+    print(M_analytics)
 
 
