@@ -138,8 +138,8 @@ print("Space steps: ", space_steps_array)
 #IC
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
 #Gaussian external pressure parameters and external normal pressure function
-# A_Ns, mu_Ns, sigma_Ns = 50, L_x/2, 0.01
-A_Ns, mu_Ns, sigma_Ns = -5, L_x/2, 1 #Controlled gaussian external pressure
+A_Ns, mu_Ns, sigma_Ns = 10, L_x/2, 1
+# A_Ns, mu_Ns, sigma_Ns = -5, L_x/2, 1 #Controlled gaussian external pressure
 N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
     x, A_Ns, mu_Ns, sigma_Ns, L_x)
 
@@ -149,8 +149,8 @@ bool_solve_FD, bool_save_FD, bool_load_FD = False, False, False
 bool_anim_FD, bool_save_anim_FD = False, False
 
 #Boolean variables to control what action to do with Spectral method
-bool_solve_Spectral, bool_save_spectral, bool_load_spectral = False, False, True
-bool_anim_spectral, bool_save_anim_spectral = True, False
+bool_solve_Spectral, bool_save_spectral, bool_load_spectral = True, True, False
+bool_anim_spectral, bool_save_anim_spectral = True, True
 
 
 
@@ -382,39 +382,6 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 
 
 ###### SPECTRAL METHOD #########
-
-##Test on DFT: to have the good normalization constant
-#Test of the differentiation with DFT 
-if False:
-    fq_tab = N_x*np.fft.rfftfreq(N_x) #to justify better after
-    print("\n Shape of the array of frequencies: ", fq_tab.shape)
-
-
-    h_test = sincos(domain_x, 0, 0, _ampl_s=1, _freq_c=0, _freq_s=1)
-    plt.plot(domain_x, h_test)
-    plt.show()
-
-    h_x = np.fft.irfft( (1j *fq_tab)*np.fft.rfft(h_test))
-    print(h_x.real)
-    plt.plot(domain_x, h_x.real)
-    plt.title("Derivative of h_0 (sin -> cos) \n with Fourier (Gibbs phenomenon ?)")
-    plt.show()
-
-    h_xx = np.fft.irfft( (1j *fq_tab)**2*np.fft.rfft(h_test))
-    print(h_xx)
-    plt.plot(domain_x, h_xx.real)
-    plt.title("2nd Derivative of u_0 (sin -> -sin) \n with Fourier (Gibbs phenomenon ?)")
-    plt.show()
-
-    h_xxxx = np.fft.irfft( (1j *fq_tab)**4*np.fft.rfft(h_test))
-    print(h_xxxx)
-    plt.plot(domain_x, h_xxxx.real)
-    plt.title("4th Derivative of u_0 (sin -> sin) \n with Fourier (Gibbs phenomenon ?)")
-    plt.show()
-    plt.plot(domain_x, np.absolute(h_xxxx-np.sin(domain_x*2*np.pi/L_x)))
-    plt.title("some difference")
-    plt.show()
-
 
 ### Solving
 title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_massM.txt'.format(
@@ -693,6 +660,8 @@ if False:
 
 
 
+
+
 ##### All sort of different Verifications #####
 ##### Linear Analysis
 bool_linear_analysis = False
@@ -882,8 +851,6 @@ if bool_linear_analysis:
             plt.legend()
             plt.show()
 
-        
-
         # assert (idx_decay_time[0]>0), "Decay time not determined. "
         decay_time_exp, decay_time_th = 1/array_LinReg_a, 1/lambda_k.real
         error_decay_rate = max( abs(abs(abs(decay_time_exp)-abs(decay_time_th))/abs(decay_time_th) ))
@@ -894,33 +861,39 @@ if bool_linear_analysis:
         array_err_oscilation = np.array([13.415033612929134,  5.884803310469058])
         
 
+
+
 ##### Mass conservation check
 #We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume). 
+#Pay attention that the integration domain (domain_t or domain_x )is in the inputs otherwise there 
+#will be some dt or dx multiplicative error.
 #For more details, see the Obsidian document.
-print("\n\nMASSE CONSERVATION CHECK\n")
+
+print("\n\nMASS CONSERVATION CHECK\n")
 
 print("Parameters of the external pressure function:", A_Ns, mu_Ns, sigma_Ns)
 plt.plot(domain_x, N_s_function(domain_x)[0])
 plt.show()
 if bool_solve_Spectral or bool_load_spectral:
-    M_0 = np.trapz(h_mat_spectral[0, :])
-
+    N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
+        _N_x=space_steps_array[0], _CFL_factor = CFL_factor)
+    M_0 = np.trapz(y=h_mat_spectral[0, :], x=domain_x) #initial mass
+    print("Initial mass:", M_0)
     #Analytical variation rate of the total mass M for the Controled Benney eq
     M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_function(L_x)[1]- N_s_function(0)[1])
-    print("extremal values N_s_function:", N_s_function(0)[0], N_s_function(L_x)[0])
-    #Analytical total mass at each time
-    M_analytics = M_0 + np.array([1]+[np.trapz(M_variation[:n_t+1]) for n_t in range(1, N_t)])
+    print("extremal values N_s_function and derivatives:", N_s_function(0), N_s_function(L_x))
+    #Analytical total mass at each time (integration)
+    M_analytics = M_0 + np.array([0]+[np.trapz(y=M_variation[:n_t+1], 
+                                               x=domain_t[:n_t+1]) for n_t in range(1, N_t)])
 
     #Numerical total mass M
-    M_numerics = np.trapz(h_mat_spectral, axis=1)
-    print(N_t, M_numerics.shape)
+    M_numerics = np.trapz(y=h_mat_spectral, x=domain_x, axis=1)
     print("Max difference between M_analytics and M_numerics : ", np.max(np.absolute(M_analytics-M_numerics)))
     #Supposed to be small. 
     print("Max diff in percent of mean(M_analytics): ",
            np.max(np.absolute(M_analytics-M_numerics))/np.mean(M_analytics)*100, "%")
     print("Mean and variance of the the spatial integral of h during time: ", 
           np.mean(M_numerics), np.std(M_numerics))
-    print(M_numerics)
-    print(M_analytics)
+
 
 
