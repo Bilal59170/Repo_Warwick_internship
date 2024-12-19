@@ -65,32 +65,70 @@ def F_time(h_arr, h_arr_before, _p, dt):#COmputes BDF scheme
             raise Exception("BDF Scheme function: Error in the calculus, wrong p value.")
 
 
-def N_s_derivatives_gaussian(x, A_Ns, mu_Ns, sigma_Ns, L): #Gaussian pressure profile
+def N_s_derivatives_gaussian(x, A_Ns, sigma_Ns, array_used_points, L): #Gaussian pressure profile
     '''Computes the Gaussian Normal pressure profile.
     Input: 
-        x:points, (A, mu, sigma): quite explicit
+        x:points, 
+        A: array of the used amplitude
+        array_used_points: array of the index of the air jet actuators. It allows to have better performances. We 
+                            always have to have array_used_points included in points of x. 
         L (float): Length of the plane. Used to normalize the gaussian
     Remark:
         - Watch out: a compressive air jet as modelled with A_Ns <0 as the liquid-gas 
         interface is modelled with a normal from the liquid to the gas. 
     '''
-    sigma_L=sigma_Ns*L #equivalent to have -((x-mu)/L)**2/(2sigma**2)
-    N_s = A_Ns*np.exp(-(x-mu_Ns)**2/(2*sigma_L**2))
 
-    return N_s, -N_s*((x-mu_Ns)/(sigma_L**2)), N_s*(((x-mu_Ns)/(sigma_L**2))**2-1/(sigma_L**2))
-if False:
-    plt.plot(np.linspace(0, 5, 100), N_s_derivativesugaussian(np.linspace(0, 5, 100), 2, 0, 1, L=30)[0])
+    if array_used_points is None:
+        mat_x_difference = x[:, None]-x[None, :] # (x_i-x_j)_{1<= i,j <= N_x}
+    else:
+        A_Ns = A_Ns[array_used_points] # shape (n,)
+        mat_x_difference = x[:, None]-x[None, array_used_points] # (x_i-x_j)_{i,j}, shape (N_x, n)
+
+    # A_Ns = A_Ns[None, :]
+    #Precomputation of usable quantities
+    sigma_L=sigma_Ns*L #equivalent to have -((x-mu)/L)**2/(2sigma**2)
+    sigma_L2_inv = 1 / (sigma_L ** 2)
+    mat_x_diff_sigma = mat_x_difference * sigma_L2_inv
+    # print(mat_x_difference[0])
+    # print(mat_x_difference.T[0])
+
+    N_s = A_Ns*np.exp(-(mat_x_difference**2)*0.5*sigma_L2_inv) # ()*(N_x, n)
+    N_s_x = -N_s*mat_x_diff_sigma
+    N_s_xx=  N_s*(mat_x_diff_sigma**2 - sigma_L2_inv)
+    
+    return  np.array([np.sum(N_s, axis=1), np.sum(N_s_x, axis=1), np.sum(N_s_xx, axis=1)])
+
+if False: #Test to check the form of Ns, Ns_x, Ns_xx in simple cases
+    N_x, L_x = 128, 30
+    x_test = np.linspace(0, L_x, N_x)
+    A = np.zeros(N_x)
+    A[N_x//2] = 10
+    sigma_Ns = 0.01
+    print(A)
+    N_der_array = N_s_derivatives_gaussian(x_test, A, sigma_Ns , L_x)
+    plt.plot(x_test, N_der_array[2])
     plt.show()
 
-def N_s_derivatives_cos_gaussian(x, A_Ns, mu_Ns, omega,  L): #Gaussian pressure profile
+
+def N_s_derivatives_cos_gaussian(x, A_Ns, omega, array_used_points, L): #Gaussian pressure profile
     
     nu = 2*np.pi/L
-    x = x-mu_Ns
-    Ns = A_Ns*np.exp((np.cos(nu*x)-1)/(omega**2))
- 
+    if array_used_points is None:
+        mat_x_difference_nu = nu*(x[:, None]-x[None,:]) # (x_i-x_j)_{1<= i,j <= N_x}
+    else:
+        A_Ns = A_Ns[array_used_points] # shape (n,)
+        mat_x_difference_nu = nu*(x[:, None]-x[None, array_used_points]) # (x_i-x_j)_{1<= i,j <= N_x}
 
-    return Ns, Ns*(-nu*np.sin(nu*x)/(omega**2)), Ns*nu**2*(
-        np.sin(nu*x)**2/(omega**4)-np.cos(nu*x)/(omega**2))
+    omega_L2_inv = 1 / (omega**2)
+    
+    N_s = A_Ns*np.exp((np.cos(mat_x_difference_nu)-1)*omega_L2_inv)
+    N_s_x = -N_s*(nu*np.sin(mat_x_difference_nu)*omega_L2_inv)
+    N_s_xx=  N_s*(nu**2)*omega_L2_inv*(omega_L2_inv*np.sin(mat_x_difference_nu)**2
+                                     -np.cos(mat_x_difference_nu))
+
+    return  np.array([np.sum(N_s, axis=1), np.sum(N_s_x, axis=1), np.sum(N_s_xx, axis=1)])
+
+
 if False:
     plt.plot(np.linspace(0, 5, 100), N_s_derivatives(np.linspace(0, 5, 100), 2, 0, 1, L=30)[0])
     plt.show()
@@ -205,6 +243,43 @@ if False:
 
 ###### Solver for the Benney equation with Finite DIfferences & BDF scheme
 
+#not finished
+def solver_BDF_explicit(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, nb_percent=5):
+
+    ##Initial conditions & steps
+    h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. 
+    #Each line is for a given time from 0 to (N_t-1)*dt
+    L_x=N_x*dx
+    h_mat[0,:] = IC 
+
+
+    ## Solving
+    print("\n## SOLVING BENNEY EQ ##")
+    t_i = time.time()
+    # root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
+
+
+    for n_t in range(N_t-1):
+        if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
+                                                _p=1, dt=dt) + F_space(h_arr)
+        
+        else:
+            fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
+                                                _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
+        result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
+        
+        #Display of the computation progress
+        if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
+            #displays the progress of the computation every nb_percent
+            print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), 
+                "%; time passed until start: ", time.time()-t_i)
+
+    total_computation_time = time.time()-t_i
+    print("Total computation time:", total_computation_time)
+
+    return h_mat
+
 def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, nb_percent=5):
 
     ##Initial conditions & steps
@@ -246,6 +321,7 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, nb_perce
            (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
 
     return h_mat
+
 
 
 def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, nb_percent=5):

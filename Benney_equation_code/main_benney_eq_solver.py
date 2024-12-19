@@ -133,24 +133,47 @@ if False:#Plot of initial condition
 ######## SOLVING #######
 
 order_BDF_scheme = 2
-space_steps_array = np.array([256])
+space_steps_array = np.array([128])
 print("Space steps: ", space_steps_array)
 #IC
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
 #Gaussian external pressure parameters and external normal pressure function
-A_Ns, mu_Ns, sigma_Ns = 10, L_x/2, 1
-# A_Ns, mu_Ns, sigma_Ns = -5, L_x/2, 1 #Controlled gaussian external pressure
-N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
-    x, A_Ns, mu_Ns, sigma_Ns, L_x)
+N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
+                                                             _CFL_factor = CFL_factor)
+# print("DOMAINEX SHAPE", domain_x[:].shape)
+A_Ns = np.zeros_like(domain_x)
+print("ENORME SHAPE", A_Ns.shape)
+# A_Ns[N_x//2] = 20
+A_Ns[N_x//3], A_Ns[2*N_x//3]= 30, 20,   #Controlled external pressure
+sigma_Ns = 0.01
+omega_Ns = 0.1
+# array_used_points = np.array([N_x//3, 2*N_x//3])
+array_used_points = np.where(A_Ns!=0)[0]
+# array_used_points = None
+# print(array_used_points)
+# array_used_points = np.arange(0, N_x)
+
+if False: #Gaussian or Cos-gaussian
+    N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
+        x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
+    # N_s_function_point = lambda x:solver_BDF.N_s_derivatives_gaussian(
+    # x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points = None, L=L_x)
+else:
+    N_s_function = lambda x:solver_BDF.N_s_derivatives_cos_gaussian(
+        x, A_Ns=A_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
+    # N_s_function_point = lambda x:solver_BDF.N_s_derivatives_gaussian(
+    # x, A_Ns=A_Ns, sigma_Ns=omega_Ns, array_used_points = None, L=L_x)
 
 
-#Boolean variables to control what action to do with FD method
-bool_solve_FD, bool_save_FD, bool_load_FD = False, False, False
+
+## Boolean variables to control what action to do. Watch out to load the good file.
+#FD method 
+bool_solve_save_FD, bool_load_FD = False, False 
 bool_anim_FD, bool_save_anim_FD = False, False
 
-#Boolean variables to control what action to do with Spectral method
-bool_solve_Spectral, bool_save_spectral, bool_load_spectral = True, True, False
-bool_anim_spectral, bool_save_anim_spectral = True, True
+#Spectral method
+bool_solve_save_spectral, bool_load_spectral = True, False
+bool_anim_spectral, bool_save_anim_spectral = True, False
 
 
 
@@ -161,8 +184,8 @@ bool_anim_spectral, bool_save_anim_spectral = True, True
 ### Solving & animation
 title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
                 BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = 'Benney_equation_code\\anim_FD_method_animation_BDF_order{order_BDF}_Nx_{N_x}_A_Ns{A_Ns}.mp4'.format(
-        order_BDF = order_BDF_scheme, N_x=N_x, A_Ns=A_Ns)
+title_anim = 'Benney_equation_code\\anim_FD_anim_BDF_order{order_BDF}_Nx_{N_x}_A_Ns{A_Ns}_multi_jet.mp4'.format(
+        order_BDF = order_BDF_scheme, N_x=N_x, A_Ns=A_Ns[N_x//2])
 
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
@@ -171,7 +194,7 @@ for i in range(len(space_steps_array)):
     Initial_Conditions = sincos(
         domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
-    if bool_solve_FD:
+    if bool_solve_save_FD:
         #computation times : ((N_x, N_t), t computation): 
         # [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
         h_mat_FD = solver_BDF.solver_Benney_BDF_FD(
@@ -180,8 +203,7 @@ for i in range(len(space_steps_array)):
             nb_percent=1)
 
         ##Saving the solution
-        if bool_save_FD: 
-            np.savetxt(title_file, h_mat_FD)
+        np.savetxt(title_file, h_mat_FD)
 
 
 ##Loading the solution
@@ -387,8 +409,8 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_massM.txt'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x)
 title_anim = (('Benney_equation_code\\Anim_Spectral_Ns{A_Ns}_sigma{sigma}'+
-              '_BDF{BDF_order}_Nx{N_x}_theta{theta}_no_mass_cons.mp4').format(
-                    BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns, 
+              '_BDF{BDF_order}_Nx{N_x}_theta{theta}_several_jets.mp4').format(
+                    BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns[N_x//2], 
                     sigma= sigma_Ns, theta=solver_BDF.round_fct(theta, 3)))
 
 for i in range(len(space_steps_array)):
@@ -398,15 +420,14 @@ for i in range(len(space_steps_array)):
     Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
     
     
-    if bool_solve_Spectral:
+    if bool_solve_save_spectral:
         h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
             theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re,
             N_s_function=N_s_function)
 
         ##Saving the solution
-        if bool_solve_Spectral and bool_save_spectral: 
-            np.savetxt(title_file, h_mat_spectral)
+        np.savetxt(title_file, h_mat_spectral)
 
  
     if bool_load_spectral:
@@ -871,21 +892,28 @@ if bool_linear_analysis:
 
 print("\n\nMASS CONSERVATION CHECK\n")
 
-print("Parameters of the external pressure function:", A_Ns, mu_Ns, sigma_Ns)
-plt.plot(domain_x, N_s_function(domain_x)[0])
+N_s_der_distribution  = N_s_function(domain_x)
+
+print("Parameters of the external pressure function:", A_Ns, sigma_Ns)
+print("shape", N_s_der_distribution.shape)
+plt.plot(domain_x, N_s_der_distribution[0])
+# plt.plot(domain_x, N_s_der_distribution[1], label="_x")
+# plt.plot(domain_x, N_s_der_distribution[2], label="_xx")
+plt.legend()
 plt.show()
-if bool_solve_Spectral or bool_load_spectral:
+print("extremal values N_s_function and derivatives:", N_s_der_distribution[:, 0], N_s_der_distribution[:, -1])
+if (bool_solve_save_spectral or bool_load_spectral):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
         _N_x=space_steps_array[0], _CFL_factor = CFL_factor)
     M_0 = np.trapz(y=h_mat_spectral[0, :], x=domain_x) #initial mass
     print("Initial mass:", M_0)
     #Analytical variation rate of the total mass M for the Controled Benney eq
-    M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_function(L_x)[1]- N_s_function(0)[1])
-    print("extremal values N_s_function and derivatives:", N_s_function(0), N_s_function(L_x))
+    M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_der_distribution[1, -1]- N_s_der_distribution[1, 0])
+    print("extremal values N_s_function and derivatives:", N_s_der_distribution[:, 0], N_s_der_distribution[:, -1])
     #Analytical total mass at each time (integration)
     M_analytics = M_0 + np.array([0]+[np.trapz(y=M_variation[:n_t+1], 
                                                x=domain_t[:n_t+1]) for n_t in range(1, N_t)])
-
+    # print("M_Analytics: ", M_analytics)
     #Numerical total mass M
     M_numerics = np.trapz(y=h_mat_spectral, x=domain_x, axis=1)
     print("Max difference between M_analytics and M_numerics : ", np.max(np.absolute(M_analytics-M_numerics)))
