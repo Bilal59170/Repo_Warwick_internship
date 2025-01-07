@@ -10,6 +10,8 @@ from matplotlib.animation import FuncAnimation
 from IPython.display import HTML
 from sklearn.linear_model import LinearRegression
 
+import control as ct
+
 import solver_BDF 
 
 print("\n\n#### BEGINING OF THE PRINT ###")
@@ -131,42 +133,8 @@ if False:#Plot of initial condition
 
 
 ######## SOLVING #######
-
-order_BDF_scheme = 2
-space_steps_array = np.array([128])
-print("Space steps: ", space_steps_array)
-#IC
-h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
-#Gaussian external pressure parameters and external normal pressure function
-N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
-                                                             _CFL_factor = CFL_factor)
-# print("DOMAINEX SHAPE", domain_x[:].shape)
-A_Ns = np.zeros_like(domain_x)
-print("ENORME SHAPE", A_Ns.shape)
-# A_Ns[N_x//2] = 20
-A_Ns[N_x//3], A_Ns[2*N_x//3]= 30, 20,   #Controlled external pressure
-sigma_Ns = 0.01
-omega_Ns = 0.1
-# array_used_points = np.array([N_x//3, 2*N_x//3])
-array_used_points = np.where(A_Ns!=0)[0]
-# array_used_points = None
-# print(array_used_points)
-# array_used_points = np.arange(0, N_x)
-
-if False: #Gaussian or Cos-gaussian
-    N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
-        x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
-    # N_s_function_point = lambda x:solver_BDF.N_s_derivatives_gaussian(
-    # x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points = None, L=L_x)
-else:
-    N_s_function = lambda x:solver_BDF.N_s_derivatives_cos_gaussian(
-        x, A_Ns=A_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
-    # N_s_function_point = lambda x:solver_BDF.N_s_derivatives_gaussian(
-    # x, A_Ns=A_Ns, sigma_Ns=omega_Ns, array_used_points = None, L=L_x)
-
-
-
 ## Boolean variables to control what action to do. Watch out to load the good file.
+bool_Control = True #If I compute the control or not
 #FD method 
 bool_solve_save_FD, bool_load_FD = False, False 
 bool_anim_FD, bool_save_anim_FD = False, False
@@ -174,6 +142,53 @@ bool_anim_FD, bool_save_anim_FD = False, False
 #Spectral method
 bool_solve_save_spectral, bool_load_spectral = True, False
 bool_anim_spectral, bool_save_anim_spectral = True, False
+
+
+## Global settings of the simulations
+order_BDF_scheme = 2
+space_steps_array = np.array([128])
+print("Space steps: ", space_steps_array)
+h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
+#Gaussian external pressure parameters and external normal pressure function
+N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
+                                                             _CFL_factor = CFL_factor)
+# A_Ns = np.zeros_like(domain_x)
+# # A_Ns[N_x//2] = 20
+# A_Ns[N_x//3], A_Ns[2*N_x//3]= 10, 5   #Controlled external pressure
+
+
+sigma_Ns = 0.01
+omega_Ns = 0.1
+array_used_points = np.array([N_x//3, 2*N_x//3])
+k_nb_act = array_used_points.shape[0]
+A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
+A_Ns[:, 0], A_Ns[:, 1] = 10, 5
+
+
+if False: #Gaussian TAKE COS GAUSSIAN FOR THE CONTROL, OTHERWISE ERROR
+    N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
+        x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
+else:
+    N_s_function = lambda x, A_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
+        x, A_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
+
+
+
+
+
+###### Control
+from solver_BDF import matrices_ctrl
+
+
+if bool_Control:
+    # assert (Amplitudes_Ns is None), "fct solver_BDF: Problem of input" #Not supposed to be in input as computed by the ctrl
+    A, B, Q, R = matrices_ctrl(list_Re_Ca_theta= [Re, Ca, theta], array_actuators_index=array_used_points,
+                                actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x), 
+                                N_x=N_x, L_x=N_x*dx)
+    K, _, _ = ct.lqr(A, B, Q, R) #gain matrix
+    print("Dimension of the gain matrix:", K.shape)
+else:
+    K=None
 
 
 
@@ -422,32 +437,54 @@ for i in range(len(space_steps_array)):
     
     if bool_solve_save_spectral:
         h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
-            N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re,
-            N_s_function=N_s_function)
+            N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
+            order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
+            LQR_Control=bool_Control, index_array_actuators=array_used_points, K=K)
 
+        if bool_Control:
+            ctrl_mat_spectral = -h_mat_spectral@(K.T) #Control
+            assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
+            ctrl_mat_spectral = np.concatenate((np.zeros((1, k_nb_act)), ctrl_mat_spectral[:-1,:]), axis=0) 
+            assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
         ##Saving the solution
         np.savetxt(title_file, h_mat_spectral)
 
  
     if bool_load_spectral:
         h_mat_spectral= np.loadtxt(title_file)
+
         assert ((h_mat_spectral.shape[0]==N_t)
                 and(h_mat_spectral.shape[1]==N_x)),"Solution loading: Problem of shape "
 
 
     ###Animation
+    if bool_Control:
+        #Construction of a function for plotting. Tee pressure is showed upside down and normalized. (cf Obsidian file)
+        N_s_mat_spectral = np.array([solver_BDF.N_s_derivatives_cos_gaussian(
+            domain_x, ctrl_mat_spectral[n_t],omega_Ns, array_used_points, L_x)[0] for n_t in range(N_t)]) 
+        N_s_mat_spectral = 2-N_s_mat_spectral/np.max(np.absolute(N_s_mat_spectral)) #Normalization & upside down
+        print("Shape N_s_mat_spectral:", N_s_mat_spectral.shape)
+        
     if bool_anim_spectral:#Animation of benney numerical solution
+        if bool_Control:
+            array_animation_spectral = np.array([h_mat_spectral, N_s_mat_spectral])
+            legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme), "Ns Control"]
+        else:
+            array_animation_spectral = np.array([h_mat_spectral])
+            legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme)]
+
         animation_Benney = solver_BDF.func_anim(
-            _time_series=np.array([h_mat_spectral]), _anim_space_array = domain_x,
+            _time_series=array_animation_spectral, _anim_space_array = domain_x,
             _anim_time_array = domain_t,
             title= "Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
             N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
 
             title_x_axis=r"x axis: horizontal inclined by $\theta$",
             title_y_axis= r"y-axis (inclined by $\theta$)",
-            _legend_list = ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme)])
+            _legend_list = legend_list)
         plt.show()
+
+        
 
     if bool_anim_spectral and bool_save_anim_spectral:
         animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
@@ -892,14 +929,14 @@ if bool_linear_analysis:
 
 print("\n\nMASS CONSERVATION CHECK\n")
 
-N_s_der_distribution  = N_s_function(domain_x)
+N_s_der_distribution  = N_s_function(domain_x, A_Ns[0, :])
 
-print("Parameters of the external pressure function:", A_Ns, sigma_Ns)
+print("External pressure function at initial time:", A_Ns[0, :], sigma_Ns)
 print("shape", N_s_der_distribution.shape)
 plt.plot(domain_x, N_s_der_distribution[0])
 # plt.plot(domain_x, N_s_der_distribution[1], label="_x")
 # plt.plot(domain_x, N_s_der_distribution[2], label="_xx")
-plt.legend()
+# plt.legend()
 plt.show()
 print("extremal values N_s_function and derivatives:", N_s_der_distribution[:, 0], N_s_der_distribution[:, -1])
 if (bool_solve_save_spectral or bool_load_spectral):
