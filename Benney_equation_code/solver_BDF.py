@@ -67,12 +67,14 @@ def F_time(h_arr, h_arr_before, _p, dt):#COmputes BDF scheme
 def actuator_fct_cos_gaussian(x, omega, L):
     omega_L2_inv = 1 / (omega**2)
     nu = 2*np.pi/L
+    x_nu = x*nu
 
-    N_s = np.exp((np.cos(x)-1)*omega_L2_inv)
-    N_s_x = -N_s*(nu*np.sin(x)*omega_L2_inv)
-    N_s_xx=  N_s*(nu**2)*omega_L2_inv*(omega_L2_inv*np.sin(x)**2
-                                     -np.cos(x))
+    N_s = np.exp((np.cos(x_nu)-1)*omega_L2_inv)
+    N_s_x = -N_s*(nu*np.sin(x_nu)*omega_L2_inv)
+    N_s_xx=  N_s*(nu**2)*omega_L2_inv*(omega_L2_inv*np.sin(x_nu)**2
+                                     -np.cos(x_nu))
     return N_s, N_s_x, N_s_xx
+
 
 # Total Normal Pressure (sum of all)
 def N_s_derivatives_gaussian(x, A_Ns, sigma_Ns, array_used_points, L): #Gaussian pressure profile
@@ -253,6 +255,9 @@ if False:
 
 
 
+
+
+
 ###CONTROL PART
 # Some test of the LQ control python library
 #Test on the system: x_t = u , x(t=0) = x_0. (cf doc Obsidian for details)
@@ -265,9 +270,10 @@ print("Solution of Riccati equation and the expected solution:", S, R**(1/2))
 
 
 
-def matrices_ctrl(list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_x):
+def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_x):
     '''
     input: 
+    - beta: weight parameter between the target state (h=1) and minimize the ctrl (cf SOR paper) 
     - list_Re_Ca_theta: the list [Re, Ca, theta] of the parameters.
     - L_x, N_x: The space length resp. number of points
     output: The control matrices (A, B, Q, R) corresponding to the LQR system fitting [Re, Ca, theta]'''
@@ -277,18 +283,30 @@ def matrices_ctrl(list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_
     Re, Ca, theta = list_Re_Ca_theta[0], list_Re_Ca_theta[1], list_Re_Ca_theta[2]
     k = np.size(position_actuators) #number of actuators
 
-    coef_array = np.array([-2, 2*np.cos(theta)/(3*np.sin(theta))-8*Re/15, -1/(3*Ca)])
-    Ampl_cos_exp = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
+    coef_array = np.array([-2/(2*dx), (2*np.cos(theta)/(3*np.sin(theta))-8*Re/15)/(dx**2), -1/(3*Ca*dx**4)])
+    A_norm_cos_exp_fct = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
+    # assert (np.trapz(y=A_norm_cos_exp_fct*actuator_fct(domain_x)[0], x=domain_x) ==1 ), "fct matrices ctrl: error in integration"
 
+    mat_D = A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[0] # shape (N_x, k)
+
+    print(mat_D.shape)
+    
     ##Matrixes
     # A and Q: size (N_x, N_x); B: (N_x, k); R: (k, k)
-    A = (coef_array[0]*mat_FD_periodic(N_x, [0, -1, 1])/(2*dx) + coef_array[1]*mat_FD_periodic(N_x, [-2, 1, 1])/(dx**2)
-            + coef_array[2]*mat_FD_periodic(N_x, [6, -4, -4, 1, 1])/(dx**4)) 
-    B = Ampl_cos_exp/3*actuator_fct(domain_x[:, None]-position_actuators[None, :])[2] 
-    Q = 10*np.identity(N_x)
-    R = np.identity(k)
+    A = (coef_array[0]*mat_FD_periodic(N_x, [0, -1, 1]) + coef_array[1]*mat_FD_periodic(N_x, [-2, 1, 1])
+            + coef_array[2]*mat_FD_periodic(N_x, [6, -4, -4, 1, 1])) 
+    B = 1/3*A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[2] 
+    Q = beta*dx*np.identity(N_x) #cf SOR paper for the discrete cost
+
+
+    # R = (1-beta)*np.identity(k)
+    #S in the Obsidian file
+    R =(1-beta)*dx*(mat_D.T)@(mat_D)
 
     return A, B, Q, R
+
+
+
 
 
 
@@ -362,7 +380,7 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
 
     for n_t in range(N_t-1):
         if LQR_Control:
-            u_ctrl = -K@h_mat[n_t, :] #Feedback ctrl with the previous state
+            u_ctrl = -K@(h_mat[n_t, :]-1) #Feedback ctrl with the previous state
         else:
             u_ctrl = Amplitudes_Ns[n_t, :]
 
@@ -439,8 +457,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
     return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_FD, nb_percent=nb_percent)
 
  
-def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, index_array_actuators, 
-                               Amplitudes_Ns, LQR_Control, K, nb_percent=5):
+def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
+                                index_array_actuators, Amplitudes_Ns, LQR_Control, K, nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps

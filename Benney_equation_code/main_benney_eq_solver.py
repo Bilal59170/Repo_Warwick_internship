@@ -14,56 +14,55 @@ import control as ct
 
 import solver_BDF 
 
-print("\n\n#### BEGINING OF THE PRINT ###")
+print("\n\n#### BEGINING OF THE PRINT ###\n")
 
 
 ######## SYSTEM SETTINGS ######
 
-# ##VARIABLES: Physics & Mathematics (Values From Oscar's code)
-# h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. 
-# L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
-# epsilon = 1/L_x
-# L_y = 10    # Dimensionless: vertical length/h_N
-# T = 200   # Dimensionless: end time of the simulation
-# theta = np.pi/3  #Slope angle: in rad
-# print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
+
+
 # # Ca, Re = 0.01, 0.03
 # # U_N= 1
 
-# mu_l = 1.0e-3   #fluid viscosity
-# rho_l = 1000   #fluid volumic mass
-# gamma = 0.00015705930063439097934322589390558 #
-# g = 9.81        #gravity acceleration
-
-# U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
-# Ca = mu_l*U_N/gamma #O(epsilon^2)
-# Re = rho_l*U_N*h_N/mu_l  #O(1)
-
-
-# print("\n Nusselt velocity: ", U_N )
-# print("Value of Re (check if O(1)):", Re)
-# print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
-
 
 ##VARIABLES: Physics & Mathematics (Values From Oscar's code)
-h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. 
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
 epsilon = 1/L_x
 L_y = 10    # Dimensionless: vertical length/h_N
 T = 200   # Dimensionless: end time of the simulation
-theta = 1.047197551  #Slope angle: in rad
+theta = (np.pi/2)*(1-0.01) #Slope angle: in rad
 print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
 
-mu_l = 1.0e-3   #fluid viscosity
-rho_l = 1000   #fluid volumic mass
-gamma = 0.00015705930063439097934322589390558 #
-g = 9.81        #gravity acceleration
-U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
-Ca = mu_l*U_N/gamma #O(epsilon^2)
-Re = rho_l*U_N*h_N/mu_l  #O(1)
 
-print("\n\n#### BEGINING OF THE PRINT ###")
-print("\n Nusselt velocity: ", U_N )
+mu_l = 1.0016e-4   # dynamical viscosity 
+rho_l = 800   # volumic mass
+gamma = 1e-3 # syrface tension
+
+if True:#Set the physical and dimensionless parameters and deduce h_n and U_n (cf 08/01)
+    mu_l = 1.0016e-3   #Water dynamical viscosity at 20°C (cf https://wiki.anton-paar.com/en/water/)
+    rho_l = 1000   #Water volumic mass
+    gamma = 71.97e-3 # surface tension of water at 20°C (cf https://srd.nist.gov/jpcrdreprint/1.555688.pdf)
+    g = 9.81        #gravity acceleration
+
+    Ca = 0.01 #Supposed O(epsilon)
+    Re =  5 #Supposed O(1)
+
+    h_N = (Re/Ca)*(mu_l**2/(rho_l*gamma))
+    U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)  #Speed of the Nusselt solution
+
+else: #What I used to do before
+    h_N =  0.000018989145744046399526063052252081 #Nusselt solution from Oscar's code. 
+    mu_l = 1.0e-3   #fluid viscosity
+    rho_l = 1000   #fluid volumic mass
+    gamma = 0.00015705930063439097934322589390558 #
+    g = 9.81        #gravity acceleration
+    U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)     #Speed of the Nusselt solution
+    Ca = mu_l*U_N/gamma #O(epsilon^2)
+    Re = rho_l*U_N*h_N/mu_l  #O(1)
+
+
+
+print("Nusselt velocity, Re, Ca: ", U_N, Re, Ca )
 print("Value of Re (check if O(1)):", Re)
 print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 
@@ -73,21 +72,25 @@ print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 
 def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     """
-    Input: The name are explicit
+    Computes dt from dx (or the other way around if _N_t isn't None) using CFL conditions with
+    U_N velocity. I take the same step if the CFL conditions give me a less precise step 
+    (i.e dt= _dt = min(_dx, _dx/U_N/_CFL_factor)
+
+    Input: 
+    - The name are explicit and _CFL_factor is the factor in the CFL conditions (cf wiki)
+
     Output:(_N_x, _N_t, _dx, _dt, domain_x, domain_t) 
-    2 Things possible
-    - If _N_x provided (usefull to control _N_x): (N_t, dx, dt (by using some CFL Conditions))
-    - If _N_t provided: (N_x, dx, dt (by using some CFL Conditions))"""
+"""
 
     if _N_x is not None: #Space, then time
         _dx = L_x/_N_x #not dx = L_x/(N_x-1): x-periodic so we don't count the last point so Lx-dx = (Nx-1)dx
-        _dt = _dx/U_N/_CFL_factor #CFL conditions
+        _dt = min(_dx*T/L_x , _dx/U_N/_CFL_factor) #CFL conditions
         _N_t = int(T/_dt+1) #bcs (N_t-1)dt = T
 
         
     elif _N_t is not None: #Time, then space
         _dt = T/(_N_t-1)
-        _dx = _dt*U_N*_CFL_factor #My own CFL conditions 
+        _dx = min(_dt*L_x/T, _dt*U_N*_CFL_factor) #My own CFL conditions 
         _N_x = int(L_x/_dx) #as it's periodic. no +1 
     
     #Time & space domains
@@ -97,7 +100,7 @@ def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     return _N_x, _N_t, _dx, _dt, domain_x, domain_t
 
 N_x = 128 #To choose little at first and then, increase 
-CFL_factor = 150
+CFL_factor = 1
 N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=N_x, _CFL_factor = CFL_factor)
 dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 print("Nb of (space, time) points: ", (N_x, N_t))
@@ -107,21 +110,24 @@ print("First and last point of the domain:", domain_x[0], domain_x[-1])
 print("Lx-dx:", L_x-dx)
 
 
-### Initial conditions 
+
+
+###Stability
+## Stability
+k_0_sq = Ca*(8*Re/5-2*np.cos(theta)/np.sin(theta))
+if k_0_sq < 0:
+    print("Linear Stability:  no Critical wave number, k_0**2 <0")
+else:
+    print("Linear Stability: Critical wave number k_0:", L_x/(2*np.pi)*np.sqrt(k_0_sq))
+
+#IC
 def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
     '''Function to compute sinusoidal periodic initial condition'''
     return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) 
 
-h_mean = 1
-ampl_c, ampl_s, freq_c, freq_s = 0.001, 0.003, 3, 1  #frequencies need to be a relative to have periodicity
-Initial_Conditions = sincos(
-    domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
-if False:#Plot of initial condition
-    plt.plot(domain_x, Initial_Conditions)
-    plt.title("IC (t=0) for the normalized height h (Ac, As, fc, fs)"+
-    "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
-    plt.show()
+
+
 
 
 
@@ -133,44 +139,55 @@ if False:#Plot of initial condition
 
 
 ######## SOLVING #######
-## Boolean variables to control what action to do. Watch out to load the good file.
-bool_Control = True #If I compute the control or not
+### Boolean variables to control what action to do. Watch out to load the good file.
+bool_Control = False #If I compute the control or not
 #FD method 
 bool_solve_save_FD, bool_load_FD = False, False 
 bool_anim_FD, bool_save_anim_FD = False, False
 
 #Spectral method
 bool_solve_save_spectral, bool_load_spectral = True, False
-bool_anim_spectral, bool_save_anim_spectral = True, False
+bool_anim_spectral, bool_save_anim_spectral = True, True
 
 
-## Global settings of the simulations
+### Global settings of the simulations
 order_BDF_scheme = 2
 space_steps_array = np.array([128])
 print("Space steps: ", space_steps_array)
-h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.5, 0, 1 
-#Gaussian external pressure parameters and external normal pressure function
 N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
                                                              _CFL_factor = CFL_factor)
-# A_Ns = np.zeros_like(domain_x)
-# # A_Ns[N_x//2] = 20
-# A_Ns[N_x//3], A_Ns[2*N_x//3]= 10, 5   #Controlled external pressure
 
+##Initial Condition
+h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.1, 0, 1
+Initial_Conditions = sincos(
+        domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
+if True:#Plot of initial condition
+    plt.plot(domain_x, Initial_Conditions)
+    plt.title("IC (t=0) for the normalized height h (Ac, As, fc, fs)"+
+    "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
+    plt.show()
+
+##External pressure parameters and external normal pressure function
 sigma_Ns = 0.01
 omega_Ns = 0.1
-array_used_points = np.array([N_x//3, 2*N_x//3])
+#Array of the ranking of the points used for the actuators
+nb_actuators = 5
+array_used_points = np.arange(1, nb_actuators+1, 1)*N_x//(nb_actuators+1) #equi-spaced actuators
 k_nb_act = array_used_points.shape[0]
-A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
-A_Ns[:, 0], A_Ns[:, 1] = 10, 5
-
+if bool_Control:
+    A_Ns = None
+    beta = 0.1
+else:
+    A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
+    # A_Ns[:, 0], A_Ns[:, 1] = 10, 5
 
 if False: #Gaussian TAKE COS GAUSSIAN FOR THE CONTROL, OTHERWISE ERROR
     N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
         x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
 else:
-    N_s_function = lambda x, A_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
-        x, A_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
+    N_s_function = lambda x, Amplitudes_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
+        x, Amplitudes_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
 
 
 
@@ -179,16 +196,24 @@ else:
 ###### Control
 from solver_BDF import matrices_ctrl
 
-
 if bool_Control:
     # assert (Amplitudes_Ns is None), "fct solver_BDF: Problem of input" #Not supposed to be in input as computed by the ctrl
-    A, B, Q, R = matrices_ctrl(list_Re_Ca_theta= [Re, Ca, theta], array_actuators_index=array_used_points,
+    A, B, Q, R = matrices_ctrl(beta, list_Re_Ca_theta= [Re, Ca, theta], array_actuators_index=array_used_points,
                                 actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x), 
                                 N_x=N_x, L_x=N_x*dx)
     K, _, _ = ct.lqr(A, B, Q, R) #gain matrix
     print("Dimension of the gain matrix:", K.shape)
+    print("highest term of K", np.max(K))
 else:
     K=None
+
+
+
+
+
+
+
+
 
 
 
@@ -199,15 +224,13 @@ else:
 ### Solving & animation
 title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
                 BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = 'Benney_equation_code\\anim_FD_anim_BDF_order{order_BDF}_Nx_{N_x}_A_Ns{A_Ns}_multi_jet.mp4'.format(
-        order_BDF = order_BDF_scheme, N_x=N_x, A_Ns=A_Ns[N_x//2])
+title_anim = 'Benney_equation_code\\anim_FD_anim_BDF_order{order_BDF}_Nx_{N_x}_multi_jet.mp4'.format(
+        order_BDF = order_BDF_scheme, N_x=N_x)
 
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
         _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-    Initial_Conditions = sincos(
-        domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
     if bool_solve_save_FD:
         #computation times : ((N_x, N_t), t computation): 
@@ -418,22 +441,23 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 
 
 
+
+
+
+
 ###### SPECTRAL METHOD #########
 
 ### Solving
-title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_for_massM.txt'.format(
+title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_stability_analysis.txt'.format(
                     BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = (('Benney_equation_code\\Anim_Spectral_Ns{A_Ns}_sigma{sigma}'+
-              '_BDF{BDF_order}_Nx{N_x}_theta{theta}_several_jets.mp4').format(
-                    BDF_order=order_BDF_scheme, N_x=N_x, A_Ns=A_Ns[N_x//2], 
-                    sigma= sigma_Ns, theta=solver_BDF.round_fct(theta, 3)))
+title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
+              '_BDF{BDF_order}_Nx{N_x}_theta{theta}_stability_analysis.mp4').format(
+                    BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
 
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
         _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
-    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-    Initial_Conditions = sincos(domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
-    
+    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4    
     
     if bool_solve_save_spectral:
         h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
@@ -442,7 +466,7 @@ for i in range(len(space_steps_array)):
             LQR_Control=bool_Control, index_array_actuators=array_used_points, K=K)
 
         if bool_Control:
-            ctrl_mat_spectral = -h_mat_spectral@(K.T) #Control
+            ctrl_mat_spectral = -(h_mat_spectral-1)@(K.T) #Control
             assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
             ctrl_mat_spectral = np.concatenate((np.zeros((1, k_nb_act)), ctrl_mat_spectral[:-1,:]), axis=0) 
             assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
@@ -488,6 +512,49 @@ for i in range(len(space_steps_array)):
 
     if bool_anim_spectral and bool_save_anim_spectral:
         animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -593,10 +660,6 @@ if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 2
 
     animation_BDF_Spectral.save(
         'Benney_equation_code\\Spectral_BDForder_1_comparison_nrm_with_other.mp4')  
-
-
-
-
 
 
 
@@ -921,44 +984,62 @@ if bool_linear_analysis:
 
 
 
-##### Mass conservation check
-#We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume). 
-#Pay attention that the integration domain (domain_t or domain_x )is in the inputs otherwise there 
-#will be some dt or dx multiplicative error.
-#For more details, see the Obsidian document.
+if not bool_Control:##### Mass conservation check
+    #We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume). 
+    #Pay attention that the integration domain (domain_t or domain_x )is in the inputs otherwise there 
+    #will be some dt or dx multiplicative error.
+    #For more details, see the Obsidian document.
 
-print("\n\nMASS CONSERVATION CHECK\n")
+    print("\n\nMASS CONSERVATION CHECK\n")
 
-N_s_der_distribution  = N_s_function(domain_x, A_Ns[0, :])
+    N_s_der_distribution  = N_s_function(domain_x, A_Ns[0, :])
 
-print("External pressure function at initial time:", A_Ns[0, :], sigma_Ns)
-print("shape", N_s_der_distribution.shape)
-plt.plot(domain_x, N_s_der_distribution[0])
-# plt.plot(domain_x, N_s_der_distribution[1], label="_x")
-# plt.plot(domain_x, N_s_der_distribution[2], label="_xx")
-# plt.legend()
-plt.show()
-print("extremal values N_s_function and derivatives:", N_s_der_distribution[:, 0], N_s_der_distribution[:, -1])
-if (bool_solve_save_spectral or bool_load_spectral):
-    N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
-        _N_x=space_steps_array[0], _CFL_factor = CFL_factor)
-    M_0 = np.trapz(y=h_mat_spectral[0, :], x=domain_x) #initial mass
-    print("Initial mass:", M_0)
-    #Analytical variation rate of the total mass M for the Controled Benney eq
-    M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_der_distribution[1, -1]- N_s_der_distribution[1, 0])
+    print("External pressure function at initial time:", A_Ns[0, :], sigma_Ns)
+    print("shape", N_s_der_distribution.shape)
+    plt.plot(domain_x, N_s_der_distribution[0])
+    # plt.plot(domain_x, N_s_der_distribution[1], label="_x")
+    # plt.plot(domain_x, N_s_der_distribution[2], label="_xx")
+    # plt.legend()
+    plt.show()
     print("extremal values N_s_function and derivatives:", N_s_der_distribution[:, 0], N_s_der_distribution[:, -1])
-    #Analytical total mass at each time (integration)
-    M_analytics = M_0 + np.array([0]+[np.trapz(y=M_variation[:n_t+1], 
-                                               x=domain_t[:n_t+1]) for n_t in range(1, N_t)])
-    # print("M_Analytics: ", M_analytics)
-    #Numerical total mass M
-    M_numerics = np.trapz(y=h_mat_spectral, x=domain_x, axis=1)
-    print("Max difference between M_analytics and M_numerics : ", np.max(np.absolute(M_analytics-M_numerics)))
-    #Supposed to be small. 
-    print("Max diff in percent of mean(M_analytics): ",
-           np.max(np.absolute(M_analytics-M_numerics))/np.mean(M_analytics)*100, "%")
-    print("Mean and variance of the the spatial integral of h during time: ", 
-          np.mean(M_numerics), np.std(M_numerics))
+    if (bool_solve_save_spectral or bool_load_spectral):
+        N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
+            _N_x=space_steps_array[0], _CFL_factor = CFL_factor)
+        M_0 = np.trapz(y=h_mat_spectral[0, :], x=domain_x) #initial mass
+        print("Initial mass:", M_0)
+        #Analytical variation rate of the total mass M for the Controled Benney eq
+        M_variation = (h_mat_spectral[:, 0]**3)/3*(N_s_der_distribution[1, -1]- N_s_der_distribution[1, 0])
+        print("extremal values N_s_function and derivatives:", N_s_der_distribution[:, 0], N_s_der_distribution[:, -1])
+        #Analytical total mass at each time (integration)
+        M_analytics = M_0 + np.array([0]+[np.trapz(y=M_variation[:n_t+1], 
+                                                x=domain_t[:n_t+1]) for n_t in range(1, N_t)])
+        # print("M_Analytics: ", M_analytics)
+        #Numerical total mass M
+        M_numerics = np.trapz(y=h_mat_spectral, x=domain_x, axis=1)
+        print("Max difference between M_analytics and M_numerics : ", np.max(np.absolute(M_analytics-M_numerics)))
+        #Supposed to be small. 
+        print("Max diff in percent of mean(M_analytics): ",
+            np.max(np.absolute(M_analytics-M_numerics))/np.mean(M_analytics)*100, "%")
+        print("Mean and variance of the the spatial integral of h during time: ", 
+            np.mean(M_numerics), np.std(M_numerics))
 
 
 
+
+
+
+
+#### experiments on the control
+h_amplitude = np.max(np.absolute(h_mat_spectral-1), axis=1)
+plt.plot(domain_t, h_amplitude)
+# plt.xscale("log")
+plt.yscale('log')
+plt.xlabel("time t")
+plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t))$")
+
+plt.title("Log amplitude of the height")
+plt.show()
+#### theoretical Control verifications
+#Verification of the scaling
+
+#
