@@ -36,7 +36,7 @@ print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
 
 mu_l = 1.0016e-4   # dynamical viscosity 
 rho_l = 800   # volumic mass
-gamma = 1e-3 # syrface tension
+gamma = 1e-3 # surface tension
 
 if True:#Set the physical and dimensionless parameters and deduce h_n and U_n (cf 08/01)
     mu_l = 1.0016e-3   #Water dynamical viscosity at 20°C (cf https://wiki.anton-paar.com/en/water/)
@@ -85,7 +85,7 @@ def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     if _N_x is not None: #Space, then time
         _dx = L_x/_N_x #not dx = L_x/(N_x-1): x-periodic so we don't count the last point so Lx-dx = (Nx-1)dx
         _dt = min(_dx*T/L_x , _dx/U_N/_CFL_factor) #CFL conditions
-        _N_t = int(T/_dt+1) #bcs (N_t-1)dt = T
+        _N_t = 2*int(T/_dt+1) #bcs (N_t-1)dt = T
 
         
     elif _N_t is not None: #Time, then space
@@ -99,15 +99,14 @@ def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
 
     return _N_x, _N_t, _dx, _dt, domain_x, domain_t
 
-N_x = 128 #To choose little at first and then, increase 
+# N_x = 128 #To choose little at first and then, increase 
 CFL_factor = 1
-N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=N_x, _CFL_factor = CFL_factor)
-dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
-print("Nb of (space, time) points: ", (N_x, N_t))
+# N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=N_x, _CFL_factor = CFL_factor)
+# print("Nb of (space, time) points: ", (N_x, N_t))
 
-#test the boundaries of the domain (0 and L_x -dx if well initialised)
-print("First and last point of the domain:", domain_x[0], domain_x[-1]) 
-print("Lx-dx:", L_x-dx)
+# #test the boundaries of the domain (0 and L_x -dx if well initialised)
+# print("First and last point of the domain:", domain_x[0], domain_x[-1]) 
+# print("Lx-dx:", L_x-dx)
 
 
 
@@ -139,8 +138,10 @@ def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
 
 
 ######## SOLVING #######
+
+
 ### Boolean variables to control what action to do. Watch out to load the good file.
-bool_Control = False #If I compute the control or not
+bool_FB_Control = False # bool of Feedback Control
 #FD method 
 bool_solve_save_FD, bool_load_FD = False, False 
 bool_anim_FD, bool_save_anim_FD = False, False
@@ -152,13 +153,13 @@ bool_anim_spectral, bool_save_anim_spectral = True, True
 
 ### Global settings of the simulations
 order_BDF_scheme = 2
-space_steps_array = np.array([128])
+space_steps_array = np.array([256])
 print("Space steps: ", space_steps_array)
 N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
                                                              _CFL_factor = CFL_factor)
-
+print("Modelisation parameters: (N_x, N_t) = ({N_x},)")
 ##Initial Condition
-h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.1, 0, 1
+h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.01, 0, 1
 Initial_Conditions = sincos(
         domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
@@ -168,6 +169,9 @@ if True:#Plot of initial condition
     "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
     plt.show()
 
+
+###Control
+
 ##External pressure parameters and external normal pressure function
 sigma_Ns = 0.01
 omega_Ns = 0.1
@@ -175,13 +179,7 @@ omega_Ns = 0.1
 nb_actuators = 5
 array_used_points = np.arange(1, nb_actuators+1, 1)*N_x//(nb_actuators+1) #equi-spaced actuators
 k_nb_act = array_used_points.shape[0]
-if bool_Control:
-    A_Ns = None
-    beta = 0.1
-else:
-    A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
-    # A_Ns[:, 0], A_Ns[:, 1] = 10, 5
-
+#Actuators shape function (the peak function)
 if False: #Gaussian TAKE COS GAUSSIAN FOR THE CONTROL, OTHERWISE ERROR
     N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
         x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
@@ -189,14 +187,15 @@ else:
     N_s_function = lambda x, Amplitudes_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
         x, Amplitudes_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
 
+##Choice: Feedback or Openloop control
+if bool_FB_Control:#Feedback Control, closed loop function of the type u(x(t))
+    A_Ns = None
+    beta = 0.1
+    time_start_ctrl = T/2 #Time where the control starts
+    idx_time_start_ctrl =int(time_start_ctrl/T*N_t)
 
+    from solver_BDF import matrices_ctrl
 
-
-
-###### Control
-from solver_BDF import matrices_ctrl
-
-if bool_Control:
     # assert (Amplitudes_Ns is None), "fct solver_BDF: Problem of input" #Not supposed to be in input as computed by the ctrl
     A, B, Q, R = matrices_ctrl(beta, list_Re_Ca_theta= [Re, Ca, theta], array_actuators_index=array_used_points,
                                 actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x), 
@@ -204,11 +203,12 @@ if bool_Control:
     K, _, _ = ct.lqr(A, B, Q, R) #gain matrix
     print("Dimension of the gain matrix:", K.shape)
     print("highest term of K", np.max(K))
-else:
-    K=None
 
-
-
+else: #Openloop control: schelduled control, function u(t
+    idx_time_start_ctrl = None
+    A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
+    K=None #no feedback matrix
+    # A_Ns[:, 0], A_Ns[:, 1] = 10, 5
 
 
 
@@ -408,11 +408,8 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
             '\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
             BDF_order=order_BDF_list[i], N_x=N_x))
         )
-
         plt.plot(domain_x, list_result_BDF_FD_N_x[i][index_eval_time,:], 
                  label="BDF {}".format(order_BDF_list[i]))
-        
-
     plt.xlabel("inclined plane"), plt.ylabel("height h(x, t)")
     plt.legend()
     plt.title("FD with BDF 1, 2, 3 at final time with N_x = {}".format(N_x_plot))
@@ -420,8 +417,6 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
     plt.show()
 
     # Animation
-
-
     animation_BDF_FD = solver_BDF.func_anim(
         _time_series=np.array(list_result_BDF_FD_N_x), _anim_space_array = domain_x,
         _anim_time_array = domain_t,
@@ -448,12 +443,19 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 ###### SPECTRAL METHOD #########
 
 ### Solving
-title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_stability_analysis.txt'.format(
-                    BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
-              '_BDF{BDF_order}_Nx{N_x}_theta{theta}_stability_analysis.mp4').format(
-                    BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
-
+if bool_FB_Control:
+    title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_Ctrl.txt'.format(
+                        BDF_order=order_BDF_scheme, N_x=N_x)
+    title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
+                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_Ctrl.mp4').format(
+                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
+else:
+    title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_NoCtrl.txt'.format(
+                        BDF_order=order_BDF_scheme, N_x=N_x)
+    title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
+                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_NoCtrl.mp4').format(
+                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
+    
 for i in range(len(space_steps_array)):
     N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
         _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
@@ -463,9 +465,10 @@ for i in range(len(space_steps_array)):
         h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
             order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
-            LQR_Control=bool_Control, index_array_actuators=array_used_points, K=K)
+            LQR_Control=bool_FB_Control, index_array_actuators=array_used_points, K=K, 
+            idx_time_start_ctrl=idx_time_start_ctrl)
 
-        if bool_Control:
+        if bool_FB_Control:
             ctrl_mat_spectral = -(h_mat_spectral-1)@(K.T) #Control
             assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
             ctrl_mat_spectral = np.concatenate((np.zeros((1, k_nb_act)), ctrl_mat_spectral[:-1,:]), axis=0) 
@@ -482,15 +485,16 @@ for i in range(len(space_steps_array)):
 
 
     ###Animation
-    if bool_Control:
+    if bool_FB_Control:
         #Construction of a function for plotting. Tee pressure is showed upside down and normalized. (cf Obsidian file)
         N_s_mat_spectral = np.array([solver_BDF.N_s_derivatives_cos_gaussian(
             domain_x, ctrl_mat_spectral[n_t],omega_Ns, array_used_points, L_x)[0] for n_t in range(N_t)]) 
+        N_s_mat_spectral[:idx_time_start_ctrl,:] = np.zeros_like(N_s_mat_spectral[:idx_time_start_ctrl,:])
         N_s_mat_spectral = 2-N_s_mat_spectral/np.max(np.absolute(N_s_mat_spectral)) #Normalization & upside down
         print("Shape N_s_mat_spectral:", N_s_mat_spectral.shape)
         
     if bool_anim_spectral:#Animation of benney numerical solution
-        if bool_Control:
+        if bool_FB_Control:
             array_animation_spectral = np.array([h_mat_spectral, N_s_mat_spectral])
             legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme), "Ns Control"]
         else:
@@ -984,7 +988,7 @@ if bool_linear_analysis:
 
 
 
-if not bool_Control:##### Mass conservation check
+if not bool_FB_Control:##### Mass conservation check
     #We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume). 
     #Pay attention that the integration domain (domain_t or domain_x )is in the inputs otherwise there 
     #will be some dt or dx multiplicative error.
@@ -1030,15 +1034,33 @@ if not bool_Control:##### Mass conservation check
 
 
 #### experiments on the control
+
+# title_plot = ('Benney_equation_code\\plot_Spectral_Ns_'+
+#                 '_BDF{BDF_order}_Nx{N_x}_theta{theta}_NoCtrl.pdf').format(
+#                         BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3))
 h_amplitude = np.max(np.absolute(h_mat_spectral-1), axis=1)
 plt.plot(domain_t, h_amplitude)
 # plt.xscale("log")
 plt.yscale('log')
 plt.xlabel("time t")
-plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t))$")
+plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t)-1|)$")
+plt.title("Log amplitude of |h-1| along time")
 
-plt.title("Log amplitude of the height")
+if bool_FB_Control:
+    title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
+                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_Ctrl.pdf').format(
+                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
+    plt.axvline(x=time_start_ctrl, color='r')
+else:
+    title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
+                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_NoCtrl.pdf').format(
+                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
+    
+# plt.savefig(title_plot)
 plt.show()
+
+
+
 #### theoretical Control verifications
 #Verification of the scaling
 

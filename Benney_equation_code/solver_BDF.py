@@ -350,7 +350,7 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
 #     return h_mat
 
 def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Control,
-               Amplitudes_Ns, K, nb_percent=5):
+               Amplitudes_Ns, K, idx_time_start_ctrl, nb_percent=5):
 
     '''
     Output: Computes & outputs the computed numerical solution of the benney equation with normal pressure 
@@ -371,7 +371,6 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
     #Each line is for a given time from 0 to (N_t-1)*dt
     h_mat[0,:] = IC 
 
-
     ### Solving using a root finding method of scipy
     print("\n## SOLVING BENNEY EQ ##")
     t_i = time.time()
@@ -380,7 +379,10 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
 
     for n_t in range(N_t-1):
         if LQR_Control:
-            u_ctrl = -K@(h_mat[n_t, :]-1) #Feedback ctrl with the previous state
+            if n_t>idx_time_start_ctrl:
+                u_ctrl = -K@(h_mat[n_t, :]-1) #Feedback ctrl with the previous state
+            else:
+                u_ctrl = np.zeros(K.shape[0])
         else:
             u_ctrl = Amplitudes_Ns[n_t, :]
 
@@ -458,7 +460,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
  
 def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
-                                index_array_actuators, Amplitudes_Ns, LQR_Control, K, nb_percent=5):
+                                index_array_actuators, Amplitudes_Ns, LQR_Control, K, idx_time_start_ctrl,
+                                nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -502,7 +505,8 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
 
 
     return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_Spectral, 
-                        Amplitudes_Ns=Amplitudes_Ns, LQR_Control=LQR_Control, K=K, nb_percent=nb_percent)
+                        Amplitudes_Ns=Amplitudes_Ns, LQR_Control=LQR_Control, K=K, 
+                        idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 
 
 
