@@ -10,6 +10,8 @@ from IPython.display import HTML
 from sklearn.linear_model import LinearRegression
 import control as ct
 
+from header import * 
+
 
 ### Usefull functions for the solvers
 def mat_FD_periodic(length_h, list_coef):#FD mat with periodic Boundary conditions
@@ -281,7 +283,7 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
     dx, domain_x = L_x/N_x, np.linspace(0, L_x, N_x, endpoint=False) #periodic BC
     position_actuators = domain_x[array_actuators_index]
     Re, Ca, theta = list_Re_Ca_theta[0], list_Re_Ca_theta[1], list_Re_Ca_theta[2]
-    k = np.size(position_actuators) #number of actuators
+    # k = np.size(position_actuators) #number of actuators
 
     coef_array = np.array([-2/(2*dx), (2*np.cos(theta)/(3*np.sin(theta))-8*Re/15)/(dx**2), -1/(3*Ca*dx**4)])
     A_norm_cos_exp_fct = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
@@ -372,25 +374,33 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
     h_mat[0,:] = IC 
 
     ### Solving using a root finding method of scipy
-    print("\n## SOLVING BENNEY EQ ##")
     t_i = time.time()
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
 
+    if LQR_Control:
+        print("\n## SOLVING CONTROLED BENNEY EQ ##")
+        U_array = np.zeros((N_t, K.shape[0]))
+    else:
+        print("\n## SOLVING UNCONTROLLED BENNEY EQ ##")
 
     for n_t in range(N_t-1):
         if LQR_Control:
             if n_t>idx_time_start_ctrl:
-                u_ctrl = -K@(h_mat[n_t, :]-1) #Feedback ctrl with the previous state
+                h_tilde = (h_mat[n_t, :]-1)/1 # pk ça marche pas avec /epsilon ?
+                u_ctrl = -K@h_tilde #Feedback ctrl with the previous state
+                if True:
+                    u_ctrl = np.maximum(u_ctrl, np.zeros_like(u_ctrl))
             else:
                 u_ctrl = np.zeros(K.shape[0])
+            U_array[n_t] = u_ctrl
         else:
             u_ctrl = Amplitudes_Ns[n_t, :]
 
 
         if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
-                                                _p=1, dt=dt) + F_space(h_arr, Amplitudes_Ns= u_ctrl)
-        
+                                                 _p=1, dt=dt) + F_space(h_arr, Amplitudes_Ns=u_ctrl)
+            
         else:
             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
                                                 _p=order_BDF_scheme, dt=dt) + F_space(h_arr, Amplitudes_Ns=u_ctrl)
@@ -412,8 +422,10 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
     print("Max error (evaluation on the supposed root) and its index",
            (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
 
-    return h_mat #No need to output the control, as it's -h_mat@(K.T)
-
+    if LQR_Control:
+        return h_mat, U_array
+    else:
+        return h_mat, Amplitudes_Ns
 
 
 def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, nb_percent=5):
@@ -460,7 +472,7 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
  
 def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
-                                index_array_actuators, Amplitudes_Ns, LQR_Control, K, idx_time_start_ctrl,
+                                Amplitudes_Ns, LQR_Control, K, idx_time_start_ctrl,
                                 nb_percent=5):
     '''
     INPUTS:
@@ -508,72 +520,3 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
                         Amplitudes_Ns=Amplitudes_Ns, LQR_Control=LQR_Control, K=K, 
                         idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 
-
-
-
-
-    
-
-#### Animation Functions ####
-
-def round_fct(r, nb_decimal):
-    '''Detect the power of 10 and round the number nb_decimal further. 
-    Coded to have titles of animation not to big.
-    Expl: round_fct(0.000123456, 4) = 0.000123 (or 0.0001234 I don't remember)'''
-    if r==0:
-        return 0
-    else:
-        # print("NUMBER R", r)
-        power_10 = int(np.log10(abs(r)))
-        factor = 10**(power_10)
-        return round(r/factor, nb_decimal)*factor
-
-def func_anim(_time_series, _anim_space_array, _anim_time_array, 
-              title, title_x_axis = None, title_y_axis= None, _legend_list = None):
- 
-    #(Nb_tab, N_t, N_x) tab
-    Nb_time_series =  _time_series.shape[0]
-    gap = (_time_series.max()- _time_series.min())/10
-
-    #subplot initialisation
-    fig, axs = plt.subplots(1, 1, figsize=(10, 4))
-
-    # Initialise the plot ligns
-    # print("Nb_times_series", Nb_time_series)
-    array_line_analytical = Nb_time_series*[0]
-    for k in range(Nb_time_series):
-        if not(_legend_list is None):
-            array_line_analytical[k], = axs.plot([], [], label=_legend_list[k])
-        else:
-            array_line_analytical[k], = axs.plot([], [])
-
-    axs.set_xlim([_anim_space_array.min(), _anim_space_array.max()])
-    axs.set_ylim([_time_series.min()-gap, _time_series.max()+gap])
-
-    # if bool_grid:
-    #     if _x_ticks_major is None:
-    #         axs.set_xticks(_anim_space_array, minor=True)
-    #         axs.grid(which='both')  # Major ticks for x-axis, every 1 unit
-    #     else:
-    #         axs.set_xticks(_x_ticks_major) #Major xticks : the one which is showed on the x axis
-    #         axs.set_xticks(_anim_space_array, minor=True) #minor xticks
-    #         axs.grid(which='both') #grid for the minor tick
-
-    # Update the function in the animation
-    def update(frame):
-        t_1 = _anim_time_array[frame]
-        y = np.array([_time_series[k][frame] for k in range(Nb_time_series)])
-        for k in range(_time_series.shape[0]):
-            
-            array_line_analytical[k].set_data(_anim_space_array, y[k])
-            
-        axs.set_title(title + ' at t= {}'.format(round_fct(t_1, 5)))
-        axs.set_xlabel(title_x_axis)
-        axs.set_ylabel(title_y_axis)
-        if not(_legend_list is None):
-            axs.legend()
-        
-        return array_line_analytical,
-
-    # Create the animation
-    return FuncAnimation(fig, update, frames=len(_anim_time_array)-1)
