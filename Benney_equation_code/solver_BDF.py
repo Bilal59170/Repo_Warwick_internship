@@ -299,9 +299,6 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
             + coef_array[2]*mat_FD_periodic(N_x, [6, -4, -4, 1, 1])) 
     B = 1/3*A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[2] 
     Q = beta*dx*np.identity(N_x) #cf SOR paper for the discrete cost
-
-
-    # R = (1-beta)*np.identity(k)
     #S in the Obsidian file
     R =(1-beta)*dx*(mat_D.T)@(mat_D)
 
@@ -351,12 +348,13 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
 
 #     return h_mat
 
-def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Control,
+def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, LQR_positive_truncated,
+               positive_ctrl,
                Amplitudes_Ns, K, idx_time_start_ctrl, nb_percent=5):
 
     '''
     Output: Computes & outputs the computed numerical solution of the benney equation with normal pressure 
-            and without or without LQR control. Uses a BDF scheme for the solving along the time axis.
+            and with or without LQR control. Uses a BDF scheme for the solving along the time axis.
             Call either a Finite Difference or Spectral method for solving along the space axis.
     Inputs:
     - N_x, N_t, dx, dt, IC, order_BDF_scheme: all the space-time discretization parameters, Initial condition
@@ -377,33 +375,48 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
     t_i = time.time()
     root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
 
-    if LQR_Control:
+    if FB_Control:
         print("\n## SOLVING CONTROLED BENNEY EQ ##")
         U_array = np.zeros((N_t, K.shape[0]))
     else:
         print("\n## SOLVING UNCONTROLLED BENNEY EQ ##")
 
     for n_t in range(N_t-1):
-        if LQR_Control:
-            if n_t>idx_time_start_ctrl:
-                h_tilde = (h_mat[n_t, :]-1)/1 # pk ça marche pas avec /epsilon ?
-                u_ctrl = -K@h_tilde #Feedback ctrl with the previous state
-                if True:
-                    u_ctrl = np.maximum(u_ctrl, np.zeros_like(u_ctrl))
+        if False:
+            if FB_Control:
+                if n_t>idx_time_start_ctrl: # After the starting time of the control
+                    h_tilde = (h_mat[n_t, :]-1)/delta # Useless in the computation as we rescale again later with Ampl_Ns = delta*u_ctrl
+                    u_ctrl = -K@h_tilde #Feedback ctrl with the previous state
+                    if LQR_positive_truncated:
+                        u_ctrl = np.maximum(u_ctrl, np.zeros_like(u_ctrl))
+                else:
+                    u_ctrl = np.zeros(K.shape[0])
+
+                U_array[n_t] = delta*u_ctrl #the real control on the height h=1+delta*\tilde{h}
+                Ampl_Ns = delta*u_ctrl
             else:
-                u_ctrl = np.zeros(K.shape[0])
-            U_array[n_t] = u_ctrl
+                Ampl_Ns = Amplitudes_Ns[n_t, :]
+        elif positive_ctrl:
+            u_ctrl = np.zeros(K.shape[0])
+            if n_t>idx_time_start_ctrl: # After the starting time of the control
+                u_ctrl = -K@h_mat[n_t, :] #Direct control on the height h
+                Ampl_Ns = np.zeros(K.shape[0])
+                # Ampl_Ns = u_ctrl
+                U_array[n_t] = u_ctrl
+            else:
+                Ampl_Ns = np.zeros(K.shape[0])
         else:
-            u_ctrl = Amplitudes_Ns[n_t, :]
+            Ampl_Ns = np.zeros(K.shape[0])
+            
 
 
         if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
-                                                 _p=1, dt=dt) + F_space(h_arr, Amplitudes_Ns=u_ctrl)
+                                                 _p=1, dt=dt) + F_space(h_arr, Amplitudes_Ns=Ampl_Ns)
             
         else:
             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
-                                                _p=order_BDF_scheme, dt=dt) + F_space(h_arr, Amplitudes_Ns=u_ctrl)
+                                                _p=order_BDF_scheme, dt=dt) + F_space(h_arr, Amplitudes_Ns=Ampl_Ns)
             
         result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
         h_mat[n_t+1, :] = result["x"]
@@ -422,7 +435,7 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, LQR_Cont
     print("Max error (evaluation on the supposed root) and its index",
            (np.max(root_method_errors_arr), np.argmax(root_method_errors_arr)))
 
-    if LQR_Control:
+    if FB_Control:
         return h_mat, U_array
     else:
         return h_mat, Amplitudes_Ns
@@ -472,8 +485,8 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
  
 def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
-                                Amplitudes_Ns, LQR_Control, K, idx_time_start_ctrl,
-                                nb_percent=5):
+                                Amplitudes_Ns, FB_Control, LQR_positive_truncated, positive_ctrl,
+                                K, idx_time_start_ctrl, nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -517,6 +530,7 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
 
 
     return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_Spectral, 
-                        Amplitudes_Ns=Amplitudes_Ns, LQR_Control=LQR_Control, K=K, 
+                        Amplitudes_Ns=Amplitudes_Ns, FB_Control=FB_Control,
+                          LQR_positive_truncated= LQR_positive_truncated, K=K, positive_ctrl=positive_ctrl,
                         idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 

@@ -25,7 +25,7 @@ Re =  5 #Supposed O(1)
 h_N = (Re/Ca)*(mu_l**2/(rho_l*gamma))
 U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)  #Speed of the Nusselt solution
 
-epsilon = h_N/L_x
+epsilon = 1/L_x
 delta = 1e-3
 
 ###Some Usefull fonctions
