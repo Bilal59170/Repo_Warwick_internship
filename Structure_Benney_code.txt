@@ -1,0 +1,48 @@
+Structure of the code:
+
+**** KS equation ***
+
+16-09_KS_eq_Fourier.py
+- Initialisation and definition
+- Fourier Decomposition: tests & definitions
+- Expression of the lambdas and solving
+- Animations & results
+
+
+
+
+*** For the Benney equation ***
+
+header.py:
+- Setting of the variables of the system (rho, L, T, Re, Ca, theta…)
+- def of usefull functions
+
+
+main_benney_eq.py:
+- Simulation & Control Settings
+	- Initial condition, 
+	- Choice and construction of the control strategy (4 different)
+		- LQR, positive part of LQR, positive Linear, proportional
+	- parameters of the model (like N_x), not of the system (like L or T)
+- Solving
+	- solving the equation with either Finite Difference or Spectral method
+	- display of animations, saving of animations and values of the solutions
+- Tests & Experiments& Control theory verification
+	- Before control: plot of dispersion relation
+	- After Control: plot of log amplitude of h
+
+
+benney_eq_verif.py: 
+- Simulation SETTINGS
+- Pseudo consistency and comparison of the Schemes (Finite Difference & Spectral)
+	- Finite Difference&BDF: 
+		- Solving & save / loading solution
+		- Animation with different order of BDF scheme 
+		- Difference graph for different space step (fixed BDF order)
+	- Spectral Method & BDF: Same 3 part as Finite Difference & BDF.
+	- Comparison between FD & Spectral methods
+- Verification of linear theory
+	- Visualisation of the dispersion relation
+	- Computation of Fourier mode and comparison with linear theory
+- Physical properties verification:
+	- Mass conservation

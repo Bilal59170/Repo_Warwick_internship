@@ -5,87 +5,65 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-
-
 import solver_BDF 
 from header import *
 
-print("\n\n#### BEGINING OF THE PRINT ###\n")
+print("\n\n******  Verification of the Scheme: Beginning of the print *****\n")
 
+
+###################################
 
 ######## Simulation SETTINGS ######
-print("Nusselt velocity, Re, Ca: ", U_N, Re, Ca )
+
+##################################### 
+# Using of air jets or not. Interpretated as open loop control
+bool_open_loop_control = False 
+
+## Check the asumptions
+print("U_N, theta, Re, Ca : ", U_N, theta, Re, Ca )
 print("Value of Re (check if O(1)):", Re)
 print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
+
+
+
+#########  Simulation details  ############
+##Simulation constants
 CFL_factor = 1
-
-###Stability
-k_0_sq = Ca*(8*Re/5-2*np.cos(theta)/np.sin(theta))
-if k_0_sq < 0:
-    print("Linear Stability:  no Critical wave number, k_0**2 <0")
-else:
-    print("Linear Stability: Critical wave number k_0:", L_x/(2*np.pi)*np.sqrt(k_0_sq))
-
-
-bool_FB_Control = False # bool of Feedback Control
-
-
-##############################################################
-
-######## Pseudo consistency of the Schemes (FD & Spectral) ######
-
-##############################################################
-### Boolean variables to control what action to do. Watch out to load the good file.
-#FD method 
-bool_solve_save_FD, bool_load_FD = False, False 
-bool_anim_FD, bool_save_anim_FD = False, False
-
-#Spectral method
-bool_solve_save_spectral, bool_load_spectral = False, False
-bool_anim_spectral, bool_save_anim_spectral = False, False
-
-
-######## SOLVING #######
-### Global settings of the simulations
-order_BDF_scheme = 2
-space_steps_array = np.array([128])
+# array of the space steps. They are several as we compute several solutions in a for loop.
+space_steps_array = np.array([128, 256, 512, 1024]) 
 print("Space steps: ", space_steps_array)
-N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
-                                                             _CFL_factor = CFL_factor)
-print("Modelisation parameters: (N_x, N_t) = ({N_x},{N_t})")
-##Initial Condition
-h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, 0.01, 0, 1
-Initial_Conditions = sincos(
-        domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 
-if True:#Plot of initial condition
+##Initial Condition
+mode_fq = 1
+h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, delta, mode_fq, mode_fq
+
+if False:#Plot of initial condition
     plt.plot(domain_x, Initial_Conditions)
     plt.title("IC (t=0) for the normalized height h (Ac, As, fc, fs)"+
     "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
     plt.show()
 
 
-### Air jets (Can be seen as a sort of open loop control)
-##External pressure parameters and external normal pressure function
-sigma_Ns = 0.01
-omega_Ns = 0.1
-#Array of the ranking of the points used for the actuators
-nb_actuators = 5
-array_used_points = np.arange(1, nb_actuators+1, 1)*N_x//(nb_actuators+1) #equi-spaced actuators
-k_nb_act = array_used_points.shape[0]
+## Air jets (Can be seen as a sort of open loop control)
+#External pressure parameters and external normal pressure function
+k_nb_act = 5 ## numbers of actuators
+
+
 #Actuators shape function (the peak function)
-if False: #Gaussian TAKE COS GAUSSIAN FOR THE CONTROL, OTHERWISE ERROR
-    N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
-        x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
+sigma_Ns,omega_Ns = 0.01, 0.1 # width of the air jet for a gaussian (resp. 'cos gaussian') function
+
+#To chose a Gaussian shape of actuators. Gives no mass conservation and isn't L-periodic, better to chose the cos-gaussian 
+
+if bool_open_loop_control:
+    if False: 
+        N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
+            x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
+    else:
+        N_s_function = lambda x, Amplitudes_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
+            x, Amplitudes_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
+
 else:
-    N_s_function = lambda x, Amplitudes_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
-        x, Amplitudes_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
-
-##Scheduled Amplitude
-idx_time_start_ctrl = None
-A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
-K=None #no feedback matrix
-# A_Ns[:, 0], A_Ns[:, 1] = 10, 5
+    N_s_function = lambda x, Amplitudes_Ns: np.array([np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)])
 
 
 
@@ -95,54 +73,84 @@ K=None #no feedback matrix
 
 
 
+##############################################################
+
+######## Pseudo consistency and comparison of the Schemes (Finite Difference & Spectral methods) ######
+
+##############################################################
+
+### Boolean variables to control what action to do. Watch out to load the good file.
+#FD method 
+bool_solve_save_FD, bool_load_FD = False, True 
+bool_anim_FD, bool_save_anim_FD = False, False
+
+#Spectral method
+bool_solve_save_spectral, bool_load_spectral = False, False
+bool_anim_spectral, bool_save_anim_spectral = False, False
 
 ###### Finite Difference & BDF Scheme ######
 
 ### Solving & animation
-title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = 'Benney_equation_code\\anim_FD_anim_BDF_order{order_BDF}_Nx_{N_x}_multi_jet.mp4'.format(
-        order_BDF = order_BDF_scheme, N_x=N_x)
 
-for i in range(len(space_steps_array)):
-    N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
-        _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
-    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+for  order_BDF_scheme in range(1,2):
+    print("### Order of the BDF Scheme: ", order_BDF_scheme)
+    for i in range(len(space_steps_array)):
 
-    if bool_solve_save_FD:
-        #computation times : ((N_x, N_t), t computation): 
-        # [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
-        h_mat_FD = solver_BDF.solver_Benney_BDF_FD(
-            N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-            theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, N_s_function=N_s_function,
-            nb_percent=1)
+        #SImulation setting
+        N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
+            _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
+        print("Modelisation parameters: (N_x, N_t) = ({N_x},{N_t})".format(N_x=N_x, N_t=N_t))
 
-        ##Saving the solution
-        np.savetxt(title_file, h_mat_FD)
+        # File name 
+        title_file = 'Benney_equation_code\\Schemes_verification\\Verif_FD_BDF{order_BDF}_Nx{N_x}.txt'.format(
+                    order_BDF=order_BDF_scheme, N_x=N_x)
+        title_anim = 'Benney_equation_code\\Schemes_verification\\Anim_Verif_FD_BDF{order_BDF}_Nx{N_x}.mp4'.format(
+                order_BDF = order_BDF_scheme, N_x=N_x)
+
+        #Initial condition
+        Initial_Conditions = sincos(
+            domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+        
+        #Open loop Control
+        array_used_points = np.arange(1, k_nb_act+1, 1)*N_x//(k_nb_act+1) #equi-spaced actuators
+        A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
+
+        if bool_solve_save_FD:
+            #computation times : ((N_x, N_t), t computation): 
+            # [(128, 229),14s), ((256, 458), 60s), ((512, 915),T= 710s)]
+            h_mat_FD,  _ = solver_BDF.solver_Benney_BDF_FD(
+                N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
+                order_BDF_scheme=order_BDF_scheme, Amplitudes_Ns=A_Ns, N_s_function=N_s_function,
+                nb_percent=5)
+
+            ##Saving the solution
+            np.savetxt(title_file, h_mat_FD)
 
 
-##Loading the solution
-if bool_load_FD:
-    h_mat_FD= np.loadtxt(title_file)
-    assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
+        ##Loading the solution
+        if bool_load_FD:
+            h_mat_FD= np.loadtxt(title_file)
+            # print(h_mat_FD.shape)
+            assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
 
 
-### VISUALISATION 
-##animation function
+        ### VISUALISATION 
+        ##animation function
+        animation_Benney = func_anim(_time_series=np.array([h_mat_FD]), 
+                _anim_space_array = domain_x, _anim_time_array = domain_t,
+                title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+                    N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=round_fct(Re,3), Ca=round_fct(Ca, 3)), 
 
-if bool_anim_FD:#Animation of benney numerical solution
-    animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
-        _anim_space_array = domain_x, _anim_time_array = domain_t,
-        title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
-            N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+                title_x_axis=r"x axis: horizontal inclined by $\theta$",
+                title_y_axis= r"y-axis (inclined by $\theta$)",
+                _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
 
-        title_x_axis=r"x axis: horizontal inclined by $\theta$",
-        title_y_axis= r"y-axis (inclined by $\theta$)",
-        _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
-    # plt.show()
-
-if bool_save_anim_FD:
-    animation_Benney.save(title_anim)  #needs the program ffmpeg installed and in the PATH
+        if bool_anim_FD:#Animation of benney numerical solution
+            plt.show()
+        else:
+            plt.close()
+        if bool_save_anim_FD:
+            animation_Benney.save(title_anim)  #needs the program ffmpeg installed and in the PATH
 
 
 ### VERIFICATION OF THE METHOD
@@ -246,15 +254,15 @@ def plot_difference_graph(list_h_mat, general_subplot_title, title_left_graph=No
         plt.savefig(file_name)
     plt.show()
 
-if False:
+if True:
     list_h_mat_FD = [] 
     for space_step in space_steps_array:
         list_h_mat_FD.append(
             np.loadtxt(
-                'Benney_equation_code\\Saved_numerical_solutions\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'
-                .format(BDF_order=order_BDF_scheme, N_x=space_step)))
+                'Benney_equation_code\\Schemes_verification\\Verif_FD_BDF{order_BDF}_Nx{N_x}.txt'
+                .format(order_BDF=order_BDF_scheme, N_x=space_step)))
         
-if False: #Plot the difference Graph
+if True: #Plot the difference Graph
     print("List of the tested space steps:", space_steps_array)
 
     #list of the FD & BDF numerical solution for different space steps
@@ -315,12 +323,10 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 
 
 
-
-
 ###### SPECTRAL METHOD #########
 
 ### Solving
-if bool_FB_Control:
+if bool_open_loop_control:
     title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_Ctrl.txt'.format(
                         BDF_order=order_BDF_scheme, N_x=N_x)
     title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
@@ -339,13 +345,11 @@ for i in range(len(space_steps_array)):
     dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4    
     
     if bool_solve_save_spectral:
-        h_mat_spectral = solver_BDF.solver_Benney_BDF_Spectral(
+        h_mat_spectral, _ = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
-            order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
-            LQR_Control=bool_FB_Control, index_array_actuators=array_used_points, K=K, 
-            idx_time_start_ctrl=idx_time_start_ctrl)
+            order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns)
 
-        if bool_FB_Control:
+        if bool_open_loop_control:
             ctrl_mat_spectral = -(h_mat_spectral-1)@(K.T) #Control
             assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
             ctrl_mat_spectral = np.concatenate((np.zeros((1, k_nb_act)), ctrl_mat_spectral[:-1,:]), axis=0) 
@@ -362,7 +366,7 @@ for i in range(len(space_steps_array)):
 
 
     ###Animation
-    if bool_FB_Control:
+    if bool_open_loop_control:
         #Construction of a function for plotting. Tee pressure is showed upside down and normalized. (cf Obsidian file)
         N_s_mat_spectral = np.array([solver_BDF.N_s_derivatives_cos_gaussian(
             domain_x, ctrl_mat_spectral[n_t],omega_Ns, array_used_points, L_x)[0] for n_t in range(N_t)]) 
@@ -371,7 +375,7 @@ for i in range(len(space_steps_array)):
         print("Shape N_s_mat_spectral:", N_s_mat_spectral.shape)
         
     if bool_anim_spectral:#Animation of benney numerical solution
-        if bool_FB_Control:
+        if bool_open_loop_control:
             array_animation_spectral = np.array([h_mat_spectral, N_s_mat_spectral])
             legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme), "Ns Control"]
         else:
@@ -393,50 +397,6 @@ for i in range(len(space_steps_array)):
 
     if bool_anim_spectral and bool_save_anim_spectral:
         animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-###################################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -508,43 +468,6 @@ if False: #Spectral method Animation & Graph: Fixed step,  Compare the different
         'Benney_equation_code\\Spectral_BDF_order_comparison_order_1236_Nx_{}.mp4'.format(N_x_plot))  
 
 
-if False: #Spectral method Animation & Graph: Fixed step, and order 1: compare 2 methods
-    #Plot
-    N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=1024, _CFL_factor=CFL_factor)
-    list_result_BDF_1_spectral_N_x_1024, order_BDF_list = [], [1, 2, 3, 6]
-    index_eval_time = int(N_t/2)
-
-    list_result_BDF_1_spectral_N_x_1024.append(
-            np.loadtxt(
-            'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-            BDF_order=order_BDF_list[0], N_x=1024))
-        ) 
-    list_result_BDF_1_spectral_N_x_1024.append(
-            np.loadtxt(
-            'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_other_method.txt'.format(
-            BDF_order=order_BDF_list[0], N_x=1024))
-        )
-
-      #Animation
-
-
-    animation_BDF_Spectral = solver_BDF.func_anim(
-        _time_series=np.array(list_result_BDF_1_spectral_N_x_1024), _anim_space_array = domain_x,
-        _anim_time_array = domain_t,
-        title="Benney height with Spectral method and BDF for (N_x, CFL, Re, Ca) =({N_x}, {CFL}, {Re}, {Ca})".format(
-        N_x=1024, CFL=30, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
-
-        title_x_axis=r"x axis: horizontal inclined by $\theta$",
-        title_y_axis= r"y-axis (inclined by $\theta$)",
-        _legend_list = ["original method", "my weird method"])
-    # plt.show()
-
-    animation_BDF_Spectral.save(
-        'Benney_equation_code\\Spectral_BDForder_1_comparison_nrm_with_other.mp4')  
-
-
-
-
 
 ###### Comparison of the FD & Spectral methods  #######
 bool_anim = False
@@ -586,8 +509,6 @@ if False:
     for i in range(len(space_steps_array)):
         arr_L2_diff[i] = np.linalg.norm(list_h_mat_FD[i][-1]-list_h_mat_spectral[i][-1])
         arr_Linf_diff[i] = np.max(np.absolute(list_h_mat_FD[i][-1]-list_h_mat_spectral[i][-1]))
-
-
 
     ##plot
     fig, axs = plt.subplots(1,2, figsize=(15, 5))
@@ -668,21 +589,27 @@ if False:
 
 
 
+
+
+
+
+
+
 ##############################################################
 
-######## ANalysis of the linear system ######
+########  Verification of linear theory ######
 
 ##############################################################
  
-bool_linear_analysis = True
-bool_solve_save_linear, bool_load_linear = True, False
+bool_linear_analysis = False
+bool_solve_save_linear, bool_load_linear = False, False
 bool_anim_linear, bool_save_anim_linear = False, False
 
 #Check that it doesn't load and solve at the same time
 assert (not(bool_solve_save_linear) or not(bool_load_linear)), "Linear analysis: Problem in booleans initialisation"
 
 
-if True: #Visualisation of linear modes (dampening or amplificating regimes) 
+if False: #Visualisation of linear modes (dampening or amplificating regimes) 
     def coef_dispersion(k):
         '''Cf Oscar's paper for the formula. He does it on a 2pi-per function whereas I'm doing it
         on a L-per function. So I scale by 2pi/L as derive in L-per case <=> multiply
@@ -750,7 +677,7 @@ if bool_linear_analysis:
         h_mat_lin, _ = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
             order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
-            LQR_Control=bool_FB_Control, K=K, 
+            LQR_Control=bool_open_loop_control, K=K, 
             idx_time_start_ctrl=idx_time_start_ctrl)
         np.savetxt(title_simulation, h_mat_lin)
 
@@ -893,12 +820,12 @@ if bool_linear_analysis:
 
 ##############################################################
 
-######## Physical stuff check ######
+######## Physical properties check ######
 
 ##############################################################
+bool_mass_conservation = False
 
-
-if not bool_FB_Control:##### Mass conservation check
+if bool_mass_conservation:##### Mass conservation check
     #We integrate the height to check the mass (rho_l is constant so mass is proportionnal to the volume). 
     #Pay attention that the integration domain (domain_t or domain_x )is in the inputs otherwise there 
     #will be some dt or dx multiplicative error.

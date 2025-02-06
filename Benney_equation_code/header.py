@@ -1,5 +1,7 @@
 ### Sort of header. Regroups all the common variables and functions that are used in several .py files in the same time.
+print("\n\n****  Header: Beginning of the print  *** \n")
 
+###Imports
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -9,9 +11,10 @@ from IPython.display import HTML
 
 #### System VARIABLES: Physics & Mathematics (Values From Oscar's code)
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
-nu =  2*np.pi/L_x
-T = 200   # Dimensionless: end time of the simulation
+nu =  2*np.pi/L_x #Not the nu from the Ks equation
+T = 160   # Dimensionless: end time of the simulation
 theta = np.pi/3 #Slope angle: in rad
+print("Time T: ", T)
 print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
 
 #Set the physical and dimensionless parameters and deduce h_n and U_n (cf 08/01)
@@ -28,8 +31,21 @@ U_N = rho_l*g*(h_N**2)*np.sin(theta)/(2*mu_l)  #Speed of the Nusselt solution
 epsilon = 1/L_x
 delta = 1e-3
 
-###Some Usefull fonctions
 
+
+###Linear stability 
+Re_0 = 5/4/np.tan(theta)
+k_0_sq = Ca*8/5*(Re-Re_0)/(nu**2) #/(nu**2) as k_0**2 not k_0
+
+if k_0_sq < 0:
+    print("Linear Stability:  no Critical wave number, k_0**2 <0")
+else:
+    k_0 = np.sqrt(k_0_sq)
+    print("Linear Stability: Critical wave number k_0:", k_0)
+
+
+
+###Some Usefull fonctions
 #Function for setting the time and space steps
 def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     """
@@ -46,7 +62,7 @@ def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     if _N_x is not None: #Space, then time
         _dx = L_x/_N_x #not dx = L_x/(N_x-1): x-periodic so we don't count the last point so Lx-dx = (Nx-1)dx
         _dt = min(_dx*T/L_x , _dx/U_N/_CFL_factor) #CFL conditions
-        _N_t = 2*int(T/_dt+1) #bcs (N_t-1)dt = T
+        _N_t = int(T/_dt+1) #bcs (N_t-1)dt = T
 
         
     elif _N_t is not None: #Time, then space
@@ -128,3 +144,23 @@ def func_anim(_time_series, _anim_space_array, _anim_time_array,
     # Create the animation
     return FuncAnimation(fig, update, frames=len(_anim_time_array)-1)
 
+def print_neat_matrix(matrix):
+    """
+    Prints a NumPy array (or matrix) neatly with aligned columns.
+
+    Parameters:
+        matrix (numpy.ndarray): The NumPy array to be printed.
+    """
+    if not isinstance(matrix, np.ndarray):
+        raise ValueError("Input must be a numpy.ndarray")
+
+    # Determine the maximum width of any element for alignment
+    max_width = max(len(f"{item:.4g}") for item in matrix.flatten())
+
+    # Generate the format string for alignment
+    format_str = f"{{:>{max_width}.4g}}"
+
+    # Print each row of the matrix
+    for row in matrix:
+        formatted_row = " ".join(format_str.format(item) for item in row)
+        print(formatted_row, "\n")

@@ -265,11 +265,9 @@ if False:
 #Test on the system: x_t = u , x(t=0) = x_0. (cf doc Obsidian for details)
 A, B= 0*np.ones(1),  1*np.ones(1)
 R, Q = 1/2*np.ones(1),  1*np.ones(1)
-
 K, S, _ = ct.lqr(A, B, Q, R)
 print("Gain matrix (scalar) and the expected solution:", K, R**(-1/2))
 print("Solution of Riccati equation and the expected solution:", S, R**(1/2))
-
 
 
 def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_x):
@@ -311,46 +309,9 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
 
 
 ###### Solver for the Benney equation with Finite DIfferences & BDF scheme
-#not finished
-# def solver_BDF_explicit(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, nb_percent=5):
 
-#     ##Initial conditions & steps
-#     h_mat = np.zeros((N_t, N_x)) #Matrix of the normalised height. 
-#     #Each line is for a given time from 0 to (N_t-1)*dt
-#     L_x=N_x*dx
-#     h_mat[0,:] = IC 
-
-
-#     ## Solving
-#     print("\n## SOLVING BENNEY EQ ##")
-#     t_i = time.time()
-#     # root_method_CV_arr, root_method_errors_arr = np.zeros(N_t, dtype=bool), np.zeros(N_t)
-
-
-#     for n_t in range(N_t-1):
-#         if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
-#             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
-#                                                 _p=1, dt=dt) + F_space(h_arr)
-        
-#         else:
-#             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[(n_t+1-order_BDF_scheme):n_t+1,:],
-#                                                 _p=order_BDF_scheme, dt=dt) + F_space(h_arr)
-#         result = scipy.optimize.root(fun= fct_objective, x0= h_mat[n_t,:]) 
-        
-#         #Display of the computation progress
-#         if np.floor((100/nb_percent)*(n_t+1)/(N_t-1)) != np.floor((100/nb_percent)*(n_t)/(N_t-1)):
-#             #displays the progress of the computation every nb_percent
-#             print("Computation progress:", np.floor(100*(n_t+1)/(N_t-1)), 
-#                 "%; time passed until start: ", time.time()-t_i)
-
-#     total_computation_time = time.time()-t_i
-#     print("Total computation time:", total_computation_time)
-
-#     return h_mat
-
-def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, LQR_positive_truncated,
-               positive_ctrl,
-               Amplitudes_Ns, K, idx_time_start_ctrl, nb_percent=5):
+def solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, bool_LQR_pos_part,
+               positive_ctrl, Amplitudes_Ns, K, idx_time_start_ctrl, nb_percent=5):
 
     '''
     Output: Computes & outputs the computed numerical solution of the benney equation with normal pressure 
@@ -382,33 +343,25 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, FB_Contr
         print("\n## SOLVING UNCONTROLLED BENNEY EQ ##")
 
     for n_t in range(N_t-1):
-        if False:
-            if FB_Control:
-                if n_t>idx_time_start_ctrl: # After the starting time of the control
+        if FB_Control:
+            u_ctrl = np.zeros(K.shape[0])
+
+            if n_t>idx_time_start_ctrl: # After the starting time of the control
+                if positive_ctrl:
+                    u_ctrl = -K@h_mat[n_t, :] #Direct control on the height h
+                    U_array[n_t] = u_ctrl
+                else:
                     h_tilde = (h_mat[n_t, :]-1)/delta # Useless in the computation as we rescale again later with Ampl_Ns = delta*u_ctrl
                     u_ctrl = -K@h_tilde #Feedback ctrl with the previous state
-                    if LQR_positive_truncated:
+                    if bool_LQR_pos_part:
                         u_ctrl = np.maximum(u_ctrl, np.zeros_like(u_ctrl))
-                else:
-                    u_ctrl = np.zeros(K.shape[0])
-
-                U_array[n_t] = delta*u_ctrl #the real control on the height h=1+delta*\tilde{h}
-                Ampl_Ns = delta*u_ctrl
-            else:
-                Ampl_Ns = Amplitudes_Ns[n_t, :]
-        elif positive_ctrl:
-            u_ctrl = np.zeros(K.shape[0])
-            if n_t>idx_time_start_ctrl: # After the starting time of the control
-                u_ctrl = -K@h_mat[n_t, :] #Direct control on the height h
-                Ampl_Ns = np.zeros(K.shape[0])
-                # Ampl_Ns = u_ctrl
-                U_array[n_t] = u_ctrl
-            else:
-                Ampl_Ns = np.zeros(K.shape[0])
+                    U_array[n_t] = delta*u_ctrl #the rescalled real control on the height h=1+delta*\tilde{h}
+                    
+            Ampl_Ns = U_array[n_t]
         else:
-            Ampl_Ns = np.zeros(K.shape[0])
-            
+            Ampl_Ns = Amplitudes_Ns[n_t, :]
 
+            
 
         if n_t < order_BDF_scheme-1: #solving the first step with 1 order BDF (i.e backwards Euler)
             fct_objective = lambda h_arr: F_time(h_arr, h_arr_before=h_mat[n_t,:],
@@ -441,7 +394,9 @@ def solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time, F_space, FB_Contr
         return h_mat, Amplitudes_Ns
 
 
-def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, nb_percent=5):
+def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
+                                Amplitudes_Ns, FB_Control=False, bool_LQR_pos_part=False, positive_ctrl=False,
+                                K=None, idx_time_start_ctrl=None, nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -462,9 +417,9 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
     mat_DF_xx = mat_FD_periodic(N_x, [-2, 1, 1])/dx_2
     mat_DF_xxx = mat_FD_periodic(N_x, [3, -1, -3, 0, 1])/dx_3
     mat_DF_xxxx = mat_FD_periodic(N_x, [6, -4, -4, 1, 1])/dx_4
-    # print(mat_DF_x@h_mat[0, :])
 
-    def F_space_FD(h_arr):
+
+    def F_space_FD(h_arr, Amplitudes_Ns):
         '''
         Input: 
             - h_arr: array of height at time t+dt (Implicit method);
@@ -474,19 +429,22 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
         h_x = mat_DF_x@h_arr
         h_xx = mat_DF_xx@h_arr #no definition of h_xxx and h_xxxx bcs they are computed just once in the function
 
-        N_s_der=N_s_function(domain_x)
+        N_s_der = N_s_function(domain_x, Amplitudes_Ns)
 
         return ( h_x*(h_arr**2)*(2*np.ones_like(h_arr)-N_s_der[1]-2*h_x/np.tan(theta) + (1/Ca)*mat_DF_xxx@h_arr) 
                 - (1/3)*(h_arr**3)*(N_s_der[2]+(2/np.tan(theta))*h_xx - (1/Ca)*mat_DF_xxxx@h_arr) 
                 + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
 
 
-    return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_FD, nb_percent=nb_percent)
+    return solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_FD, 
+                        Amplitudes_Ns=Amplitudes_Ns, FB_Control=FB_Control,
+                          bool_LQR_pos_part= bool_LQR_pos_part, K=K, positive_ctrl=positive_ctrl,
+                        idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 
  
 def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
-                                Amplitudes_Ns, FB_Control, LQR_positive_truncated, positive_ctrl,
-                                K, idx_time_start_ctrl, nb_percent=5):
+                                Amplitudes_Ns, FB_Control=False, bool_LQR_pos_part=False, positive_ctrl=False,
+                                K=None, idx_time_start_ctrl=None, nb_percent=5):
     '''
     INPUTS:
         - N_x, N_t, dx, dt : space & time number of point and steps
@@ -529,8 +487,8 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
                 + (8*Re/15)*(6*(h_arr**5)*(h_x**2) + (h_arr**6)*h_xx))
 
 
-    return solver_BDF(N_x, N_t, dx, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_Spectral, 
+    return solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_Spectral, 
                         Amplitudes_Ns=Amplitudes_Ns, FB_Control=FB_Control,
-                          LQR_positive_truncated= LQR_positive_truncated, K=K, positive_ctrl=positive_ctrl,
+                          bool_LQR_pos_part= bool_LQR_pos_part, K=K, positive_ctrl=positive_ctrl,
                         idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 
