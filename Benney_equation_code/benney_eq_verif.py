@@ -81,19 +81,104 @@ else:
 
 ### Boolean variables to control what action to do. Watch out to load the good file.
 #FD method 
-bool_solve_save_FD, bool_load_FD = False, True 
+bool_solve_save_FD, bool_load_FD = True, False 
 bool_anim_FD, bool_save_anim_FD = False, False
 
 #Spectral method
-bool_solve_save_spectral, bool_load_spectral = False, False
+bool_solve_save_spectral, bool_load_spectral = True, False
 bool_anim_spectral, bool_save_anim_spectral = False, False
 
-###### Finite Difference & BDF Scheme ######
 
-### Solving & animation
 
-for  order_BDF_scheme in range(1,2):
-    print("### Order of the BDF Scheme: ", order_BDF_scheme)
+######### Solving & animation #########
+
+
+#### Spectral method & BDF Scheme
+
+for  order_BDF_scheme in range(1,7):
+    print("### Order of the BDF Scheme for Spectral method: ", order_BDF_scheme)
+    for i in range(len(space_steps_array)):
+
+        #Simulation setting
+        N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
+            _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
+        print("Modelisation parameters: (N_x, N_t) = ({N_x},{N_t})".format(N_x=N_x, N_t=N_t))
+        
+        # File name 
+        title_file = 'Benney_equation_code\\Schemes_verification\\Verif_Sp_BDF{order_BDF}_Nx{N_x}.txt'.format(
+                    order_BDF=order_BDF_scheme, N_x=N_x)
+        title_anim = 'Benney_equation_code\\Schemes_verification\\Anim_Verif_Sp_BDF{order_BDF}_Nx{N_x}.mp4'.format(
+                order_BDF = order_BDF_scheme, N_x=N_x)
+        
+         #Initial condition
+        Initial_Conditions = sincos(
+            domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
+        
+        #Open loop Control
+        array_used_points = np.arange(1, k_nb_act+1, 1)*N_x//(k_nb_act+1) #equi-spaced actuators
+        A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
+
+        if bool_solve_save_spectral:
+            #Don't save the control just the height dynamics
+            h_mat_spectral, _ = solver_BDF.solver_Benney_BDF_Spectral(
+                N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
+                order_BDF_scheme=order_BDF_scheme, Amplitudes_Ns=A_Ns, N_s_function=N_s_function,
+                nb_percent=5)
+
+            ##Saving the solution
+            np.savetxt(title_file, h_mat_spectral)
+
+    
+        if bool_load_spectral:
+            h_mat_spectral= np.loadtxt(title_file)
+
+            assert ((h_mat_spectral.shape[0]==N_t)
+                    and(h_mat_spectral.shape[1]==N_x)),"Solution loading: Problem of shape "
+
+
+        ###Animation
+        if bool_open_loop_control:
+            # #Construction of a function for plotting. Tee pressure is showed upside down and normalized. (cf Obsidian file)
+            # N_s_mat_spectral = np.array([solver_BDF.N_s_derivatives_cos_gaussian(
+            #     domain_x, ctrl_mat_spectral[n_t],omega_Ns, array_used_points, L_x)[0] for n_t in range(N_t)]) 
+            # N_s_mat_spectral[:idx_time_start_ctrl,:] = np.zeros_like(N_s_mat_spectral[:idx_time_start_ctrl,:])
+            # N_s_mat_spectral = 2-N_s_mat_spectral/np.max(np.absolute(N_s_mat_spectral)) #Normalization & upside down
+            # print("Shape N_s_mat_spectral:", N_s_mat_spectral.shape)
+
+            # array_animation_spectral = np.array([h_mat_spectral, N_s_mat_spectral])
+            # legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme), "Ns Control"]
+            pass 
+        else:
+            array_animation_spectral = np.array([h_mat_spectral])
+            legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme)]
+
+        animation_Benney = solver_BDF.func_anim(
+            _time_series=array_animation_spectral, _anim_space_array = domain_x,
+            _anim_time_array = domain_t,
+            title= "Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
+            N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
+
+            title_x_axis=r"x axis: horizontal inclined by $\theta$",
+            title_y_axis= r"y-axis (inclined by $\theta$)",
+            _legend_list = legend_list)
+        
+        if bool_anim_spectral:#Animation of benney numerical solution
+            plt.show()
+            
+        else:
+            plt.close()
+
+            
+
+        if bool_save_anim_spectral:
+            animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
+
+
+
+####Finite Difference & BDF Scheme 
+
+for  order_BDF_scheme in range(4, 7):
+    print("### Order of the BDF Scheme for FD method: ", order_BDF_scheme)
     for i in range(len(space_steps_array)):
 
         #SImulation setting
@@ -153,9 +238,11 @@ for  order_BDF_scheme in range(1,2):
             animation_Benney.save(title_anim)  #needs the program ffmpeg installed and in the PATH
 
 
-### VERIFICATION OF THE METHOD
 
-#Load the arrays
+
+
+############## Verifications #############
+
 
 def plot_difference_graph(list_h_mat, general_subplot_title, title_left_graph=None, 
                           title_right_graph=None, save_plot = False, 
@@ -254,7 +341,10 @@ def plot_difference_graph(list_h_mat, general_subplot_title, title_left_graph=No
         plt.savefig(file_name)
     plt.show()
 
-if True:
+#### FD Method
+
+#Load the arrays
+if False:
     list_h_mat_FD = [] 
     for space_step in space_steps_array:
         list_h_mat_FD.append(
@@ -262,7 +352,7 @@ if True:
                 'Benney_equation_code\\Schemes_verification\\Verif_FD_BDF{order_BDF}_Nx{N_x}.txt'
                 .format(order_BDF=order_BDF_scheme, N_x=space_step)))
         
-if True: #Plot the difference Graph
+if False: #Plot the difference Graph
     print("List of the tested space steps:", space_steps_array)
 
     #list of the FD & BDF numerical solution for different space steps
@@ -320,87 +410,7 @@ if False: #FD method Animation & Graph: Fixed step,  Compare the different BDF O
 
 
 
-
-
-
-###### SPECTRAL METHOD #########
-
-### Solving
-if bool_open_loop_control:
-    title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_Ctrl.txt'.format(
-                        BDF_order=order_BDF_scheme, N_x=N_x)
-    title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
-                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_Ctrl.mp4').format(
-                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
-else:
-    title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_NoCtrl.txt'.format(
-                        BDF_order=order_BDF_scheme, N_x=N_x)
-    title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
-                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_NoCtrl.mp4').format(
-                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
-    
-for i in range(len(space_steps_array)):
-    N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
-        _N_x=space_steps_array[i], _CFL_factor = CFL_factor)
-    dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4    
-    
-    if bool_solve_save_spectral:
-        h_mat_spectral, _ = solver_BDF.solver_Benney_BDF_Spectral(
-            N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
-            order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns)
-
-        if bool_open_loop_control:
-            ctrl_mat_spectral = -(h_mat_spectral-1)@(K.T) #Control
-            assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
-            ctrl_mat_spectral = np.concatenate((np.zeros((1, k_nb_act)), ctrl_mat_spectral[:-1,:]), axis=0) 
-            assert (ctrl_mat_spectral.shape[1] == k_nb_act), "Shape problm gain matrix"
-        ##Saving the solution
-        np.savetxt(title_file, h_mat_spectral)
-
- 
-    if bool_load_spectral:
-        h_mat_spectral= np.loadtxt(title_file)
-
-        assert ((h_mat_spectral.shape[0]==N_t)
-                and(h_mat_spectral.shape[1]==N_x)),"Solution loading: Problem of shape "
-
-
-    ###Animation
-    if bool_open_loop_control:
-        #Construction of a function for plotting. Tee pressure is showed upside down and normalized. (cf Obsidian file)
-        N_s_mat_spectral = np.array([solver_BDF.N_s_derivatives_cos_gaussian(
-            domain_x, ctrl_mat_spectral[n_t],omega_Ns, array_used_points, L_x)[0] for n_t in range(N_t)]) 
-        N_s_mat_spectral[:idx_time_start_ctrl,:] = np.zeros_like(N_s_mat_spectral[:idx_time_start_ctrl,:])
-        N_s_mat_spectral = 2-N_s_mat_spectral/np.max(np.absolute(N_s_mat_spectral)) #Normalization & upside down
-        print("Shape N_s_mat_spectral:", N_s_mat_spectral.shape)
-        
-    if bool_anim_spectral:#Animation of benney numerical solution
-        if bool_open_loop_control:
-            array_animation_spectral = np.array([h_mat_spectral, N_s_mat_spectral])
-            legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme), "Ns Control"]
-        else:
-            array_animation_spectral = np.array([h_mat_spectral])
-            legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme)]
-
-        animation_Benney = solver_BDF.func_anim(
-            _time_series=array_animation_spectral, _anim_space_array = domain_x,
-            _anim_time_array = domain_t,
-            title= "Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
-            N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
-
-            title_x_axis=r"x axis: horizontal inclined by $\theta$",
-            title_y_axis= r"y-axis (inclined by $\theta$)",
-            _legend_list = legend_list)
-        plt.show()
-
-        
-
-    if bool_anim_spectral and bool_save_anim_spectral:
-        animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
-
-
-
-###### Verification of Spectral Method
+####Spectral Method 
 
 #Load the arrays
 print("List of the tested space steps:", space_steps_array)
@@ -421,7 +431,6 @@ if False: #Animation & Graph Spectral method: Fixed BDF order, compare the diffe
         save_plot=True,
         regression_lin=True,
         file_name="Benney_equation_code\\BDF_order_{}_Spectral_difference_graph".format(order_BDF_scheme))
-
 
 if False: #Spectral method Animation & Graph: Fixed step,  Compare the different BDF Orders
     #Plot
@@ -466,6 +475,8 @@ if False: #Spectral method Animation & Graph: Fixed step,  Compare the different
 
     animation_BDF_Spectral.save(
         'Benney_equation_code\\Spectral_BDF_order_comparison_order_1236_Nx_{}.mp4'.format(N_x_plot))  
+
+
 
 
 
