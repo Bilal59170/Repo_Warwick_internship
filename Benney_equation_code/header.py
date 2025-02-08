@@ -45,7 +45,11 @@ else:
 
 
 
-###Some Usefull fonctions
+###Some configurations and Usefull fonctions
+
+plt.rc('font', size=13) # Set the font size for all the plots 
+
+
 #Function for setting the time and space steps
 def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     """
