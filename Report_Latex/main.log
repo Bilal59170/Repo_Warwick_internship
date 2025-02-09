@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  8 FEB 2025 18:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  9 FEB 2025 11:56
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -684,30 +684,44 @@ Package: xparse 2024-08-16 L3 Experimental document command parser
 )
 Package: blx-case-expl3 2024/03/21 v3.20 expl3 case changing code for biblatex
 ))
+   defining Unicode char U+2212 (decimal 8722)
 \@quotelevel=\count449
 \@quotereset=\count450
+ (main.aux
 
-No file main.aux.
+LaTeX Warning: Label `fig:KS_eq_nu_inf_1' multiply defined.
+
+
+LaTeX Warning: Label `fig:image1' multiply defined.
+
+
+LaTeX Warning: Label `fig:image2' multiply defined.
+
+
+LaTeX Warning: Label `eq_pole_placement' multiply defined.
+
+)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -764,7 +778,8 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 17.
+Package hyperref Info: Link coloring ON on input line 23.
+ (main.out) (main.out)
 \@outlinefile=\write5
 \openout5 = `main.out'.
 
@@ -781,12 +796,12 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
  (main.bbl)
-Package biblatex Info: Reference section=0 on input line 17.
-Package biblatex Info: Reference segment=0 on input line 17.
-<cartoon_thin_film.png, id=6, 1027.84pt x 1027.84pt>
+Package biblatex Info: Reference section=0 on input line 23.
+Package biblatex Info: Reference segment=0 on input line 23.
+<cartoon_thin_film.png, id=158, 1027.84pt x 1027.84pt>
 File: cartoon_thin_film.png Graphic file (type png)
 <use cartoon_thin_film.png>
-Package pdftex.def Info: cartoon_thin_film.png  used on input line 42.
+Package pdftex.def Info: cartoon_thin_film.png  used on input line 48.
 (pdftex.def)             Requested size: 177.42868pt x 177.42805pt.
 
 
@@ -798,327 +813,196 @@ Package pdftex.def Info: cartoon_thin_film.png  used on input line 42.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.60 \newpage
-              [1]
-No file main.toc.
+l.66 \newpage
+              [1] (main.toc
+LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
+ (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
+ (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+
+[2])
 \tf@toc=\write6
 \openout6 = `main.toc'.
 
 
 
-[2]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
- (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
- (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
-
- []
-
-
-LaTeX Warning: Citation 'Susana_thesis' on page 3 undefined on input line 70.
-
-
-LaTeX Warning: Citation 'Thompson_2016_prop_ctrl' on page 3 undefined on input line 70.
-
-
-LaTeX Warning: Citation 'holroyd2023linearquadraticregulationcontrol' on page 3 undefined on input line 70.
-
-
-LaTeX Warning: Citation 'holroyd2024stabilisationfallingliquidfilms' on page 3 undefined on input line 70.
-
-
-LaTeX Warning: Citation 'Experimental_DNS_Reduced_order_modelling_paper' on page 3 undefined on input line 71.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 70--73
-
- []
-
-
-LaTeX Warning: Citation 'Dewetting_Ojiako' on page 3 undefined on input line 74.
-
-
-LaTeX Warning: Citation 'Moving_pressure_source' on page 3 undefined on input line 75.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 74--77
-
- []
-
-
-
 [3]
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
 
-LaTeX Warning: Reference `Section_KS_eq' on page 4 undefined on input line 78.
-
-
-LaTeX Warning: Citation 'Scheme_for_KS' on page 4 undefined on input line 78.
+ []
 
 
-LaTeX Warning: Reference `Section_Benney_eq' on page 4 undefined on input line 78.
+Underfull \hbox (badness 10000) in paragraph at lines 76--79
+
+ []
 
 
-LaTeX Warning: Reference `Section_Numerical_simu' on page 4 undefined on input line 78.
-
-
-LaTeX Warning: Reference `Section_Control' on page 4 undefined on input line 78.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 78--80
+Underfull \hbox (badness 10000) in paragraph at lines 80--83
 
  []
 
 
 
 [4]
+Underfull \hbox (badness 10000) in paragraph at lines 84--86
+
+ []
+
+
 
 [5]
-
-LaTeX Warning: Citation 'Shiv_Michelson_KS_eq' on page 6 undefined on input line 96.
-
-
-LaTeX Warning: Citation 'Kuramoto_KS_eq' on page 6 undefined on input line 96.
-
-
-LaTeX Warning: Citation 'Susana_thesis' on page 6 undefined on input line 96.
-
-
-LaTeX Warning: Reference `Section_Benney_eq' on page 6 undefined on input line 110.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 112--114
+Underfull \hbox (badness 10000) in paragraph at lines 118--120
 
  []
 
 
 
 [6]
-
-LaTeX Warning: Citation 'Scheme_for_KS' on page 7 undefined on input line 154.
-
-
-LaTeX Warning: Reference `KS_eq_2pi' on page 7 undefined on input line 158.
-
-
-LaTeX Warning: Citation 'Scheme_for_KS' on page 7 undefined on input line 169.
-
-
-LaTeX Warning: Citation 'KS_scheme_C_A' on page 7 undefined on input line 169.
-
-
-Overfull \hbox (34.50923pt too wide) in paragraph at lines 169--171
-[]\OT1/cmr/m/n/12 We added the $[]\OML/cmm/m/it/12 u$ \OT1/cmr/m/n/12 term be-cause we re-pro-duced the scheme con-structed in [[]].
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 169--171
+Underfull \hbox (badness 10000) in paragraph at lines 175--177
 
  []
-
-
-LaTeX Warning: Reference `KS_eq_2pi' on page 7 undefined on input line 172.
 
 
 
 [7]
 
-LaTeX Warning: Reference `KS_eq_2pi' on page 8 undefined on input line 184.
-
-
-
 [8]
-
-LaTeX Warning: Reference `ODE_KS' on page 9 undefined on input line 217.
-
-
-LaTeX Warning: Reference `ODE_KS' on page 9 undefined on input line 230.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 230--232
+Underfull \hbox (badness 10000) in paragraph at lines 236--238
 
  []
 
 
-LaTeX Warning: Reference `ODE_KS' on page 9 undefined on input line 238.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 245--248
+Underfull \hbox (badness 10000) in paragraph at lines 251--254
 
  []
 
 
-LaTeX Warning: Citation 'Scheme_for_KS' on page 9 undefined on input line 249.
+Underfull \hbox (badness 10000) in paragraph at lines 258--260
 
-
-LaTeX Warning: Citation 'KS_scheme_C_A' on page 9 undefined on input line 249.
-
-
-Overfull \hbox (46.52933pt too wide) in paragraph at lines 249--250
-[]\OT1/cmr/bx/n/12 The nu-mer-i-cal Scheme. \OT1/cmr/m/n/12 We de-scribe now the nu-mer-i-cal scheme used by [[]].
- []
-
-
-Overfull \hbox (39.00218pt too wide) in paragraph at lines 249--250
-\OT1/cmr/m/n/12 They used a Implicit-Explicit multi-step method in-tro-duced and an-a-lyzed in [[]]
  []
 
 
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 252--254
+Underfull \hbox (badness 10000) in paragraph at lines 276--278
 
  []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 270--272
-
- []
-
-
-LaTeX Warning: Reference `KS_computation_numerics' on page 10 undefined on input line 292.
 
 
 
 [10]
-
-LaTeX Warning: Reference `u_Fourier_serie' on page 11 undefined on input line 316.
-
-
-LaTeX Warning: Reference `fig:KS_eq_lambda_growing_and_dampening' on page 11 undefined on input line 318.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 318--320
+Underfull \hbox (badness 10000) in paragraph at lines 324--326
 
  []
 
-<KS_eq/plot_dispersion_nu_1_1-4.png, id=95, 929.3922pt x 364.9635pt>
+<KS_eq/plot_dispersion_nu_1_1-4.png, id=320, 929.3922pt x 364.9635pt>
 File: KS_eq/plot_dispersion_nu_1_1-4.png Graphic file (type png)
 <use KS_eq/plot_dispersion_nu_1_1-4.png>
-Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 322.
+Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 328.
 (pdftex.def)             Requested size: 443.57848pt x 174.18922pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 329.
+(hyperref)                removing `math shift' on input line 335.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\nu' on input line 329.
+(hyperref)                removing `\nu' on input line 335.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\geq' on input line 329.
+(hyperref)                removing `\geq' on input line 335.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 329.
+(hyperref)                removing `math shift' on input line 335.
 
 
 
 [11]
-<KS_eq/plot_exp_decay.png, id=106, 456.7464pt x 342.5598pt>
+<KS_eq/plot_exp_decay.png, id=329, 456.7464pt x 342.5598pt>
 File: KS_eq/plot_exp_decay.png Graphic file (type png)
 <use KS_eq/plot_exp_decay.png>
-Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 358.
+Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 364.
 (pdftex.def)             Requested size: 199.60895pt x 149.70749pt.
-<KS_eq/plot_decay_nu_1_k_1png.png, id=107, 476.982pt x 342.5598pt>
+<KS_eq/plot_decay_nu_1_k_1png.png, id=330, 476.982pt x 342.5598pt>
 File: KS_eq/plot_decay_nu_1_k_1png.png Graphic file (type png)
 <use KS_eq/plot_decay_nu_1_k_1png.png>
-Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 366.
+Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 372.
 (pdftex.def)             Requested size: 199.60895pt x 143.35664pt.
 
 
 [12 <./KS_eq/plot_dispersion_nu_1_1-4.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 378--381
+Underfull \hbox (badness 10000) in paragraph at lines 384--387
 
  []
 
-<KS_eq/plot_lambda_nu.png, id=115, 424.9476pt x 346.896pt>
+<KS_eq/plot_lambda_nu.png, id=337, 424.9476pt x 346.896pt>
 File: KS_eq/plot_lambda_nu.png Graphic file (type png)
 <use KS_eq/plot_lambda_nu.png>
-Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 386.
+Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 392.
 (pdftex.def)             Requested size: 221.78923pt x 181.0539pt.
-LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 387.
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 393.
 (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/base\omscmr.fd
 File: omscmr.fd 2024/11/19 v2.5n Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 387.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 393.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<KS_eq/KS_extrema_Fourier_coef.png, id=116, 903.375pt x 317.988pt>
+<KS_eq/KS_extrema_Fourier_coef.png, id=338, 903.375pt x 317.988pt>
 File: KS_eq/KS_extrema_Fourier_coef.png Graphic file (type png)
 <use KS_eq/KS_extrema_Fourier_coef.png>
-Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 394.
+Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 400.
 (pdftex.def)             Requested size: 443.57848pt x 156.14056pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-LaTeX Warning: Reference `fig:KS_eq_nu_inf_1' on page 13 undefined on input line 400.
-
-
 
 [13 <./KS_eq/plot_exp_decay.png> <./KS_eq/plot_decay_nu_1_k_1png.png>]
 
-LaTeX Warning: Citation 'Susana_thesis' on page 14 undefined on input line 411.
-
-
-
 [14 <./KS_eq/plot_lambda_nu.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 428--430
+Underfull \hbox (badness 10000) in paragraph at lines 434--436
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 432--434
+Underfull \hbox (badness 10000) in paragraph at lines 438--440
 
  []
 
 
 
 [15 <./KS_eq/KS_extrema_Fourier_coef.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 462--464
+Underfull \hbox (badness 10000) in paragraph at lines 468--470
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 480--481
+Underfull \hbox (badness 10000) in paragraph at lines 486--487
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 504--506
+Underfull \hbox (badness 10000) in paragraph at lines 510--512
 
  []
 
 
 
 [16]
-Underfull \hbox (badness 10000) in paragraph at lines 512--515
+Underfull \hbox (badness 10000) in paragraph at lines 518--521
 
  []
-
-
-LaTeX Warning: Reference `eq KBC' on page 17 undefined on input line 554.
-
-
-LaTeX Warning: Reference `eq NavierStokes1' on page 17 undefined on input line 554.
-
-
-LaTeX Warning: Reference `eq_no_slip' on page 17 undefined on input line 554.
-
-
-LaTeX Warning: Citation 'A_Thompson_FLF_blowing_suction' on page 17 undefined on input line 564.
 
 
 
@@ -1126,148 +1010,87 @@ LaTeX Warning: Citation 'A_Thompson_FLF_blowing_suction' on page 17 undefined on
 
 [18]
 
-LaTeX Warning: Citation 'Moving_pressure_source' on page 19 undefined on input line 624.
-
-
-LaTeX Warning: Citation 'Dewetting_Ojiako' on page 19 undefined on input line 625.
-
-
-Overfull \hbox (26.75102pt too wide) in paragraph at lines 622--627
-\OT1/cmr/m/n/12 This ap-prox-i-ma-tion has been made by the pa-per of D.Lunz & al. [[]]
- []
-
-
-
 [19]
-
-LaTeX Warning: Reference `Benney_eq_ctrl' on page 20 undefined on input line 676.
-
-
-LaTeX Warning: Citation 'Thompson_2016_prop_ctrl' on page 20 undefined on input line 703.
-
-
 
 [20]
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 728--730
+Underfull \hbox (badness 10000) in paragraph at lines 734--736
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 741--743
+Underfull \hbox (badness 10000) in paragraph at lines 747--749
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 748--750
+Underfull \hbox (badness 10000) in paragraph at lines 754--756
 
  []
 
 
 
 [22]
-Underfull \hbox (badness 10000) in paragraph at lines 766--769
+Underfull \hbox (badness 10000) in paragraph at lines 772--775
 
  []
 
 
-LaTeX Warning: Reference `Benney_eq_ctrl' on page 23 undefined on input line 781.
-
-
-LaTeX Warning: Reference `ODE_KS' on page 23 undefined on input line 781.
-
-
-LaTeX Warning: Reference `Benney_ctrl_flux' on page 23 undefined on input line 781.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 783--785
+Underfull \hbox (badness 10000) in paragraph at lines 789--791
 
  []
 
 
 
 [23]
-Underfull \hbox (badness 10000) in paragraph at lines 797--799
+Underfull \hbox (badness 10000) in paragraph at lines 803--805
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 812--813
+Underfull \hbox (badness 10000) in paragraph at lines 818--819
 
  []
 
 
 
 [24]
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:831: LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.831 
-      
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 846--848
+Underfull \hbox (badness 10000) in paragraph at lines 851--853
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 863--865
+Underfull \hbox (badness 10000) in paragraph at lines 868--870
 
  []
 
 
 
 [25]
-
-LaTeX Warning: Reference `time_step' on page 26 undefined on input line 871.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 871--873
+Underfull \hbox (badness 10000) in paragraph at lines 876--878
 
  []
 
 
-LaTeX Warning: Reference `num_scaling_conditions' on page 26 undefined on input line 885.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 885--887
+Underfull \hbox (badness 10000) in paragraph at lines 890--892
 
  []
 
-
-LaTeX Warning: Reference `Benney_eq' on page 26 undefined on input line 889.
-
-
-LaTeX Warning: Reference `fig:BDF_plot_128_512' on page 26 undefined on input line 892.
-
-
-LaTeX Warning: Reference `fig:BDF_plot_1024' on page 26 undefined on input line 892.
-
-
-LaTeX Warning: Reference `fig:BDF_plot_1024' on page 26 undefined on input line 892.
-
-<Verif_scheme/plot_FD_BDF_Nx_128.png, id=236, 462.528pt x 346.896pt>
+<Verif_scheme/plot_FD_BDF_Nx_128.png, id=469, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_128.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_128.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 900.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 905.
 (pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
-<Verif_scheme/plot_FD_BDF_Nx_512.png, id=237, 462.528pt x 346.896pt>
+<Verif_scheme/plot_FD_BDF_Nx_512.png, id=470, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_512.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_512.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 908.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 913.
 (pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
-<Verif_scheme/plot_FD_BDF_Nx_1024.png, id=238, 462.528pt x 346.896pt>
+<Verif_scheme/plot_FD_BDF_Nx_1024.png, id=471, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_1024.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_1024.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 918.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 923.
 (pdftex.def)             Requested size: 332.68385pt x 249.52672pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1275,58 +1098,34 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [26]
-
-LaTeX Warning: Reference `eq_value_variables_num_verif' on page 27 undefined on input line 940.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 938--942
+Underfull \hbox (badness 10000) in paragraph at lines 943--947
 
  []
 
 
 
 [27 <./Verif_scheme/plot_FD_BDF_Nx_128.png> <./Verif_scheme/plot_FD_BDF_Nx_512.png>]
-
-LaTeX Warning: Reference `fig:Convergence_plot_BDF_4_Sp' on page 28 undefined on input line 943.
-
-
-LaTeX Warning: Reference `h_diff_convergence_rate' on page 28 undefined on input line 943.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 943--945
+Underfull \hbox (badness 10000) in paragraph at lines 948--950
 
  []
 
-<Verif_scheme/Convergence_graph_Sp_method.png, id=257, 947.4597pt x 359.9046pt>
+<Verif_scheme/Convergence_graph_Sp_method.png, id=493, 947.4597pt x 359.9046pt>
 File: Verif_scheme/Convergence_graph_Sp_method.png Graphic file (type png)
 <use Verif_scheme/Convergence_graph_Sp_method.png>
-Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 948.
+Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 953.
 (pdftex.def)             Requested size: 443.57848pt x 168.50166pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 961--963
+Underfull \hbox (badness 10000) in paragraph at lines 966--968
 
  []
 
-<Verif_scheme/Comparison_scheme_BDF4.png, id=258, 952.5186pt x 357.0138pt>
+<Verif_scheme/Comparison_scheme_BDF4.png, id=494, 952.5186pt x 357.0138pt>
 File: Verif_scheme/Comparison_scheme_BDF4.png Graphic file (type png)
 <use Verif_scheme/Comparison_scheme_BDF4.png>
-Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 969.
+Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 974.
 (pdftex.def)             Requested size: 443.57848pt x 166.26027pt.
 
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:975: LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.975 
-      
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 976--979
+Underfull \hbox (badness 10000) in paragraph at lines 980--983
 
  []
 
@@ -1335,88 +1134,58 @@ Underfull \hbox (badness 10000) in paragraph at lines 976--979
 [28 <./Verif_scheme/plot_FD_BDF_Nx_1024.png>]
 
 [29 <./Verif_scheme/Convergence_graph_Sp_method.png> <./Verif_scheme/Comparison_scheme_BDF4.png>]
-
-LaTeX Warning: Reference `Benney_ctrl_flux' on page 30 undefined on input line 985.
-
-
-LaTeX Warning: Reference `mass_variation' on page 30 undefined on input line 996.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 996--998
+Underfull \hbox (badness 10000) in paragraph at lines 1000--1002
 
  []
 
 
 
 [30]
-
-LaTeX Warning: Reference `Benney_ctrl_linearised' on page 31 undefined on input line 1008.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1025--1028
+Underfull \hbox (badness 10000) in paragraph at lines 1029--1032
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1039--1040
+Underfull \hbox (badness 10000) in paragraph at lines 1043--1044
 
  []
 
 
-LaTeX Warning: Reference `sub_section_link_ctr_FLF' on page 31 undefined on input line 1046.
-
-
-LaTeX Warning: Citation 'experimental_paper' on page 31 undefined on input line 1046.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1045--1048
+Underfull \hbox (badness 10000) in paragraph at lines 1049--1052
 
  []
 
 
 
 [31]
-Overfull \hbox (38.11884pt too wide) in paragraph at lines 1065--1067
+Overfull \hbox (38.11884pt too wide) in paragraph at lines 1069--1071
 []$\OT1/cmr/m/n/12 . There-fore, the prob-lem can be fi-nally rewrit-ten as a $[]$: 
  []
 
-LaTeX Font Info:    Trying to load font information for U+euf on input line 1070.
+LaTeX Font Info:    Trying to load font information for U+euf on input line 1074.
 (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
-
-LaTeX Warning: Reference `h_linear_decomposition' on page 32 undefined on input line 1085.
-
-
-LaTeX Warning: Reference `Benney_ctrl_linearised' on page 32 undefined on input line 1085.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1086--1088
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1092
 
  []
 
 
 
 [32]
-Underfull \hbox (badness 10000) in paragraph at lines 1098--1100
+Underfull \hbox (badness 10000) in paragraph at lines 1102--1104
 
  []
 
 
-LaTeX Warning: Reference `Ctrl_framework_continuous' on page 33 undefined on input line 1120.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1119--1121
+Underfull \hbox (badness 10000) in paragraph at lines 1123--1125
 
  []
-
-
-LaTeX Warning: Reference `Ctrl_framework_discrete' on page 33 undefined on input line 1130.
 
 
 
 [33]
-Underfull \hbox (badness 10000) in paragraph at lines 1144--1146
+Underfull \hbox (badness 10000) in paragraph at lines 1148--1150
 
  []
 
@@ -1424,373 +1193,149 @@ Underfull \hbox (badness 10000) in paragraph at lines 1144--1146
 
 [34]
 
-LaTeX Warning: Citation 'A_Thompson_FLF_blowing_suction' on page 35 undefined on input line 1190.
-
-
-Overfull \hbox (105.10217pt too wide) in paragraph at lines 1190--1191
-\OT1/cmr/m/n/12 with the dis-crete cost c by solv-ing a ma-trix equa-tion. We know from [[]]
- []
-
-
-LaTeX Warning: Reference `eq_Riccati_eq' on page 35 undefined on input line 1201.
-
-
-LaTeX Warning: Citation 'holroyd2023linearquadraticregulationcontrol' on page 35 undefined on input line 1201.
-
-
-
 [35]
-Underfull \hbox (badness 10000) in paragraph at lines 1213--1215
+Underfull \hbox (badness 10000) in paragraph at lines 1217--1219
 
  []
-
-
-LaTeX Warning: Citation 'Thompson_2016_prop_ctrl' on page 36 undefined on input line 1216.
-
-
-LaTeX Warning: Reference `Benney_ctrl_linearised' on page 36 undefined on input line 1216.
-
-
-LaTeX Warning: Reference `N_s_prop_ctrl' on page 36 undefined on input line 1216.
-
-
-LaTeX Warning: Reference `subsubsection_linear_theory' on page 36 undefined on input line 1222.
-
-
-LaTeX Warning: Citation 'Thompson_2016_prop_ctrl' on page 36 undefined on input line 1236.
-
-
-Overfull \hbox (52.44432pt too wide) in paragraph at lines 1236--1237
-[]\OT1/cmr/m/n/12 In com-par-i-son, the co-ef-fi-cient $\OML/cmm/m/it/12 $ \OT1/cmr/m/n/12 for blow-ing and suc-tion in pa-per [[]]
- []
-
-
-LaTeX Warning: Reference `eq_value_variables_num_verif' on page 36 undefined on input line 1241.
 
 
 
 [36]
 
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1248: LaTeX Error: File `' not found.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.1248 \includegraphics[width=1\textwidth]{}
-                                            
-I could not locate the file with any of these extensions:
-.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+LaTeX Warning: Reference `fig:prop_ctrl_dispersion' on page 37 undefined on input line 1258.
 
 
-LaTeX Warning: Reference `fig:prop_ctrl_dispersion' on page 37 undefined on input line 1253.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1253--1255
+Underfull \hbox (badness 10000) in paragraph at lines 1258--1260
 
  []
-
-
-LaTeX Warning: Citation 'Thompson_2016_prop_ctrl' on page 37 undefined on input line 1256.
-
-
-LaTeX Warning: Reference `eq_discrete_ctrl_FLF' on page 37 undefined on input line 1258.
-
-
-LaTeX Warning: Reference `eq_pole_placement' on page 37 undefined on input line 1263.
 
 
 
 [37]
-
-LaTeX Warning: Reference `eq_discrete_ctrl_FLF' on page 38 undefined on input line 1280.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1301--1303
+Underfull \hbox (badness 10000) in paragraph at lines 1306--1308
 
  []
 
 
-LaTeX Warning: Reference `expo_ctrl_system' on page 38 undefined on input line 1304.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1304--1306
+Underfull \hbox (badness 10000) in paragraph at lines 1309--1311
 
  []
 
 
-LaTeX Warning: Citation 'pos_ctrl_paper' on page 38 undefined on input line 1320.
+Underfull \hbox (badness 10000) in paragraph at lines 1333--1336
+
+ []
 
 
 
 [38]
-Underfull \hbox (badness 10000) in paragraph at lines 1328--1331
-
- []
-
-
-LaTeX Warning: Citation 'pos_ctrl_paper' on page 39 undefined on input line 1334.
-
-
-LaTeX Warning: Reference `pos_ctrl_system' on page 39 undefined on input line 1356.
-
-
-LaTeX Warning: Reference `linear_inequalities_pos_ctrl' on page 39 undefined on input line 1359.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1359--1361
+Underfull \hbox (badness 10000) in paragraph at lines 1364--1366
 
  []
 
 
 
 [39]
-Underfull \hbox (badness 10000) in paragraph at lines 1383--1385
+Underfull \hbox (badness 10000) in paragraph at lines 1388--1390
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1400--1401
+Underfull \hbox (badness 10000) in paragraph at lines 1405--1406
 
  []
-
-
-LaTeX Warning: Reference `opti_problem_pos_ctrl' on page 40 undefined on input line 1403.
 
 
 
 [40]
 
 [41]
-Underfull \hbox (badness 10000) in paragraph at lines 1450--1452
+Underfull \hbox (badness 10000) in paragraph at lines 1455--1457
 
  []
 
 
-Overfull \hbox (27.51035pt too wide) detected at line 1458
+Overfull \hbox (27.51035pt too wide) detected at line 1463
 [][][][]
  []
 
 
-Overfull \hbox (27.75941pt too wide) detected at line 1466
+Overfull \hbox (27.75941pt too wide) detected at line 1471
 [][][][]
  []
 
 
-LaTeX Warning: Reference `eq NavierStokes1' on page 42 undefined on input line 1471.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1476--1479
+Underfull \hbox (badness 10000) in paragraph at lines 1481--1484
 
  []
 
 
 
 [42]
-Overfull \hbox (0.69704pt too wide) in paragraph at lines 1487--1488
+Overfull \hbox (0.69704pt too wide) in paragraph at lines 1492--1493
 []\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
  []
 
 
-LaTeX Warning: Reference `eq DBC1_Normal' on page 43 undefined on input line 1490.
+LaTeX Warning: Reference `eq DBC1_Normal' on page 43 undefined on input line 1495.
 
 
-LaTeX Warning: Reference `eq DBC_Tangential' on page 43 undefined on input line 1490.
+LaTeX Warning: Reference `eq DBC_Tangential' on page 43 undefined on input line 1495.
 
 
-Overfull \hbox (24.49733pt too wide) in paragraph at lines 1497--1498
+Overfull \hbox (24.49733pt too wide) in paragraph at lines 1502--1503
 []\OT1/cmr/m/n/12 with $\OML/cmm/m/it/12 ^^T \OT1/cmr/m/n/12 = []\OML/cmm/m/it/12 :[]$ \OT1/cmr/m/n/12 and $[] = [](\OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OT1/cmr/m/n/12 1)$ the nor-mal points$[]$
  []
 
 
-LaTeX Warning: Reference `eq DBC Kaliadasis' on page 43 undefined on input line 1508.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1503--1509
+Underfull \hbox (badness 10000) in paragraph at lines 1508--1514
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1503--1509
+Underfull \hbox (badness 10000) in paragraph at lines 1508--1514
 
  []
 
 
-Overfull \hbox (90.98366pt too wide) detected at line 1520
+Overfull \hbox (90.98366pt too wide) detected at line 1525
 []
  []
 
 
 
 [43]
-Overfull \hbox (43.28723pt too wide) detected at line 1537
+Overfull \hbox (43.28723pt too wide) detected at line 1542
 [][][][][]
  []
 
 
-LaTeX Warning: Reference `eq DBC_Normal Control' on page 44 undefined on input line 1539.
+LaTeX Warning: Reference `eq DBC_Normal Control' on page 44 undefined on input line 1544.
 
 
-LaTeX Warning: Reference `eq DBC Kaliadasis' on page 44 undefined on input line 1546.
-
-
-Overfull \hbox (76.92438pt too wide) detected at line 1556
+Overfull \hbox (76.92438pt too wide) detected at line 1561
 []
  []
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Extra }, or forgotten \right.
-<template> }
-            $}\ifmeasuring@ \savefieldlength@ \fi \set@field \hfil \endtempl...
-l.1564 \end{align*}
-                   
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing \right. inserted.
-<inserted text> 
-                \right .
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing } inserted.
-<inserted text> 
-                }
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing } inserted.
-<inserted text> 
-                }
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Extra \right.
-<argument> ...-h_{,x}h_{,y}(v_{,z}+w_{,y})\right ]
-                                                   = -T_{sx}. 
-l.1564 \end{align*}
-                   
-I'm ignoring a \right that had no matching \left.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing { inserted.
-<inserted text> 
-                {
-l.1564 \end{align*}
-                   
-I've put in what seems to be necessary to fix
-the current column of the current alignment.
-Try to go on, since this might almost work.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Extra }, or forgotten \right.
-<template> }
-            $}\ifmeasuring@ \savefieldlength@ \fi \set@field \hfil \endtempl...
-l.1564 \end{align*}
-                   
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing \right. inserted.
-<inserted text> 
-                \right .
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing } inserted.
-<inserted text> 
-                }
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing } inserted.
-<inserted text> 
-                }
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Extra \right.
-<argument> ...-h_{,x}h_{,y}(v_{,z}+w_{,y})\right ]
-                                                   = -T_{sx}. 
-l.1564 \end{align*}
-                   
-I'm ignoring a \right that had no matching \left.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing \endgroup inserted.
-<inserted text> 
-                \endgroup 
-l.1564 \end{align*}
-                   
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Misplaced \omit.
-\math@cr@@@ ...@ \@ne \add@amps \maxfields@ \omit 
-                                                  \kern -\alignsep@ \iftag@ ...
-l.1564 \end{align*}
-                   
-I expect to see \omit only after tab marks or the \cr of
-an alignment. Proceed, and I'll ignore this case.
-
-c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex:1564: Missing { inserted.
-<inserted text> 
-                {
-l.1564 \end{align*}
-                   
-I've put in what seems to be necessary to fix
-the current column of the current alignment.
-Try to go on, since this might almost work.
-
-
-LaTeX Warning: Reference `eq DBC_Control' on page 44 undefined on input line 1567.
 
 
 
 [44]
 
-LaTeX Warning: Empty bibliography on input line 1583.
+[45]
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 1591--1591
+[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
+ []
+
+
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 1591--1591
+[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
+ []
 
 
 
-[45] (main.aux)
+[46]
+
+[47] (main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1800,37 +1345,26 @@ L3 programming layer <2025-01-18>
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  0F574C78BFC361EFF355B0FD4DDA0599;7183.
-
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                main
-(biblatex)                and rerun LaTeX afterwards.
-
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 0F574C78BFC361EFF355B0FD4DDA0599;7183.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 29694 strings out of 473530
- 568848 string characters out of 5710923
- 1356487 words of memory out of 5000000
- 52320 multiletter control sequences out of 15000+600000
- 572335 words of font info for 87 fonts, out of 8000000 for 9000
+ 29808 strings out of 473530
+ 573748 string characters out of 5710923
+ 1362519 words of memory out of 5000000
+ 52409 multiletter control sequences out of 15000+600000
+ 572636 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,15n,91p,2318b,1163s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\Bilal_BM_user\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/euler/eufm10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (46 pages, 1655015 bytes).
+ 84i,15n,91p,2318b,1473s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\Bilal_BM_user\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/euler/eufm10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on main.pdf (48 pages, 1724534 bytes).
 PDF statistics:
- 551 PDF objects out of 1000 (max. 8388607)
- 197 named destinations out of 1000 (max. 500000)
- 68 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 848 PDF objects out of 1000 (max. 8388607)
+ 213 named destinations out of 1000 (max. 500000)
+ 372 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -11,8 +11,14 @@
 \usepackage[colorlinks]{hyperref}
 \usepackage{graphicx}
 \usepackage{subcaption}
+
+%Bibliography
+\bibliographystyle{plain}
 \usepackage{biblatex}
 \addbibresource{bibliography.bib}
+
+
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}} %To avoid some error with the - symbol
 
 \begin{document}
 
@@ -826,8 +832,7 @@ Hence, in python (with a little change in the code notation):
     mat_DF_xxxx = mat_FD_periodic(N_x, [6, -4, -4, 1, 1])/dx_4
 \end{verbatim}
 
-
-\\
+\vspace{0.5cm}
 
 As we suppose h to be L-periodic in space, we also test a \underline{spectral method} as a spatial scheme. Let us decompose h into its Fourier series: $$h(x, t) = \sum_{n\in \mathbb{Z}} c_n(t)e^{inx}$$
 with $$\forall n \in \mathbb{Z}, \quad c_n(t) = \frac{1}{2\pi}\int_{-\pi}^{\pi}h(x,t) e^{-inx}dx.$$
@@ -970,8 +975,7 @@ for the experimentation in the upcoming control part.
     \caption{Comparison between the Spectral and FD methods with $N_{BDF}=4.$ We see that the $L^{\infty}$ norm of the difference when $N_x=512$ is around $1.10^{-2}$ and $1.10^{-3}$ which is satisfactory for a final state of amplitude $3.10^{-1}$. }
     \label{fig:enter-label}
 \end{figure}
-
-\\
+\vspace{0.5cm}
 
 \textbf{Physical properties.}
 We check here some physical properties.
@@ -1244,11 +1248,12 @@ $$\alpha_{AJ} = \frac{24}{15}(5-0.72) = 6.9, \quad \alpha_{BS} = \frac{16\times 
 
 The blowing and suction actuation seem to be far more
 
-\begin{figure}[h]
-\includegraphics[width=1\textwidth]{}
-\caption{Plots of the $\mathfrak{R}(\lambda(k))$ with $\alpha = 0$ and $\alpha = \alpha_{AJ} $ in the left plot, and $\alpha = 0$ and $\alpha = \alpha_{BS}$ in the right plot. We can see that while the curve is just shifted down the y-axis in the blowing and suction case, its curvature is changed in the air jet case. It is expected as the $\alpha$ coefficient appears as a second order term (i.e in $k^2$) so it has an influence on the second derivative of $\mathfrak{R}(\lambda(k))$, so on its curvature.}
-\label{fig:prop_ctrl_dispersion}
-\end{figure}
+
+% \begin{figure}[h]
+% \includegraphics[width=1\textwidth]{}
+% \caption{Plots of the $\mathfrak{R}(\lambda(k))$ with $\alpha = 0$ and $\alpha = \alpha_{AJ} $ in the left plot, and $\alpha = 0$ and $\alpha = \alpha_{BS}$ in the right plot. We can see that while the curve is just shifted down the y-axis in the blowing and suction case, its curvature is changed in the air jet case. It is expected as the $\alpha$ coefficient appears as a second order term (i.e in $k^2$) so it has an influence on the second derivative of $\mathfrak{R}(\lambda(k))$, so on its curvature.}
+% \label{fig:prop_ctrl_dispersion}
+% \end{figure}
 
 In the blowing and suction case,  the coefficient $\alpha_{AJ}$ is the maximal coefficient where there exists a mode $k$ sucht that $\mathfrak{R}(\lambda(k)) \geq 0.$. For an $\alpha$ above that threshold, all the modes are exponentially decreasing and the solution flattens towards the Nusselt solution. It is not the case of the air jet actuation method where we will always have $\lambda_0=0.$ Indeed, a non zero order 0 mode would imply having a different mass as the one of the Nusselt solution as we add something whose average is different than zero. Therefore, it was expected that $\lambda_0 = 0$ because the air jet actuation conserves the mass of the liquid so its mean height will not change. We can see in \eqref{fig:prop_ctrl_dispersion} that the control changes the curve of the dispersion relation but not its value on $k=0$.
 \\
@@ -1559,8 +1564,10 @@ So (undimensionnalisation \& computation..)
 
 
 \begin{align*}
-    \frac{1}{\sqrt{1+h_{,x}^2+h_{,y}^2}\sqrt{1+h_{,x}^2}} & \left[ 2h_{,x}(w_{,z}-u_{,x})-h_{,y}(u_{,y}+v_{,x})\\
-    &+(1-h_{,x}^2)(u_{,z}+w_{,x}) -h_{,x}h_{,y}(v_{,z}+w_{,y})\right] = -T_{sx}.
+    \frac{1}{\sqrt{1+h_{,x}^2+h_{,y}^2}\sqrt{1+h_{,x}^2}} &\Big[
+        2h_{,x}(w_{,z}-u_{,x})-h_{,y}(u_{,y}+v_{,x})\\
+    &+(1-h_{,x}^2)(u_{,z}+w_{,x}) -h_{,x}h_{,y}(v_{,z}+w_{,y}) \Big]
+    = -T_{sx}.
 \end{align*}
 
 

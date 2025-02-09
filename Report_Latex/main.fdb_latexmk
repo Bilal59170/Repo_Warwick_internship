@@ -1,11 +1,12 @@
 # Fdb version 4
-["biber main"] 1739039913.46375 "main.bcf" "main.bbl" "main" 1739040287.57122 2
-  "main.bcf" 1739040287 110729 5bd77c1a7e1a833e7c164508422c91ca "pdflatex"
+["biber main"] 1739102069.17841 "main.bcf" "main.bbl" "main" 1739102189.57405 0
+  "bibliography.bib" 1739038815 7262 8fba1d60d4997bb6664625b40dd38317 ""
+  "main.bcf" 1739102189 110729 5bd77c1a7e1a833e7c164508422c91ca "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1739040285.23597 "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" "main.pdf" "main" 1739040287.5725 2
+["pdflatex"] 1739102187.27731 "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" "main.pdf" "main" 1739102189.57485 0
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1739039908 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1739039912 14064 bce51e000c5c2dc411f152d7485cb117 ""
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1739039842 12021666 70d6ecc2498bbd0c2587c497e79898ac ""
@@ -29,6 +30,7 @@
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmbx12.tfm" 1136765053 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmbx6.tfm" 1136765053 1344 8a0be4fe4d376203000810ad4dc81558 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmbx8.tfm" 1136765053 1332 1fde11373e221473104d6cc5993f046e ""
+  "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmcsc10.tfm" 1136765053 1300 63a6111ee6274895728663cf4b4e7e81 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmex10.tfm" 1136765053 992 662f679a0b3d2d53c1b94050fdaa3f50 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi12.tfm" 1136765053 1524 4414a8315f39513458b80dfc63bff03a ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmmi6.tfm" 1136765053 1512 f21f83efb36853c0b70002322c1ab3ad ""
@@ -45,6 +47,7 @@
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmtt12.tfm" 1136765053 772 9a936b7f5e2ff0557fce0f62822f0bbf ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1247596666 32080 340ef9bf63678554ee606688e7b5339d ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb" 1247596666 32166 b0c356b15f19587482a9217ce1d8fa67 ""
+  "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb" 1247596667 32001 6aeea3afe875097b1eb0da29acd61e28 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1247596667 30251 6afa5cb1d0204815a708a080681d4674 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1247596667 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1247596667 36741 0ee9e374ec3e30da87cdfb0ea3575226 ""
@@ -203,7 +206,6 @@
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/pgf/utilities/pgfrcs.sty" 1673775190 325 f9f16d12354225b7dd52a3321f085955 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/refcount/refcount.sty" 1576433952 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1657800696 9714 ba3194bd52c8499b3f1e3eb91d409670 ""
-  "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/tools/.tex" 1730400552 1426 cd6cd1667b1a28ea51b9de2c0b64d363 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "KS_eq/KS_extrema_Fourier_coef.png" 1739038815 95654 272b62917eb1b20fd6757855eac55c50 ""
@@ -216,13 +218,14 @@
   "Verif_scheme/plot_FD_BDF_Nx_1024.png" 1739038815 58337 9a42dca3ce7faf03ab186e658e1fc5f6 ""
   "Verif_scheme/plot_FD_BDF_Nx_128.png" 1739038815 66212 e8d5b96aa02e8164300227d6c9f27f76 ""
   "Verif_scheme/plot_FD_BDF_Nx_512.png" 1739038815 61319 61edb8ea0810b6bb3317c20ac026e283 ""
-  "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" 1739040281 96369 b368c99fb23b94333cd04aa1488e2f6d ""
+  "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" 1739102186 96540 9cb4a2c53a893235cbe73e9abaa3ac0c ""
   "cartoon_thin_film.png" 1739038815 906324 d3033f1fe2065b2db0965c21925516f1 ""
-  "main.aux" 1739040287 19697 46ab4921c55020268eb702b3aa3a9c26 "pdflatex"
-  "main.bbl" 1739039923 0 d41d8cd98f00b204e9800998ecf8427e "biber main"
-  "main.out" 1739040287 7183 0f574c78bfc361eff355b0fd4dda0599 "pdflatex"
-  "main.tex" 1739040281 96369 b368c99fb23b94333cd04aa1488e2f6d ""
-  "main.toc" 1739040287 3537 287e8ee9a4828f2356a5185287d638a4 "pdflatex"
+  "main.aux" 1739102189 19766 84d6df4185a1fca369edbfbe40f41ac1 "pdflatex"
+  "main.bbl" 1739102071 28543 e1c43a0c9665f09c9bfb17c04e053b05 "biber main"
+  "main.out" 1739102189 7183 0f574c78bfc361eff355b0fd4dda0599 "pdflatex"
+  "main.run.xml" 1739102189 2307 fa280d158a7733084a6a66e2106e4193 "pdflatex"
+  "main.tex" 1739102186 96540 9cb4a2c53a893235cbe73e9abaa3ac0c ""
+  "main.toc" 1739102189 3537 179ed542150a4a6253ecb69b1ee5abac "pdflatex"
   (generated)
   "main.aux"
   "main.bcf"

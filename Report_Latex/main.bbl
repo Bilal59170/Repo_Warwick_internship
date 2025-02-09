@@ -1,0 +1,640 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{KS_scheme_C_A}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d5772f5d2a6ea2686ba17d4b8f9ea76b}{%
+           family={{Akrivis}},
+           familyi={A\bibinitperiod},
+           given={Georgios},
+           giveni={G\bibinitperiod}}}%
+        {{hash=79c86a7612c6bc00e344b94e214b362d}{%
+           family={{Crouzeix}},
+           familyi={C\bibinitperiod},
+           given={Michel},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{fullhash}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{fullhashraw}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{bibnamehash}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{authorbibnamehash}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{authornamehash}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{authorfullhash}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \strng{authorfullhashraw}{abbc0dd382f7f9f45d4c8e3cdbe7820f}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mathematics of Computation}
+      \field{month}{1}
+      \field{title}{{Linearly implicit methods for nonlinear parabolic equations}}
+      \field{volume}{73}
+      \field{year}{2004}
+      \field{pages}{613\bibrangedash 635}
+      \range{pages}{23}
+    \endentry
+    \entry{Scheme_for_KS}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d5772f5d2a6ea2686ba17d4b8f9ea76b}{%
+           family={Akrivis},
+           familyi={A\bibinitperiod},
+           given={Georgios},
+           giveni={G\bibinitperiod}}}%
+        {{hash=64c5afaf694cfe900cd6badb20832030}{%
+           family={Papageorgiou},
+           familyi={P\bibinitperiod},
+           given={Demetrios},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{fullhash}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{fullhashraw}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{bibnamehash}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{authorbibnamehash}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{authornamehash}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{authorfullhash}{4baed53bb0800ec552a329e30c9ed9a4}
+      \strng{authorfullhashraw}{4baed53bb0800ec552a329e30c9ed9a4}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IMA Journal of Numerical Analysis 299−321 [Received on January}
+      \field{month}{01}
+      \field{title}{Linearly implicit methods for a semilinear parabolic system arising in two-phase flows}
+      \field{volume}{31}
+      \field{year}{2011}
+      \verb{doi}
+      \verb 10.1093/imanum/drp034
+      \endverb
+    \endentry
+    \entry{Experimental_DNS_Reduced_order_modelling_paper}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=6540bfb638623280a9031de4303e55fa}{%
+           family={Denner},
+           familyi={D\bibinitperiod},
+           given={Fabian},
+           giveni={F\bibinitperiod}}}%
+        {{hash=fa4a3f45e67d187690ae33319d62f1dd}{%
+           family={Charogiannis},
+           familyi={C\bibinitperiod},
+           given={Alexandros},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f5b5ab5d9544c29dae6a00bddc757e93}{%
+           family={Pradas},
+           familyi={P\bibinitperiod},
+           given={Marc},
+           giveni={M\bibinitperiod}}}%
+        {{hash=678f85df8fc6935ef5027263a89b5d7d}{%
+           family={Markides},
+           familyi={M\bibinitperiod},
+           given={Christos\bibnamedelima N.},
+           giveni={C\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=30918e23653dc2e4a8ce755a22e2066c}{%
+           family={Wachem},
+           familyi={W\bibinitperiod},
+           given={Berend\bibnamedelimb G.\bibnamedelimi M.},
+           giveni={B\bibinitperiod\bibinitdelim G\bibinitperiod\bibinitdelim M\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=3c46ffd39202817eb7eea28b2a8f2419}{%
+           family={Kalliadasis},
+           familyi={K\bibinitperiod},
+           given={Serafim},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{fullhash}{f7316bc19d4f10561f294ddb392b21c3}
+      \strng{fullhashraw}{f7316bc19d4f10561f294ddb392b21c3}
+      \strng{bibnamehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{authorbibnamehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{authornamehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{authorfullhash}{f7316bc19d4f10561f294ddb392b21c3}
+      \strng{authorfullhashraw}{f7316bc19d4f10561f294ddb392b21c3}
+      \field{extraname}{1}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Fluid Mechanics}
+      \field{title}{Solitary waves on falling liquid films in the inertia-dominated regime}
+      \field{volume}{837}
+      \field{year}{2018}
+      \field{pages}{491\bibrangedash 519}
+      \range{pages}{29}
+      \verb{doi}
+      \verb 10.1017/jfm.2017.867
+      \endverb
+    \endentry
+    \entry{experimental_paper}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=6540bfb638623280a9031de4303e55fa}{%
+           family={Denner},
+           familyi={D\bibinitperiod},
+           given={Fabian},
+           giveni={F\bibinitperiod}}}%
+        {{hash=fa4a3f45e67d187690ae33319d62f1dd}{%
+           family={Charogiannis},
+           familyi={C\bibinitperiod},
+           given={Alexandros},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f5b5ab5d9544c29dae6a00bddc757e93}{%
+           family={Pradas},
+           familyi={P\bibinitperiod},
+           given={Marc},
+           giveni={M\bibinitperiod}}}%
+        {{hash=678f85df8fc6935ef5027263a89b5d7d}{%
+           family={Markides},
+           familyi={M\bibinitperiod},
+           given={Christos\bibnamedelima N.},
+           giveni={C\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=30918e23653dc2e4a8ce755a22e2066c}{%
+           family={Wachem},
+           familyi={W\bibinitperiod},
+           given={Berend\bibnamedelimb G.\bibnamedelimi M.},
+           giveni={B\bibinitperiod\bibinitdelim G\bibinitperiod\bibinitdelim M\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=3c46ffd39202817eb7eea28b2a8f2419}{%
+           family={Kalliadasis},
+           familyi={K\bibinitperiod},
+           given={Serafim},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{fullhash}{f7316bc19d4f10561f294ddb392b21c3}
+      \strng{fullhashraw}{f7316bc19d4f10561f294ddb392b21c3}
+      \strng{bibnamehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{authorbibnamehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{authornamehash}{219c0f945d90084b9f68537cae09d1cc}
+      \strng{authorfullhash}{f7316bc19d4f10561f294ddb392b21c3}
+      \strng{authorfullhashraw}{f7316bc19d4f10561f294ddb392b21c3}
+      \field{extraname}{2}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Fluid Mechanics}
+      \field{title}{Solitary waves on falling liquid films in the inertia-dominated regime}
+      \field{volume}{837}
+      \field{year}{2018}
+      \field{pages}{491\bibrangedash 519}
+      \range{pages}{29}
+      \verb{doi}
+      \verb 10.1017/jfm.2017.867
+      \endverb
+    \endentry
+    \entry{Susana_thesis}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{hash=a3779caf3bef39f3f3f38233d91b6b21}{%
+           family={Gomes},
+           familyi={G\bibinitperiod},
+           given={Susana},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Imperial College London}%
+      }
+      \strng{namehash}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{fullhash}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{fullhashraw}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{bibnamehash}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{authorbibnamehash}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{authornamehash}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{authorfullhash}{a3779caf3bef39f3f3f38233d91b6b21}
+      \strng{authorfullhashraw}{a3779caf3bef39f3f3f38233d91b6b21}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Control theory for infinite dimensional dynamical systems and applications to falling liquid film flows}
+      \field{type}{phdthesis}
+      \field{year}{2016}
+    \endentry
+    \entry{holroyd2023linearquadraticregulationcontrol}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=3ffa27380b17083d54fb5384109b0be5}{%
+           family={Holroyd},
+           familyi={H\bibinitperiod},
+           given={Oscar\bibnamedelima A.},
+           giveni={O\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=8e38bab70130e099724788d2dab8e2f0}{%
+           family={Cimpeanu},
+           familyi={C\bibinitperiod},
+           given={Radu},
+           giveni={R\bibinitperiod}}}%
+        {{hash=43c71122e6687a27e4c57fe404ab25bd}{%
+           family={Gomes},
+           familyi={G\bibinitperiod},
+           given={Susana\bibnamedelima N.},
+           giveni={S\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \strng{namehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{fullhash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{fullhashraw}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{bibnamehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authorbibnamehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authornamehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authorfullhash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authorfullhashraw}{606c3026ae0a531ef398f991b6a269c1}
+      \field{extraname}{1}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{math.OC}
+      \field{eprinttype}{arXiv}
+      \field{title}{Linear quadratic regulation control for falling liquid films}
+      \field{year}{2023}
+      \verb{eprint}
+      \verb 2301.11379
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2301.11379
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2301.11379
+      \endverb
+    \endentry
+    \entry{holroyd2024stabilisationfallingliquidfilms}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=3ffa27380b17083d54fb5384109b0be5}{%
+           family={Holroyd},
+           familyi={H\bibinitperiod},
+           given={Oscar\bibnamedelima A.},
+           giveni={O\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=8e38bab70130e099724788d2dab8e2f0}{%
+           family={Cimpeanu},
+           familyi={C\bibinitperiod},
+           given={Radu},
+           giveni={R\bibinitperiod}}}%
+        {{hash=43c71122e6687a27e4c57fe404ab25bd}{%
+           family={Gomes},
+           familyi={G\bibinitperiod},
+           given={Susana\bibnamedelima N.},
+           giveni={S\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \strng{namehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{fullhash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{fullhashraw}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{bibnamehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authorbibnamehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authornamehash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authorfullhash}{606c3026ae0a531ef398f991b6a269c1}
+      \strng{authorfullhashraw}{606c3026ae0a531ef398f991b6a269c1}
+      \field{extraname}{2}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{math.OC}
+      \field{eprinttype}{arXiv}
+      \field{title}{Stabilisation of falling liquid films with restricted observations}
+      \field{year}{2024}
+      \verb{eprint}
+      \verb 2407.06906
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2407.06906
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2407.06906
+      \endverb
+    \endentry
+    \entry{Kuramoto_KS_eq}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=33cc8eda7edf802aa364c0d9e695b43c}{%
+           family={Kuramoto},
+           familyi={K\bibinitperiod},
+           given={Yoshiki},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{fullhash}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{fullhashraw}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{bibnamehash}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{authorbibnamehash}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{authornamehash}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{authorfullhash}{33cc8eda7edf802aa364c0d9e695b43c}
+      \strng{authorfullhashraw}{33cc8eda7edf802aa364c0d9e695b43c}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{A turbulent state in a distributed chemical reaction system is studied theoretically. The chaotic behavior here is basically due to the unstable growth of a spatial inhomogeneity taking place in an oscillating medium. It is argued that phase turbulence and amplitude turbulence have to be discriminated from each other according to their distinct origins. Two prototype equations describing respective types of turbulence are derived by means of some asymptotic methods, and their solutions turn out toe exhibit successive bifurcations. It is found that the phase turbulence arises essentially from the interaction among a few unstable phase modes, while the amplitude turbulence may well appear in the presence of only one unstable mode with is a mixed mode of the phase and amplitude. In particular, some similarity of the amplitude turbulence to the Lorenz chaos is pointed out. Throughout the present paper, the chaotic behavior is discucssed in connection with spatial pattern, so that no discrete approximations, such as a box-model or mode-truncation, are employed.}
+      \field{issn}{0375-9687}
+      \field{journaltitle}{Progress of Theoretical Physics Supplement}
+      \field{month}{02}
+      \field{title}{Diffusion-Induced Chaos in Reaction Systems}
+      \field{volume}{64}
+      \field{year}{1978}
+      \field{pages}{346\bibrangedash 367}
+      \range{pages}{22}
+      \verb{doi}
+      \verb 10.1143/PTPS.64.346
+      \endverb
+      \verb{eprint}
+      \verb https://academic.oup.com/ptps/article-pdf/doi/10.1143/PTPS.64.346/5293041/64-346.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1143/PTPS.64.346
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1143/PTPS.64.346
+      \endverb
+    \endentry
+    \entry{Moving_pressure_source}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d31cc44b7ff0d4bbaf2f3b9aaae47199}{%
+           family={Lunz},
+           familyi={L\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=83661deaef8b2f57140f575336b95147}{%
+           family={Howell},
+           familyi={H\bibinitperiod},
+           given={P.\bibnamedelimi D.},
+           giveni={P\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {American Physical Society}%
+      }
+      \strng{namehash}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{fullhash}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{fullhashraw}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{bibnamehash}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{authorbibnamehash}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{authornamehash}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{authorfullhash}{1fccb5b3d2451014ac6996e09655d05f}
+      \strng{authorfullhashraw}{1fccb5b3d2451014ac6996e09655d05f}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{11}
+      \field{journaltitle}{Phys. Rev. Fluids}
+      \field{month}{11}
+      \field{title}{Dynamics of a thin film driven by a moving pressure source}
+      \field{volume}{3}
+      \field{year}{2018}
+      \field{pages}{114801}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1103/PhysRevFluids.3.114801
+      \endverb
+      \verb{urlraw}
+      \verb https://link.aps.org/doi/10.1103/PhysRevFluids.3.114801
+      \endverb
+      \verb{url}
+      \verb https://link.aps.org/doi/10.1103/PhysRevFluids.3.114801
+      \endverb
+    \endentry
+    \entry{Shiv_Michelson_KS_eq}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=170e7660a318d44d57b125bf38fb17ac}{%
+           family={Michelson},
+           familyi={M\bibinitperiod},
+           given={D.M.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=c184fbf8ae2af6dca9ba956387ddb558}{%
+           family={Sivashinsky},
+           familyi={S\bibinitperiod},
+           given={G.I.},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{fullhash}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{fullhashraw}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{bibnamehash}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{authorbibnamehash}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{authornamehash}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{authorfullhash}{6ed1d9929e892063f9aa0292898ba493}
+      \strng{authorfullhashraw}{6ed1d9929e892063f9aa0292898ba493}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We consider a nonstationary nonlinear integrodifferential equation describing the evolution of a disturbed plane flame front. The following two-dimensional problems are solved numerically: (i) The formation of a wrinkled noncellular laminar flame front under conditions of spontaneous hydrodynamic instability. (ii) The formation of a turbulent cellular flame front under conditions of spontaneous diffusional-thermal instability. (iii) The formation of a turbulent wrinkled-cellular flame front under conditions of spontaneous hydrodynamic and diffusional-thermal instability. We compute the flame front velocity in laminar and turbulent propagation.}
+      \field{issn}{0094-5765}
+      \field{journaltitle}{Acta Astronautica}
+      \field{number}{11}
+      \field{title}{Nonlinear analysis of hydrodynamic instability in laminar flames—II. Numerical experiments}
+      \field{volume}{4}
+      \field{year}{1977}
+      \field{pages}{1207\bibrangedash 1221}
+      \range{pages}{15}
+      \verb{doi}
+      \verb https://doi.org/10.1016/0094-5765(77)90097-2
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/0094576577900972
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/0094576577900972
+      \endverb
+    \endentry
+    \entry{Dewetting_Ojiako}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=47cb156c4390f1b13d037cea3e00ed3c}{%
+           family={Ojiako},
+           familyi={O\bibinitperiod},
+           given={Chinasa\bibnamedelima Juliet},
+           giveni={C\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=8e38bab70130e099724788d2dab8e2f0}{%
+           family={Cimpeanu},
+           familyi={C\bibinitperiod},
+           given={Radu},
+           giveni={R\bibinitperiod}}}%
+        {{hash=da6030f22eb85b168aec781c398288ea}{%
+           family={Bandulasena},
+           familyi={B\bibinitperiod},
+           given={Hemaka},
+           giveni={H\bibinitperiod}}}%
+        {{hash=d0b022e384f9faf6b85149a7633bcbc5}{%
+           family={Smith},
+           familyi={S\bibinitperiod},
+           given={Roger\bibnamedelima K.},
+           giveni={R\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=db925b6a7a6dfca88ad07fd6daa381ca}{%
+           family={Tseluiko},
+           familyi={T\bibinitperiod},
+           given={Dmitri},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{82bbee3e7ce051c5267162e49ee12678}
+      \strng{fullhash}{dc0f2a52b4269245ad25f76d6c6dccdf}
+      \strng{fullhashraw}{dc0f2a52b4269245ad25f76d6c6dccdf}
+      \strng{bibnamehash}{82bbee3e7ce051c5267162e49ee12678}
+      \strng{authorbibnamehash}{82bbee3e7ce051c5267162e49ee12678}
+      \strng{authornamehash}{82bbee3e7ce051c5267162e49ee12678}
+      \strng{authorfullhash}{dc0f2a52b4269245ad25f76d6c6dccdf}
+      \strng{authorfullhashraw}{dc0f2a52b4269245ad25f76d6c6dccdf}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Fluid Mechanics}
+      \field{title}{Deformation and dewetting of liquid films under gas jets}
+      \field{volume}{905}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb https://api.semanticscholar.org/CorpusID:210839383
+      \endverb
+      \verb{url}
+      \verb https://api.semanticscholar.org/CorpusID:210839383
+      \endverb
+    \endentry
+    \entry{pos_ctrl_paper}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9fad00283cbfb2dff381a0c7e10ef1de}{%
+           family={Rami},
+           familyi={R\bibinitperiod},
+           given={M.\bibnamedelimi Ait},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=263bc504a922b1447c30a1910106f2d8}{%
+           family={Tadeo},
+           familyi={T\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{d63bdf2ff562664433a475b40befee3d}
+      \strng{fullhash}{d63bdf2ff562664433a475b40befee3d}
+      \strng{fullhashraw}{d63bdf2ff562664433a475b40befee3d}
+      \strng{bibnamehash}{d63bdf2ff562664433a475b40befee3d}
+      \strng{authorbibnamehash}{d63bdf2ff562664433a475b40befee3d}
+      \strng{authornamehash}{d63bdf2ff562664433a475b40befee3d}
+      \strng{authorfullhash}{d63bdf2ff562664433a475b40befee3d}
+      \strng{authorfullhashraw}{d63bdf2ff562664433a475b40befee3d}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Circuits and Systems II: Express Briefs}
+      \field{number}{2}
+      \field{title}{Controller Synthesis for Positive Linear Systems With Bounded Controls}
+      \field{volume}{54}
+      \field{year}{2007}
+      \field{pages}{151\bibrangedash 155}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/TCSII.2006.886888
+      \endverb
+      \keyw{Control system synthesis;Linear systems;Linear programming;Control systems;Robust stability;Robust control;Temperature;Liquids;Chemical processes;Mathematical model;Bounded controls;linear programming;positive systems;stabilization}
+    \endentry
+    \entry{A_Thompson_FLF_blowing_suction}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=dda8772847a583b4a696e772a6fcbed1}{%
+           family={Thompson},
+           familyi={T\bibinitperiod},
+           given={Alice\bibnamedelima B.},
+           giveni={A\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=db925b6a7a6dfca88ad07fd6daa381ca}{%
+           family={Tseluiko},
+           familyi={T\bibinitperiod},
+           given={Dmitri},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a5c9bf9f1b7d2fb8fc9a9cc0f883b4bf}{%
+           family={Papageorgiou},
+           familyi={P\bibinitperiod},
+           given={Demetrios\bibnamedelima T.},
+           giveni={D\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{fullhash}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{fullhashraw}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{bibnamehash}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{authorbibnamehash}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{authornamehash}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{authorfullhash}{7967290182e9e57583be1c2940b4bc8b}
+      \strng{authorfullhashraw}{7967290182e9e57583be1c2940b4bc8b}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Fluid Mechanics}
+      \field{title}{Falling liquid films with blowing and suction}
+      \field{volume}{787}
+      \field{year}{2016}
+      \field{pages}{292\bibrangedash 330}
+      \range{pages}{39}
+      \verb{doi}
+      \verb 10.1017/jfm.2015.683
+      \endverb
+    \endentry
+    \entry{Thompson_2016_prop_ctrl}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=dda8772847a583b4a696e772a6fcbed1}{%
+           family={Thompson},
+           familyi={T\bibinitperiod},
+           given={Alice\bibnamedelima B.},
+           giveni={A\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=43c71122e6687a27e4c57fe404ab25bd}{%
+           family={Gomes},
+           familyi={G\bibinitperiod},
+           given={Susana\bibnamedelima N.},
+           giveni={S\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=5c8b250b9b99abef579f4004b782a21d}{%
+           family={Pavliotis},
+           familyi={P\bibinitperiod},
+           given={Grigorios\bibnamedelima A.},
+           giveni={G\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=a5c9bf9f1b7d2fb8fc9a9cc0f883b4bf}{%
+           family={Papageorgiou},
+           familyi={P\bibinitperiod},
+           given={Demetrios\bibnamedelima T.},
+           giveni={D\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {AIP Publishing}%
+      }
+      \strng{namehash}{cabaa6de1df0e3fc2c794cc55181ce75}
+      \strng{fullhash}{030d454de11618c3a1f350aafc3097e2}
+      \strng{fullhashraw}{030d454de11618c3a1f350aafc3097e2}
+      \strng{bibnamehash}{cabaa6de1df0e3fc2c794cc55181ce75}
+      \strng{authorbibnamehash}{cabaa6de1df0e3fc2c794cc55181ce75}
+      \strng{authornamehash}{cabaa6de1df0e3fc2c794cc55181ce75}
+      \strng{authorfullhash}{030d454de11618c3a1f350aafc3097e2}
+      \strng{authorfullhashraw}{030d454de11618c3a1f350aafc3097e2}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1089-7666}
+      \field{journaltitle}{Physics of Fluids}
+      \field{month}{1}
+      \field{number}{1}
+      \field{title}{Stabilising falling liquid film flows using feedback control}
+      \field{volume}{28}
+      \field{year}{2016}
+      \verb{doi}
+      \verb 10.1063/1.4938761
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1063/1.4938761
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1063/1.4938761
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
