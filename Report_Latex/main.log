@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  9 FEB 2025 11:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  9 FEB 2025 12:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -831,38 +831,38 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 74--75
+Underfull \hbox (badness 10000) in paragraph at lines 74--79
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 76--79
+Underfull \hbox (badness 10000) in paragraph at lines 80--102
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 80--83
+Underfull \hbox (badness 10000) in paragraph at lines 103--106
 
  []
 
 
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 84--86
+Underfull \hbox (badness 10000) in paragraph at lines 107--109
 
  []
 
 
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 118--120
+Underfull \hbox (badness 10000) in paragraph at lines 141--143
 
  []
 
 
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 175--177
+Underfull \hbox (badness 10000) in paragraph at lines 198--200
 
  []
 
@@ -871,57 +871,57 @@ Underfull \hbox (badness 10000) in paragraph at lines 175--177
 [7]
 
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 236--238
+Underfull \hbox (badness 10000) in paragraph at lines 259--261
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 251--254
+Underfull \hbox (badness 10000) in paragraph at lines 274--277
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 258--260
+Underfull \hbox (badness 10000) in paragraph at lines 281--283
 
  []
 
 
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 276--278
+Underfull \hbox (badness 10000) in paragraph at lines 299--301
 
  []
 
 
 
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 324--326
+Underfull \hbox (badness 10000) in paragraph at lines 347--349
 
  []
 
 <KS_eq/plot_dispersion_nu_1_1-4.png, id=320, 929.3922pt x 364.9635pt>
 File: KS_eq/plot_dispersion_nu_1_1-4.png Graphic file (type png)
 <use KS_eq/plot_dispersion_nu_1_1-4.png>
-Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 328.
+Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 351.
 (pdftex.def)             Requested size: 443.57848pt x 174.18922pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 335.
+(hyperref)                removing `math shift' on input line 358.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\nu' on input line 335.
+(hyperref)                removing `\nu' on input line 358.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\geq' on input line 335.
+(hyperref)                removing `\geq' on input line 358.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 335.
+(hyperref)                removing `math shift' on input line 358.
 
 
 
@@ -929,31 +929,31 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 <KS_eq/plot_exp_decay.png, id=329, 456.7464pt x 342.5598pt>
 File: KS_eq/plot_exp_decay.png Graphic file (type png)
 <use KS_eq/plot_exp_decay.png>
-Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 364.
+Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 387.
 (pdftex.def)             Requested size: 199.60895pt x 149.70749pt.
 <KS_eq/plot_decay_nu_1_k_1png.png, id=330, 476.982pt x 342.5598pt>
 File: KS_eq/plot_decay_nu_1_k_1png.png Graphic file (type png)
 <use KS_eq/plot_decay_nu_1_k_1png.png>
-Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 372.
+Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 395.
 (pdftex.def)             Requested size: 199.60895pt x 143.35664pt.
 
 
 [12 <./KS_eq/plot_dispersion_nu_1_1-4.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 384--387
+Underfull \hbox (badness 10000) in paragraph at lines 407--410
 
  []
 
 <KS_eq/plot_lambda_nu.png, id=337, 424.9476pt x 346.896pt>
 File: KS_eq/plot_lambda_nu.png Graphic file (type png)
 <use KS_eq/plot_lambda_nu.png>
-Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 392.
+Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 415.
 (pdftex.def)             Requested size: 221.78923pt x 181.0539pt.
-LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 393.
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 416.
 (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/base\omscmr.fd
 File: omscmr.fd 2024/11/19 v2.5n Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 393.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 416.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -961,7 +961,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 <KS_eq/KS_extrema_Fourier_coef.png, id=338, 903.375pt x 317.988pt>
 File: KS_eq/KS_extrema_Fourier_coef.png Graphic file (type png)
 <use KS_eq/KS_extrema_Fourier_coef.png>
-Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 400.
+Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 423.
 (pdftex.def)             Requested size: 443.57848pt x 156.14056pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -971,36 +971,36 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [13 <./KS_eq/plot_exp_decay.png> <./KS_eq/plot_decay_nu_1_k_1png.png>]
 
 [14 <./KS_eq/plot_lambda_nu.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 434--436
+Underfull \hbox (badness 10000) in paragraph at lines 457--459
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 438--440
+Underfull \hbox (badness 10000) in paragraph at lines 461--463
 
  []
 
 
 
 [15 <./KS_eq/KS_extrema_Fourier_coef.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 468--470
+Underfull \hbox (badness 10000) in paragraph at lines 491--493
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 486--487
+Underfull \hbox (badness 10000) in paragraph at lines 509--510
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 510--512
+Underfull \hbox (badness 10000) in paragraph at lines 533--535
 
  []
 
 
 
 [16]
-Underfull \hbox (badness 10000) in paragraph at lines 518--521
+Underfull \hbox (badness 10000) in paragraph at lines 541--544
 
  []
 
@@ -1015,82 +1015,82 @@ Underfull \hbox (badness 10000) in paragraph at lines 518--521
 [20]
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 734--736
+Underfull \hbox (badness 10000) in paragraph at lines 757--759
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 747--749
+Underfull \hbox (badness 10000) in paragraph at lines 770--772
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 754--756
+Underfull \hbox (badness 10000) in paragraph at lines 777--779
 
  []
 
 
 
 [22]
-Underfull \hbox (badness 10000) in paragraph at lines 772--775
+Underfull \hbox (badness 10000) in paragraph at lines 795--798
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 789--791
+Underfull \hbox (badness 10000) in paragraph at lines 812--814
 
  []
 
 
 
 [23]
-Underfull \hbox (badness 10000) in paragraph at lines 803--805
+Underfull \hbox (badness 10000) in paragraph at lines 826--828
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 818--819
+Underfull \hbox (badness 10000) in paragraph at lines 841--842
 
  []
 
 
 
 [24]
-Underfull \hbox (badness 10000) in paragraph at lines 851--853
+Underfull \hbox (badness 10000) in paragraph at lines 874--876
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 868--870
+Underfull \hbox (badness 10000) in paragraph at lines 891--893
 
  []
 
 
 
 [25]
-Underfull \hbox (badness 10000) in paragraph at lines 876--878
+Underfull \hbox (badness 10000) in paragraph at lines 899--901
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 890--892
+Underfull \hbox (badness 10000) in paragraph at lines 913--915
 
  []
 
 <Verif_scheme/plot_FD_BDF_Nx_128.png, id=469, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_128.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_128.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 905.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 928.
 (pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
 <Verif_scheme/plot_FD_BDF_Nx_512.png, id=470, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_512.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_512.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 913.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 936.
 (pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
 <Verif_scheme/plot_FD_BDF_Nx_1024.png, id=471, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_1024.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_1024.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 923.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 946.
 (pdftex.def)             Requested size: 332.68385pt x 249.52672pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1098,34 +1098,34 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [26]
-Underfull \hbox (badness 10000) in paragraph at lines 943--947
+Underfull \hbox (badness 10000) in paragraph at lines 966--970
 
  []
 
 
 
 [27 <./Verif_scheme/plot_FD_BDF_Nx_128.png> <./Verif_scheme/plot_FD_BDF_Nx_512.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 948--950
+Underfull \hbox (badness 10000) in paragraph at lines 971--973
 
  []
 
 <Verif_scheme/Convergence_graph_Sp_method.png, id=493, 947.4597pt x 359.9046pt>
 File: Verif_scheme/Convergence_graph_Sp_method.png Graphic file (type png)
 <use Verif_scheme/Convergence_graph_Sp_method.png>
-Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 953.
+Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 976.
 (pdftex.def)             Requested size: 443.57848pt x 168.50166pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 966--968
+Underfull \hbox (badness 10000) in paragraph at lines 989--991
 
  []
 
 <Verif_scheme/Comparison_scheme_BDF4.png, id=494, 952.5186pt x 357.0138pt>
 File: Verif_scheme/Comparison_scheme_BDF4.png Graphic file (type png)
 <use Verif_scheme/Comparison_scheme_BDF4.png>
-Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 974.
+Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 997.
 (pdftex.def)             Requested size: 443.57848pt x 166.26027pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 980--983
+Underfull \hbox (badness 10000) in paragraph at lines 1003--1006
 
  []
 
@@ -1134,58 +1134,58 @@ Underfull \hbox (badness 10000) in paragraph at lines 980--983
 [28 <./Verif_scheme/plot_FD_BDF_Nx_1024.png>]
 
 [29 <./Verif_scheme/Convergence_graph_Sp_method.png> <./Verif_scheme/Comparison_scheme_BDF4.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1000--1002
+Underfull \hbox (badness 10000) in paragraph at lines 1023--1025
 
  []
 
 
 
 [30]
-Underfull \hbox (badness 10000) in paragraph at lines 1029--1032
+Underfull \hbox (badness 10000) in paragraph at lines 1052--1055
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1043--1044
+Underfull \hbox (badness 10000) in paragraph at lines 1066--1067
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1049--1052
+Underfull \hbox (badness 10000) in paragraph at lines 1072--1075
 
  []
 
 
 
 [31]
-Overfull \hbox (38.11884pt too wide) in paragraph at lines 1069--1071
+Overfull \hbox (38.11884pt too wide) in paragraph at lines 1092--1094
 []$\OT1/cmr/m/n/12 . There-fore, the prob-lem can be fi-nally rewrit-ten as a $[]$: 
  []
 
-LaTeX Font Info:    Trying to load font information for U+euf on input line 1074.
+LaTeX Font Info:    Trying to load font information for U+euf on input line 1097.
 (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
-Underfull \hbox (badness 10000) in paragraph at lines 1090--1092
+Underfull \hbox (badness 10000) in paragraph at lines 1113--1115
 
  []
 
 
 
 [32]
-Underfull \hbox (badness 10000) in paragraph at lines 1102--1104
+Underfull \hbox (badness 10000) in paragraph at lines 1125--1127
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1123--1125
+Underfull \hbox (badness 10000) in paragraph at lines 1146--1148
 
  []
 
 
 
 [33]
-Underfull \hbox (badness 10000) in paragraph at lines 1148--1150
+Underfull \hbox (badness 10000) in paragraph at lines 1171--1173
 
  []
 
@@ -1194,7 +1194,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1148--1150
 [34]
 
 [35]
-Underfull \hbox (badness 10000) in paragraph at lines 1217--1219
+Underfull \hbox (badness 10000) in paragraph at lines 1240--1242
 
  []
 
@@ -1202,46 +1202,46 @@ Underfull \hbox (badness 10000) in paragraph at lines 1217--1219
 
 [36]
 
-LaTeX Warning: Reference `fig:prop_ctrl_dispersion' on page 37 undefined on input line 1258.
+LaTeX Warning: Reference `fig:prop_ctrl_dispersion' on page 37 undefined on input line 1281.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1258--1260
+Underfull \hbox (badness 10000) in paragraph at lines 1281--1283
 
  []
 
 
 
 [37]
-Underfull \hbox (badness 10000) in paragraph at lines 1306--1308
+Underfull \hbox (badness 10000) in paragraph at lines 1329--1331
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1309--1311
+Underfull \hbox (badness 10000) in paragraph at lines 1332--1334
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1333--1336
+Underfull \hbox (badness 10000) in paragraph at lines 1356--1359
 
  []
 
 
 
 [38]
-Underfull \hbox (badness 10000) in paragraph at lines 1364--1366
+Underfull \hbox (badness 10000) in paragraph at lines 1387--1389
 
  []
 
 
 
 [39]
-Underfull \hbox (badness 10000) in paragraph at lines 1388--1390
+Underfull \hbox (badness 10000) in paragraph at lines 1411--1413
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1405--1406
+Underfull \hbox (badness 10000) in paragraph at lines 1428--1429
 
  []
 
@@ -1250,70 +1250,70 @@ Underfull \hbox (badness 10000) in paragraph at lines 1405--1406
 [40]
 
 [41]
-Underfull \hbox (badness 10000) in paragraph at lines 1455--1457
+Underfull \hbox (badness 10000) in paragraph at lines 1478--1480
 
  []
 
 
-Overfull \hbox (27.51035pt too wide) detected at line 1463
+Overfull \hbox (27.51035pt too wide) detected at line 1486
 [][][][]
  []
 
 
-Overfull \hbox (27.75941pt too wide) detected at line 1471
+Overfull \hbox (27.75941pt too wide) detected at line 1494
 [][][][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1481--1484
+Underfull \hbox (badness 10000) in paragraph at lines 1504--1507
 
  []
 
 
 
 [42]
-Overfull \hbox (0.69704pt too wide) in paragraph at lines 1492--1493
+Overfull \hbox (0.69704pt too wide) in paragraph at lines 1515--1516
 []\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
  []
 
 
-LaTeX Warning: Reference `eq DBC1_Normal' on page 43 undefined on input line 1495.
+LaTeX Warning: Reference `eq DBC1_Normal' on page 43 undefined on input line 1518.
 
 
-LaTeX Warning: Reference `eq DBC_Tangential' on page 43 undefined on input line 1495.
+LaTeX Warning: Reference `eq DBC_Tangential' on page 43 undefined on input line 1518.
 
 
-Overfull \hbox (24.49733pt too wide) in paragraph at lines 1502--1503
+Overfull \hbox (24.49733pt too wide) in paragraph at lines 1525--1526
 []\OT1/cmr/m/n/12 with $\OML/cmm/m/it/12 ^^T \OT1/cmr/m/n/12 = []\OML/cmm/m/it/12 :[]$ \OT1/cmr/m/n/12 and $[] = [](\OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OT1/cmr/m/n/12 1)$ the nor-mal points$[]$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1508--1514
+Underfull \hbox (badness 10000) in paragraph at lines 1531--1537
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1508--1514
+Underfull \hbox (badness 10000) in paragraph at lines 1531--1537
 
  []
 
 
-Overfull \hbox (90.98366pt too wide) detected at line 1525
+Overfull \hbox (90.98366pt too wide) detected at line 1548
 []
  []
 
 
 
 [43]
-Overfull \hbox (43.28723pt too wide) detected at line 1542
+Overfull \hbox (43.28723pt too wide) detected at line 1565
 [][][][][]
  []
 
 
-LaTeX Warning: Reference `eq DBC_Normal Control' on page 44 undefined on input line 1544.
+LaTeX Warning: Reference `eq DBC_Normal Control' on page 44 undefined on input line 1567.
 
 
-Overfull \hbox (76.92438pt too wide) detected at line 1561
+Overfull \hbox (76.92438pt too wide) detected at line 1584
 []
  []
 
@@ -1322,12 +1322,12 @@ Overfull \hbox (76.92438pt too wide) detected at line 1561
 [44]
 
 [45]
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 1591--1591
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 1614--1614
 []\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
  []
 
 
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 1591--1591
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 1614--1614
 []\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
  []
 
@@ -1360,7 +1360,7 @@ Here is how much of TeX's memory you used:
  52409 multiletter control sequences out of 15000+600000
  572636 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,15n,91p,2318b,1473s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,15n,91p,1757b,1473s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Bilal_BM_user\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/euler/eufm10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
 Output written on main.pdf (48 pages, 1724534 bytes).
 PDF statistics:
