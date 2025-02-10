@@ -310,7 +310,7 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
 
 ###### Solver for the Benney equation with Finite DIfferences & BDF scheme
 
-def solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, bool_LQR_pos_part,
+def solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, bool_pos_part,
                positive_ctrl, Amplitudes_Ns, K, idx_time_start_ctrl, nb_percent=5):
 
     '''
@@ -353,7 +353,7 @@ def solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, 
                 else:
                     h_tilde = (h_mat[n_t, :]-1)/delta # Useless in the computation as we rescale again later with Ampl_Ns = delta*u_ctrl
                     u_ctrl = -K@h_tilde #Feedback ctrl with the previous state
-                    if bool_LQR_pos_part:
+                    if bool_pos_part:
                         u_ctrl = np.maximum(u_ctrl, np.zeros_like(u_ctrl))
                     U_array[n_t] = delta*u_ctrl #the rescalled real control on the height h=1+delta*\tilde{h}
                     
@@ -395,7 +395,7 @@ def solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time, F_space, FB_Control, 
 
 
 def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
-                                Amplitudes_Ns, FB_Control=False, bool_LQR_pos_part=False, positive_ctrl=False,
+                                Amplitudes_Ns, FB_Control=False, bool_pos_part=False, positive_ctrl=False,
                                 K=None, idx_time_start_ctrl=None, nb_percent=5):
     '''
     INPUTS:
@@ -438,12 +438,12 @@ def solver_Benney_BDF_FD(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, 
 
     return solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_FD, 
                         Amplitudes_Ns=Amplitudes_Ns, FB_Control=FB_Control,
-                          bool_LQR_pos_part= bool_LQR_pos_part, K=K, positive_ctrl=positive_ctrl,
+                          bool_pos_part= bool_pos_part, K=K, positive_ctrl=positive_ctrl,
                         idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 
  
 def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_scheme, N_s_function, 
-                                Amplitudes_Ns, FB_Control=False, bool_LQR_pos_part=False, positive_ctrl=False,
+                                Amplitudes_Ns, FB_Control=False, bool_pos_part=False, positive_ctrl=False,
                                 K=None, idx_time_start_ctrl=None, nb_percent=5):
     '''
     INPUTS:
@@ -489,6 +489,6 @@ def solver_Benney_BDF_Spectral(N_x, N_t, dx, dt, IC, theta, Ca, Re, order_BDF_sc
 
     return solver_BDF(N_x, N_t, dt, IC, order_BDF_scheme, F_time=F_time, F_space=F_space_Spectral, 
                         Amplitudes_Ns=Amplitudes_Ns, FB_Control=FB_Control,
-                          bool_LQR_pos_part= bool_LQR_pos_part, K=K, positive_ctrl=positive_ctrl,
+                          bool_pos_part= bool_pos_part, K=K, positive_ctrl=positive_ctrl,
                         idx_time_start_ctrl=idx_time_start_ctrl, nb_percent=nb_percent)
 

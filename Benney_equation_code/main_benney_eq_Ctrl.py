@@ -10,6 +10,8 @@ import solver_BDF
 import Control_file as file_ctrl
 from header import * 
 
+from sklearn.linear_model import LinearRegression
+
 
 print("\n\n#### BEGINING OF THE PRINT ###\n")
 
@@ -25,11 +27,12 @@ bool_FB_Control = True # bool of Feedback Control
 bool_open_loop_control = False # open loop control i.e predicted
 
 ##Control
-bool_LQR, bool_LQR_pos_part = False, False # LQR control & positive part of LQR control
+bool_pos_part = True
+bool_LQR = True # LQR control & positive part of LQR control
 #Positive ctrl with linear system
 bool_positive_Ctrl, bool_solve_save_solus_opti, bool_load_solus_opti = False, False, False
 #proportionnal control
-bool_prop_ctrl = True
+bool_prop_ctrl = False
 
 
 
@@ -44,17 +47,23 @@ assert (Re<1e2) and (Re>1e-2), r"False scaling assumption: $Ca \neq O(\epsilon^2
 
 
 
+
+
 #########  Simulation details  ############
 ##Time&Space steps
 CFL_factor = 1
-space_steps_array = np.array([128])
+space_steps_array = np.array([512])
+order_BDF_scheme = 4 # Order BDF Scheme
+
+
 print("Modelisation parameters: (N_x, N_t) = ({N_x},)")
 N_x, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(_N_x=space_steps_array[0],
                                                              _CFL_factor = CFL_factor)
 
 
 ## Initial Condition
-h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, delta, 0*delta, 1, 0 #delta from the header
+mode_fq= 1
+h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, delta, 0*delta, mode_fq, mode_fq #delta from the header
 Initial_Conditions = sincos(
         domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
 if True:#Plot of initial condition
@@ -72,9 +81,13 @@ if True:#Plot of initial condition
 sigma_Ns = 0.01
 omega_Ns = 0.1
 #Array of the ranking of the points used for the actuators
-k_nb_act = N_x
+k_nb_act = 5
 array_used_points = np.arange(1, k_nb_act+1, 1)*N_x//(k_nb_act+1) #equi-spaced actuators
 assert array_used_points.shape[0] == k_nb_act, "Problem of shape for the actuators"
+time_start_ctrl = 160 #Time where the control starts
+idx_time_start_ctrl =int(time_start_ctrl/T*N_t)
+
+
 
 #Actuators shape function (the peak function)
 if False: #Gaussian TAKE COS GAUSSIAN FOR THE CONTROL, OTHERWISE ERROR
@@ -91,11 +104,12 @@ else:
 
 
 A_Ns = None
+coef_pos_part_ctrl = 1 #Multiplicative coefficient of the gain matrix (for LQR and proportional control)
+#used when we take the positive part of a control. Try to compense the loss of energy (so should be around 2 maybe).
 
 if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(x(t))
-    beta = 0.95#Only matter for LQR Control, not the positive one. 
-    time_start_ctrl = 25 #Time where the control starts
-    idx_time_start_ctrl =int(time_start_ctrl/T*N_t)
+    beta = 0.95 #Only matter for LQR Control, not the positive one. 
+
 
 
     from solver_BDF import matrices_ctrl
@@ -106,8 +120,8 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
                                 N_x=N_x, L_x=N_x*dx)
 
 
-    # print("Sum of the columns of A: ", A@np.ones(A.shape[1]))
-    if bool_LQR or bool_LQR_pos_part:
+    
+    if bool_LQR:
         if bool_LQR:
             print("## LQR Control ##")
         else:
@@ -156,10 +170,17 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
   
     elif bool_prop_ctrl:
         print("Proportionnal Control")
+        #Computation of the constant alpha
+        # def gain_mat_prop_ctrl()
+        # prop_fct = lambda alpha: max(np.linalg.eig(A)[2].real)
+        
         K = np.zeros((k_nb_act, N_x))
         #We have -K@h in the solver, so we put -alpha here to have N_s=alpha (h-1)/delta.
         for i in range(k_nb_act):
-            K[i, array_used_points[i]] = -file_ctrl.alpha_B_AJ 
+            K[i, array_used_points[i]] = -6*file_ctrl.alpha_B_AJ 
+
+    if bool_pos_part:
+        K = coef_pos_part_ctrl*K #cf the definition of po_part_coef for explanations
 
 else:  #No Control
     idx_time_start_ctrl = None
@@ -195,24 +216,55 @@ else:  #No Control
 ### Boolean variables to control what action to do. Watch out to load the good file.
 #FD method 
 bool_solve_save_FD, bool_load_FD = False, False 
-bool_anim_FD, bool_save_anim_FD = False, False
+bool_anim_display_FD, bool_save_anim_FD = False, False
 
 #Spectral method
-bool_solve_save_spectral, bool_load_spectral = True, False
-bool_anim_spectral, bool_save_anim_spectral = True, True
+bool_solve_save_Sp, bool_load_Sp = False, True
+bool_anim_display_Sp, bool_save_anim_Sp = False, False
 
-## Order BDF Scheme
-order_BDF_scheme = 2
+
+
+
+
+def file_anim_name_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _beta, _coef_pos_part_ctrl):
+    '''Function to write automatically the file names to avoid making typos. 
+    Returns the names of the animation and the file with numerical values.'''
+
+
+    assert (method == "FD" or method == "Sp"), "file_anim_name_ctrl fct: problem in the name of the space scheme."
+    assert (Ctrl_name in ["LQR", "prop", "positive"] ), "file_anim_name_ctrl fct: problem in the name of the Control."
+    
+    _str_pos_part = ""
+    if pos_part:
+        _str_pos_part = "pospart"+str(_coef_pos_part_ctrl)
+    if Ctrl_name != "LQR":
+        _beta = "None"
+
+    title_file = ('Benney_equation_code\\Control_verifications\\Ctrl_'+ Ctrl_name + _str_pos_part + '_' +
+                    method + '_' + 'BDF{order_BDF}_Nx{N_x}_beta{beta}.txt'.format(
+            order_BDF=_order_BDF, N_x=_N_x, beta=_beta))
+    title_anim = ('Benney_equation_code\\Control_verifications\\Anim_Ctrl_'+ Ctrl_name + _str_pos_part + '_' +
+                    method + '_' + 'BDF{order_BDF}_Nx{N_x}_beta{beta}.mp4'.format(
+            order_BDF=_order_BDF, N_x=_N_x, beta=_beta))
+    
+    return title_file, title_anim
+
+
+if bool_LQR:
+    Ctrl_name = 'LQR'
+elif bool_prop_ctrl:
+    Ctrl_name = 'prop'
+elif bool_positive_Ctrl:
+    Ctrl_name = 'positive'
 
 
 
 ###### Finite Difference & BDF Scheme ######
 
 ### Solving & animation
-title_file = 'Benney_equation_code\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                BDF_order=order_BDF_scheme, N_x=N_x)
-title_anim = 'Benney_equation_code\\anim_FD_anim_BDF_order{order_BDF}_Nx_{N_x}_multi_jet.mp4'.format(
-        order_BDF = order_BDF_scheme, N_x=N_x)
+title_file, title_anim = file_anim_name_ctrl('FD', Ctrl_name=Ctrl_name, pos_part=bool_pos_part,
+                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _beta=beta,
+                                             _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
 
 _, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
@@ -238,7 +290,7 @@ if bool_load_FD:
 ### VISUALISATION 
 ##animation function
 
-if bool_anim_FD:#Animation of benney numerical solution
+if bool_anim_display_FD:#Animation of benney numerical solution
     animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
         _anim_space_array = domain_x, _anim_time_array = domain_t,
         title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
@@ -258,18 +310,9 @@ if bool_save_anim_FD:
 
 ###### SPECTRAL METHOD #########
 ### Solving
-if bool_FB_Control:
-    title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_prop_Ctrl.txt'.format(
-                        BDF_order=order_BDF_scheme, N_x=N_x, beta=beta)
-    title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
-                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_prop_Ctrl.mp4').format(
-                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3), beta=beta))
-else:
-    title_file = 'Benney_equation_code\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}_NoCtrl.txt'.format(
-                        BDF_order=order_BDF_scheme, N_x=N_x)
-    title_anim = (('Benney_equation_code\\Anim_Spectral_Ns_'+
-                '_BDF{BDF_order}_Nx{N_x}_theta{theta}_Test_theta{T}.mp4').format(
-                        BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3), T=T))
+title_file, title_anim = file_anim_name_ctrl('Sp', Ctrl_name=Ctrl_name, pos_part=bool_pos_part,
+                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _beta=beta,
+                                             _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
 title_amplitude = title_file[:-4]+"_Ampl.txt"
 
@@ -279,11 +322,12 @@ _, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
 dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4    
 print("Number of Space and Time points:", (N_x, N_t))
 
-if bool_solve_save_spectral:
+
+if bool_solve_save_Sp:
     h_mat_spectral, amplitudes_spectral = solver_BDF.solver_Benney_BDF_Spectral(
         N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
         order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
-        FB_Control=bool_FB_Control,  bool_LQR_pos_part= bool_LQR_pos_part, 
+        FB_Control=bool_FB_Control,  bool_pos_part= bool_pos_part, 
         positive_ctrl= bool_positive_Ctrl, K=K, idx_time_start_ctrl=idx_time_start_ctrl)
 
     if bool_FB_Control:
@@ -295,7 +339,7 @@ if bool_solve_save_spectral:
     np.savetxt(title_amplitude, amplitudes_spectral)
 
 
-if bool_load_spectral:
+if bool_load_Sp:
     h_mat_spectral, amplitudes_spectral = np.loadtxt(title_file), np.loadtxt(title_amplitude)
 
     assert ((h_mat_spectral.shape[0]==N_t)
@@ -303,7 +347,7 @@ if bool_load_spectral:
 
 
 ###Animation
-if bool_anim_spectral:#Animation of benney numerical solution
+if bool_anim_display_Sp or bool_save_anim_Sp:#Animation of benney numerical solution
     #Construction of a function for plotting. Tee pressure is showed upside down and normalized. (cf Obsidian file)
     
     if bool_FB_Control or bool_open_loop_control:
@@ -334,10 +378,13 @@ if bool_anim_spectral:#Animation of benney numerical solution
         title_x_axis=r"x axis: horizontal inclined by $\theta$",
         title_y_axis= r"y-axis (inclined by $\theta$)",
         _legend_list = legend_list)
-    plt.show()
+    if bool_anim_display_Sp:
+        plt.show()
+    else:
+        plt.close()
 
-if bool_anim_spectral and bool_save_anim_spectral:
-    animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
+    if bool_save_anim_Sp:
+        animation_Benney.save(title_anim) #needs the program ffmpeg installed and in the PATH
 
 
 
@@ -360,51 +407,93 @@ if bool_anim_spectral and bool_save_anim_spectral:
 
 print("******** Tests & Experiments& Control theory verification ***********")
 
+bool_reg_lin = True
+
+def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _beta, _coef_pos_part_ctrl):
+    '''Function to write automatically the file names to avoid making typos. 
+    Returns the names of the animation and the file with numerical values.'''
+
+
+    assert (method == "FD" or method == "Sp"), "file_anim_name_ctrl fct: problem in the name of the space scheme."
+    assert (Ctrl_name in 
+            ["LQR", "prop", "positive"] ), "file_anim_name_ctrl fct: problem in the name of the Control."
+    
+    str_pos_part, str_pos_part_plot = "", ""
+    if pos_part:
+        str_pos_part, str_pos_part_plot = ("pospart"+str(_coef_pos_part_ctrl), 
+                                           str(_coef_pos_part_ctrl)+" times the positive part of ")
+    if Ctrl_name != "LQR":
+        _beta = "None"
+
+    title_plot_file = ('Benney_equation_code\\Control_verifications\\Plot_Ctrl_'+ Ctrl_name + str_pos_part + '_' +
+                    method + '_' + 'BDF{order_BDF}_Nx{N_x}_beta{beta}.png'.format(
+            order_BDF=_order_BDF, N_x=_N_x, beta=_beta))
+    
+    if Ctrl_name =="prop":
+        Ctrl_name = "proportional"
+
+    title_plot = ("Log(max|h-1|) with"+str_pos_part_plot + Ctrl_name+ " control ,with \n"+
+                        r"N_x={N_x}, $\beta$={beta}".format(N_x=N_x, beta=beta))
+    
+    return title_plot_file, title_plot
+
+
 
 ### Log amplitude of the Control
-if bool_solve_save_spectral or bool_load_spectral:
-    h_amplitude = np.max(np.absolute(h_mat_spectral-1), axis=1) #Eventhough we do a control on (h-1)/delta, we are interested in |h-1|
-    plt.plot(domain_t, h_amplitude)
-    # plt.xscale("log")
-    plt.yscale('log')
-    plt.xlabel("time t")
-    plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t)-1|)$")
+
+h_amplitude = np.max(np.absolute((h_mat_spectral-1)), axis=1) #Eventhough we do a control on (h-1)/delta, we are interested in |h-1|
+
+#Exponential regression to compute the dampening rate  
+if bool_reg_lin: 
+    t1, t2 = time_start_ctrl, T
+    N1, N2 = int(t1/T*N_t), int(t2/T*N_t)
+    h_ampl_lin_reg, array_t_reg_lin = h_amplitude[N1:N2], domain_t[N1:N2]
+
+    #Linear regression of the differences
+    x_lin_reg_array = np.log10(array_t_reg_lin).reshape(-1,1) #Necessary reshape for sklearn
+
+    #L2 Case
+    y_lin_reg_array = np.log10(h_ampl_lin_reg).reshape(-1, 1)
+    reg = LinearRegression(fit_intercept=True).fit(x_lin_reg_array, y_lin_reg_array) #sklearn function
+    #slope a, intercept b and  Determination coefficient R²
+    Reg_lin_coef_a , Reg_lin_coef_b= reg.coef_[0][0], reg.intercept_[0]
+    Reg_lin_coef_r2 = reg.score(x_lin_reg_array, y_lin_reg_array)
+    rescaled_lin_reg = 10**(Reg_lin_coef_b)*(array_t_reg_lin**Reg_lin_coef_a)
 
 
-    if bool_FB_Control:
-        if bool_LQR_pos_part:
-            title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
-            '_BDF{BDF_order}_Nx{N_x}_theta{theta}_trunc_Ctrl_beta{beta}.png').format(
-                    BDF_order=order_BDF_scheme, N_x=N_x, theta=round_fct(theta, 3), beta=beta))
-            plt.title("Log amplitude of |h-1| along time with the  positive part of LQR Control,with \n"+
-                        r"N_x={N_x}, $\beta$={beta}".format(N_x=N_x, beta=beta))
-        elif bool_positive_Ctrl:
-            title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
-            '_BDF{BDF_order}_Nx{N_x}_theta{theta}_pos_Ctrl.png').format(
-                    BDF_order=order_BDF_scheme, N_x=N_x, theta=round_fct(theta, 3), beta=beta))
-            plt.title("Log amplitude of |h-1| along time with positive Control from QP optimisation ,with \n"+
-                        r"N_x={N_x},".format(N_x=N_x))
-        elif bool_LQR:#Normal LQR Control
-            title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
-                    '_BDF{BDF_order}_Nx{N_x}_theta{theta}_trunc_Ctrl_beta{beta}.png').format(
-                            BDF_order=order_BDF_scheme, N_x=N_x, theta=round_fct(theta, 3), beta=beta))
-            plt.title("Log amplitude of |h-1| along time with LQR Control,with \n" +
-                       r"N_x={N_x}, $\beta$={beta}".format(N_x=N_x, beta=beta))
-        elif bool_prop_ctrl:
-            title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
-                    '_BDF{BDF_order}_Nx{N_x}_theta{theta}_propc_Ctrl.png').format(
-                            BDF_order=order_BDF_scheme, N_x=N_x, theta=round_fct(theta, 3), beta=beta))
-            plt.title("Log amplitude of |h-1| along time with Proportionnal Control, with \n" +
-                       "N_x={N_x}, k={k}".format(N_x=N_x, k=k_nb_act))
-        plt.axvline(x=time_start_ctrl, color='r')
-    else:
-        title_plot = (('Benney_equation_code\\plot_Spectral_Ns_'+
-                    '_BDF{BDF_order}_Nx{N_x}_theta{theta}_NoCtrl.pdf').format(
-                            BDF_order=order_BDF_scheme, N_x=N_x, theta=solver_BDF.round_fct(theta, 3)))
-        
-    plt.savefig(title_plot)
-    plt.show()
+print("LIN REG: ", Reg_lin_coef_a, Reg_lin_coef_b, Reg_lin_coef_r2)
+
+plt.plot(domain_t, h_amplitude)
+if bool_reg_lin:
+    plt.plot(array_t_reg_lin, rescaled_lin_reg, 
+        label="Linear Regression, \n "+r"(a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+        a=solver_BDF.round_fct(Reg_lin_coef_a, 2), b=solver_BDF.round_fct(Reg_lin_coef_b, 2)
+        , R2=solver_BDF.round_fct(Reg_lin_coef_r2, 4)),
+        color='r')
+# plt.xscale("log")
+plt.yscale('log')
+plt.xlabel("time t")
+plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t)-1|)$")
 
 
+if bool_FB_Control:
+    title_plot_file, title_plot = title_plot_ctrl(
+        method='Sp', Ctrl_name= Ctrl_name, pos_part=bool_pos_part, _N_x=N_x, _order_BDF=order_BDF_scheme,
+            _beta=beta, _coef_pos_part_ctrl=coef_pos_part_ctrl)
+    plt.title(title_plot)
+    plt.axvline(x=time_start_ctrl, color='k')
+
+plt.legend()
+plt.savefig(title_plot_file)
+plt.show()
+
+
+## Computation of the quadratic cost of the control
+
+
+quad_cost_ctrl = np.sum(amplitudes_spectral**2)*dx**2*dt**2
+print("Total cost before the control starts (expected to be 0): ",
+       np.sum(amplitudes_spectral[0:idx_time_start_ctrl, :]**2))
+print("Total cost of the control: ", quad_cost_ctrl)
 
 

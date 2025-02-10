@@ -1,5 +1,3 @@
-
-
 \documentclass[12pt]{article}
 \usepackage[bottom = 3cm, left = 3cm, right = 3cm, top = 3cm]{geometry}
 \usepackage{amssymb}
@@ -104,7 +102,18 @@ However, blowing and sucking fluid from the base of the plane doesn't seem pract
 In \cite{Moving_pressure_source}, D.Lunz and al. studied the effects of an oscillating actuators on a falling liquid film and carried out a analysis depending on the oscillation frequency. They simplified the problem by only modelling the normal stress induced by the gas on the liquid.  In this report, we also chose to simplify the system and only consider normal pressure, and we justify this choice later. To the best of the author's knowledge, no control paper has been drawn up with this specific system and way of control. 
 \\
 
-The report is structured in two main parts. First, we model and observe in \eqref{Section_KS_eq} the KS equation as an introductory work. We solve the equation numerically using an Implicit-Explicit method provided in \cite{Scheme_for_KS} and observe the main behaviours (steady states, progressive waves) of the KS equation, except its chaotic behaviour. Secondly, we study the inclined plane system: in \eqref{Section_Benney_eq}, we derive the Benney equation with a normal gaz pressure control term. We introduce the normal and tangential terms of the gas stress, neglect the tangential term, and choose a classic scaling to make the normal term appear in the equation.  Then, in \eqref{Section_Numerical_simu}, we construct numerical simulation scheme and carry out tests to ensure its accuracy. Finally, in \eqref{Section_Control}, we use the linearised Benney equation to compute a linear controls. We find that LQR state feedback control works well and stabilizes exponentially quickly the system. As that method gives control of any sign, we need to restraint the control to positive values to have blowing only air jets. We find that LQR optimal control with just the positive part of the control applied at each time step stabilizes successfully the system too, although with less efficiency. However, using this method, we are not sure that the state (i.e the height the the liquid film) of the system will stay positive. Hence, we lean on another way of linear feedback control, using theory of positive control systems. 
+The report is structured in two main parts. First, we model and observe in \eqref{Section_KS_eq} the KS equation 
+as an introductory work. We solve the equation numerically using an Implicit-Explicit method provided in 
+\cite{Scheme_for_KS} and observe the main behaviours (steady states, progressive waves) of the KS equation, except its chaotic 
+behaviour. Secondly, we study the inclined plane system: in \eqref{Section_Benney_eq}, we derive the Benney equation with a 
+normal gaz pressure control term. We introduce the normal and tangential terms of the gas stress, neglect the tangential 
+term, and choose a classic scaling to make the normal term appear in the equation.  Then, in \eqref{Section_Numerical_simu}, 
+we construct numerical simulation scheme and carry out tests to ensure its accuracy. Finally, in \eqref{Section_Control}, we 
+use the linearised Benney equation to compute a linear controls. We find that LQR state feedback control works well and stabilizes
+ exponentially quickly the system. As that method gives control of any sign, we need to restraint the control to positive values to 
+ have blowing only air jets. We find that LQR optimal control with just the positive part of the control applied at each time step stabilizes 
+ successfully the system too, although with less efficiency. However, using this method, we are not sure that the state (i.e the height the the 
+ liquid film) of the system will stay positive. Hence, we lean on another way of linear feedback control, using theory of positive control systems. 
 \\
 
 Throughout all that document, I denote: 
@@ -355,7 +364,7 @@ We show on figure \ref{fig:KS_eq_lambda_growing_and_dampening} two profiles of $
 
 We will now separate our observations in two parts: $\nu \geq1$ and $\nu <1$.
 
-\subsubsection{$\nu \geq1$}
+\subsubsection{\texorpdfstring{$\nu \geq 1$}{nu >= 1}}
 
 As said before, we are expecting to have exponential decays. We will here measure the characteristic decay of curves as if they were decaying exponentially by computing an exponential regression (linear regression on a log scale). Then, we compare the coefficients to the expected rate. 
 
@@ -426,7 +435,7 @@ In opposition to the tests above, we are fixing a mode value (j=1 e.g) and chang
 \end{figure}
 
 
-We see in \ref{fig:KS_eq_nu_inf_1} that the case $\nu=\frac{1}{4}$ is interesting as we would have a second divergent mode. We make tests with $\nu$ getting closer to 1/4 by above ($\{\frac{1}{2}, \frac{1}{3}, \frac{7}{24} = \frac{1/3+1/4}{2}, \frac{13}{48} = \frac{7/24 + 1/4}{2}\}$). We observe two behaviours:
+We see in \eqref{fig:KS_eq_nu_inf_1} that the case $\nu=\frac{1}{4}$ is interesting as we would have a second divergent mode. We make tests with $\nu$ getting closer to 1/4 by above ($\{\frac{1}{2}, \frac{1}{3}, \frac{7}{24} = \frac{1/3+1/4}{2}, \frac{13}{48} = \frac{7/24 + 1/4}{2}\}$). We observe two behaviours:
 \begin{itemize}
     \item When $\nu$ is "far" from $\frac{1}{4}$: u grows exponentially and then stabilizes around a wavy steady state.
     \item When $\nu$ is "close" to $\frac{1}{4}$: There is also a linear regime and a stabilization around a steady. However the equilibrium breaks and it becomes a traveling wave (cf 
@@ -980,7 +989,7 @@ Among the $12=6\times2$ graphs (one for each methods and for each $N_{BDF}$) tha
 \end{figure}
 
 Taking into account the above observation and the one before, we choose 
-\begin{equation}
+\begin{equation}\label{var_final_config_tests}
 \boxed{
     N_{BDF} = 4, \quad N_x = 512
 }
@@ -1227,12 +1236,109 @@ and
  
  The equation \eqref{eq_Riccati_eq} is known as the \underline{Continuous Algebraic Riccati Equation} (CARE). At the opposite of \cite{holroyd2023linearquadraticregulationcontrol}, we don't use a specific method to solve this equation and rather use the python library \textit{python-control} with the function \texttt{control.lqr}. We also didn't check the existence of a solution, but let us remark that in the continuous framework, if the system (A, B) is controlable,  R is positive definite and Q semi-positive definite, then there exists one and only minimizer of the cost functional $\kappa$ which solves the Riccati equation. Here, R and Q are obviously positive semi-definite and we will check numerically that R is positive definite. 
 
+
+ % PUT FIGURE OF A GAIN MATRIX ROW
  
-\subsubsection{}
+\subsubsection{Numerical experiment}
+We now try to stabilize the growing regime \eqref{eq_value_variables_num_verif} with LQR
+control. We test first classic LQR control, which stabilizes efficiently the system. Then,
+we try to apply only the positive part of the LQR control, to mimic blowing only air jets.
+We find that this control also stabilizes the system, but is less efficient. 
+\\
+
+\textbf{Classic LQR Control.} We implemment the LQR control by solving the Riccati equation, 
+as described at the end of the previous section. We test several weight parameters $\beta
+\in \{0.2, 0.5, 0.95 \}$\footnote{Let us precise that the program doesn't find a solution for
+Riccati equation for some values of $\beta$ like 0.1 or 0.5. That is why we take here $\beta=0.2$
+as a 'small' $\beta$.} to observe how this parameter affects the stabilization of the system,
+but also the total quadratic cost of the control. Here, we don't take into account the shape functions
+ of the actuators and just look at the their amplitudes as we just want to compare the cost obtained 
+ with different values of $\beta$.: 
+\begin{equation}
+    \kappa_u = \int_{0}^{T} \int_{0}^{L}u^2 dx dt,
+\end{equation}
+
+or rather its numerical counterpart:
+
+\begin{verbatim}
+    quad_cost_ctrl = np.sum(amplitudes_spectral**2)*dx**2*dt**2.
+\end{verbatim}
+
+Here, \textit{"amplitudes\_spectral"} the amplitudes of the shape function with a spectral method 
+numerical scheme.  
+\\
+
+We consider that the system is stabilized when its maximal amplitude is lower than $\delta=1$, the 
+amplitude of the initial perturbation. We take 
+
+
+\begin{equation}
+    T_{start} = 160, \quad T=300
+\end{equation}
+
+the starting time of the control (to let the perturbation grow until a sufficient large state) and
+the total time of the simulation to let the time to the control to stabilize the system.
+The control stabilizes exponentially the system, as we can see in figure \eqref{fig:LQR_beta_0.95}.We 
+present in \eqref{tab:LQR_cost_beta} the cost for different $\beta$.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Control_experiments/LQR_beta_0.95.png}
+    \caption{Stabilization of the Benney system with an LQR control of parameter $\beta=0.95$.
+    We made an exponential regression (so linear in a log scale) to see the scale of dampening.
+    Let us stress out that the decrease rate is with respect to the classic neperian logarithm
+    while the log scale in this plot is with respect to the logarithm in base 10. Therefore,
+    the slope angle doesn't match with what we see in the plot (need to rescale it with log(10)) }
+    \label{fig:LQR_beta_0.95}
+\end{figure}
+\vspace{0.5cm}
+
+
+\begin{table}[ht]
+    \caption{Array of the cost with different values of $\beta$}
+    \label{tab:LQR_cost_beta}
+    \centering
+        \begin{tabular}{ |c|c|c|c| }
+        \hline
+             $\beta$ & 0.95 & 0.5 & 0.2  \\
+        \hline
+        $\kappa_u$ & 3.2744 & 3.03386 & 3.0285 \\ 
+
+        \hline
+        \end{tabular}
+\end{table}
+
+We see that $\kappa_u$ is increasing with $\beta$, which is expected as we lower the weight
+on the cost of the control to have a better stabilization.\\
+
+The LQR control stabilizes well the Benney system, and the videos of the 3 controls can be seen in the 
+\href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github repository}. As said before, 
+this result is not sufficient as it gives not only blowing, but also suction air control. 
+\\
+
+
+\textbf{Positive part of LQR Control.}
+Now, we only take the positive part of the LQR control too construct a blowing only air jet control.
+We find that the system stabilizes also exponentially but around 3-4 times slower, with the coefficient 
+of the exponential regression bein around 3 in the positive part case against 14 in the normal case. We 
+tried to carry out simulations with T = 1000 in order to see the decrease of the amplitude until the
+end. However, the configuration given by \eqref{var_final_config_tests} doesn't seem to be enough as the 
+system Benney system with variables \eqref{eq_value_variables_num_verif} blocks before t=160 (the time on when
+the system wasn't blocking with $N_x =512$ and $N_x=1024$), which seems to mean that the number of 
+time (here $N_t = N_x = 512$) and steps point isn't enough for T=1000. 
+
+From a physical point of vue, it was expected that the control will be less efficient as we remove half 
+of the energy of the normal LQR control. 
 
 
 \subsection{Proportional Control}
-We first do proportional control i.e control of the type 
+We want now to compare the LQR result with proportionnal control. Indeed, we saw in the videos of the dynamics 
+of the liquid film height that the actuators seemed to have a behavior very close to the one of proportionnal 
+control (sucking when there is a trough, blowing when there is a crest). Therefore, we lean on proportionnal control,
+a simpler control mechanims, to see if the complexity of the LQR was necessary to have good results.
+
+We now do proportional control i.e control of the type 
 \begin{equation}\label{N_s_prop_ctrl}
     \tilde{N}_s = \alpha\tilde{h} = \alpha \frac{h-1}{\delta}, \quad \alpha >0.
 \end{equation}

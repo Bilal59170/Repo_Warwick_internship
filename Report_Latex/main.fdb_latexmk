@@ -1,13 +1,13 @@
 # Fdb version 4
-["biber main"] 1739102069.17841 "main.bcf" "main.bbl" "main" 1739102944.79419 0
+["biber main"] 0 "main.bcf" "main.bbl" "main" 1739199477.48273 -1
   "bibliography.bib" 1739102816 7262 8fba1d60d4997bb6664625b40dd38317 ""
-  "main.bcf" 1739102944 110729 5bd77c1a7e1a833e7c164508422c91ca "pdflatex"
+  "main.bcf" 1739199477 110729 5bd77c1a7e1a833e7c164508422c91ca "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1739102942.36784 "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" "main.pdf" "main" 1739102944.79494 0
-  "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1739039908 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
+["pdflatex"] 1739199475.14636 "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" "main.pdf" "main" 1739199477.48346 0
+  "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1739192253 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1739039912 14064 bce51e000c5c2dc411f152d7485cb117 ""
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1739039842 12021666 70d6ecc2498bbd0c2587c497e79898ac ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/tfm/jknappen/ec/tcrm1200.tfm" 993062508 1444 95ffe0f19b974d50849790c8225c7ef7 ""
@@ -208,6 +208,7 @@
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1657800696 9714 ba3194bd52c8499b3f1e3eb91d409670 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
+  "Control_experiments/LQR_beta_0.95.png" 1739189648 44685 50b3089a73cf6ba0dac31a630bb6ebea ""
   "KS_eq/KS_extrema_Fourier_coef.png" 1739102638 95654 272b62917eb1b20fd6757855eac55c50 ""
   "KS_eq/plot_decay_nu_1_k_1png.png" 1739102638 49275 4f2b5d6b76d6037e72eed280ffb4d26e ""
   "KS_eq/plot_dispersion_nu_1_1-4.png" 1739102638 50719 d0149dfbb6ce25e5ba43169fc4575a55 ""
@@ -218,14 +219,14 @@
   "Verif_scheme/plot_FD_BDF_Nx_1024.png" 1739102638 58337 9a42dca3ce7faf03ab186e658e1fc5f6 ""
   "Verif_scheme/plot_FD_BDF_Nx_128.png" 1739102638 66212 e8d5b96aa02e8164300227d6c9f27f76 ""
   "Verif_scheme/plot_FD_BDF_Nx_512.png" 1739102638 61319 61edb8ea0810b6bb3317c20ac026e283 ""
-  "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" 1739102941 96583 3a247d7a82dbc17edc39e5c164ba8ce9 ""
+  "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" 1739199472 101567 c5e0700ac39f09c5f819f5ba88468bbc ""
   "cartoon_thin_film.png" 1739102638 906324 d3033f1fe2065b2db0965c21925516f1 ""
-  "main.aux" 1739102944 19766 84d6df4185a1fca369edbfbe40f41ac1 "pdflatex"
-  "main.bbl" 1739102071 28543 e1c43a0c9665f09c9bfb17c04e053b05 "biber main"
-  "main.out" 1739102944 7183 0f574c78bfc361eff355b0fd4dda0599 "pdflatex"
-  "main.run.xml" 1739102944 2307 fa280d158a7733084a6a66e2106e4193 "pdflatex"
-  "main.tex" 1739102941 96583 3a247d7a82dbc17edc39e5c164ba8ce9 ""
-  "main.toc" 1739102944 3537 179ed542150a4a6253ecb69b1ee5abac "pdflatex"
+  "main.aux" 1739199477 21251 dfe7a76ba20164ce58c81b3a52e64527 "pdflatex"
+  "main.bbl" 1739195306 28543 e1c43a0c9665f09c9bfb17c04e053b05 "biber main"
+  "main.out" 1739199477 7330 c7dffe6caff6ad35461b938f904ddf88 "pdflatex"
+  "main.run.xml" 1739199477 2307 fa280d158a7733084a6a66e2106e4193 "pdflatex"
+  "main.tex" 1739199472 101567 c5e0700ac39f09c5f819f5ba88468bbc ""
+  "main.toc" 1739199477 3557 2f16b120ae87c73fe0775496b070a992 "pdflatex"
   (generated)
   "main.aux"
   "main.bcf"

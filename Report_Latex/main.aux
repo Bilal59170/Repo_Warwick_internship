@@ -114,6 +114,7 @@
 \newlabel{h_diff_convergence_rate}{{60}{27}{Verification and validation of the schemes}{equation.60}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces We observe that the third, fourth, fifth and sixth order BDF schemes are quite close for $N_x = 1024.$ The second order is still quite difference while the first order solution doesn't have the same crest amplitude at all. }}{28}{figure.caption.7}\protected@file@percent }
 \newlabel{fig:BDF_plot_1024}{{10}{28}{We observe that the third, fourth, fifth and sixth order BDF schemes are quite close for $N_x = 1024.$ The second order is still quite difference while the first order solution doesn't have the same crest amplitude at all}{figure.caption.7}{}}
+\newlabel{var_final_config_tests}{{61}{28}{Verification and validation of the schemes}{equation.61}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Spectral method, $N_{BDF}=4$: Convergence plot at t=T in a log-log plot. }}{29}{figure.caption.8}\protected@file@percent }
 \newlabel{fig:Convergence_plot_BDF_4_Sp}{{11}{29}{Spectral method, $N_{BDF}=4$: Convergence plot at t=T in a log-log plot}{figure.caption.8}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Comparison between the Spectral and FD methods with $N_{BDF}=4.$ We see that the $L^{\infty }$ norm of the difference when $N_x=512$ is around $1.10^{-2}$ and $1.10^{-3}$ which is satisfactory for a final state of amplitude $3.10^{-1}$. }}{29}{figure.caption.9}\protected@file@percent }
@@ -142,37 +143,41 @@
 \newlabel{eq_LQR_discrete_cost}{{78}{35}{LQR Control and Riccati equation}{equation.78}{}}
 \newlabel{eq_LQR_discrete_cost_matrices}{{79}{35}{LQR Control and Riccati equation}{equation.79}{}}
 \newlabel{eq_Riccati_eq}{{80}{35}{LQR Control and Riccati equation}{equation.80}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Numerical experiment}{36}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Array of the cost with different values of $\beta $}}{36}{table.caption.11}\protected@file@percent }
+\newlabel{tab:LQR_cost_beta}{{1}{36}{Array of the cost with different values of $\beta $}{table.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Stabilization of the Benney system with an LQR control of parameter $\beta =0.95$. We made an exponential regression (so linear in a log scale) to see the scale of dampening. Let us stress out that the decrease rate is with respect to the classic neperian logarithm while the log scale in this plot is with respect to the logarithm in base 10. Therefore, the slope angle doesn't match with what we see in the plot (need to rescale it with log(10)) }}{37}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:LQR_beta_0.95}{{13}{37}{Stabilization of the Benney system with an LQR control of parameter $\beta =0.95$. We made an exponential regression (so linear in a log scale) to see the scale of dampening. Let us stress out that the decrease rate is with respect to the classic neperian logarithm while the log scale in this plot is with respect to the logarithm in base 10. Therefore, the slope angle doesn't match with what we see in the plot (need to rescale it with log(10))}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Proportional Control}{37}{subsection.5.3}\protected@file@percent }
 \abx@aux@cite{0}{Thompson_2016_prop_ctrl}
 \abx@aux@segm{0}{0}{Thompson_2016_prop_ctrl}
 \abx@aux@cite{0}{Thompson_2016_prop_ctrl}
 \abx@aux@segm{0}{0}{Thompson_2016_prop_ctrl}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}}{36}{subsubsection.5.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Proportional Control}{36}{subsection.5.3}\protected@file@percent }
-\newlabel{N_s_prop_ctrl}{{82}{36}{Proportional Control}{equation.82}{}}
-\newlabel{eq_dispertion_prop_ctrl}{{84}{36}{Proportional Control}{equation.84}{}}
+\newlabel{N_s_prop_ctrl}{{84}{38}{Proportional Control}{equation.84}{}}
+\newlabel{eq_dispertion_prop_ctrl}{{86}{38}{Proportional Control}{equation.86}{}}
 \abx@aux@cite{0}{Thompson_2016_prop_ctrl}
 \abx@aux@segm{0}{0}{Thompson_2016_prop_ctrl}
-\newlabel{eq_pole_placement}{{88}{37}{Proportional Control}{equation.88}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Positive control system}{37}{subsection.5.4}\protected@file@percent }
+\newlabel{eq_pole_placement}{{90}{39}{Proportional Control}{equation.90}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Positive control system}{39}{subsection.5.4}\protected@file@percent }
 \abx@aux@cite{0}{pos_ctrl_paper}
 \abx@aux@segm{0}{0}{pos_ctrl_paper}
 \abx@aux@cite{0}{pos_ctrl_paper}
 \abx@aux@segm{0}{0}{pos_ctrl_paper}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Positive control system}{38}{subsubsection.5.4.1}\protected@file@percent }
-\newlabel{pos_ctrl_system}{{91}{38}{Positive control system}{equation.91}{}}
-\newlabel{linear_inequalities_pos_ctrl}{{94}{39}{Positive control system}{equation.94}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.2}Reformulation into a QP optimization problem}{39}{subsubsection.5.4.2}\protected@file@percent }
-\newlabel{opti_problem_pos_ctrl}{{96}{40}{Reformulation into a QP optimization problem}{equation.96}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}The code}{41}{appendix.A}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Scheme for the KS equation}{41}{subsection.A.1}\protected@file@percent }
-\newlabel{KS_computation_numerics}{{A.1}{41}{Scheme for the KS equation}{subsection.A.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}The governing equations}{42}{appendix.B}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}KBC and mass conservation}{42}{subsection.B.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Dynamic boundary conditions}{43}{subsection.B.2}\protected@file@percent }
-\newlabel{eq DBC Kaliadasis}{{99}{43}{Dynamic boundary conditions}{equation.99}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Derivation of the reduced order models}{45}{appendix.C}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Benney equation}{45}{subsection.C.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}The KS equation}{45}{subsection.C.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.1}Positive control system}{40}{subsubsection.5.4.1}\protected@file@percent }
+\newlabel{pos_ctrl_system}{{93}{40}{Positive control system}{equation.93}{}}
+\newlabel{linear_inequalities_pos_ctrl}{{96}{41}{Positive control system}{equation.96}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.4.2}Reformulation into a QP optimization problem}{41}{subsubsection.5.4.2}\protected@file@percent }
+\newlabel{opti_problem_pos_ctrl}{{98}{42}{Reformulation into a QP optimization problem}{equation.98}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}The code}{43}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Scheme for the KS equation}{43}{subsection.A.1}\protected@file@percent }
+\newlabel{KS_computation_numerics}{{A.1}{43}{Scheme for the KS equation}{subsection.A.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}The governing equations}{44}{appendix.B}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}KBC and mass conservation}{44}{subsection.B.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Dynamic boundary conditions}{45}{subsection.B.2}\protected@file@percent }
+\newlabel{eq DBC Kaliadasis}{{101}{45}{Dynamic boundary conditions}{equation.101}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Derivation of the reduced order models}{47}{appendix.C}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Benney equation}{47}{subsection.C.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}The KS equation}{47}{subsection.C.2}\protected@file@percent }
 \abx@aux@read@bbl@mdfivesum{2BDD3BAFB26FCCA02179F2B727ED26A1}
 \abx@aux@defaultrefcontext{0}{KS_scheme_C_A}{nty/global//global/global/global}
 \abx@aux@defaultrefcontext{0}{Scheme_for_KS}{nty/global//global/global/global}
@@ -188,4 +193,4 @@
 \abx@aux@defaultrefcontext{0}{pos_ctrl_paper}{nty/global//global/global/global}
 \abx@aux@defaultrefcontext{0}{A_Thompson_FLF_blowing_suction}{nty/global//global/global/global}
 \abx@aux@defaultrefcontext{0}{Thompson_2016_prop_ctrl}{nty/global//global/global/global}
-\gdef \@abspage@last{48}
+\gdef \@abspage@last{50}

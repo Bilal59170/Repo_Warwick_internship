@@ -12,7 +12,7 @@ from IPython.display import HTML
 #### System VARIABLES: Physics & Mathematics (Values From Oscar's code)
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
 nu =  2*np.pi/L_x #Not the nu from the Ks equation
-T = 160   # Dimensionless: end time of the simulation
+T = 300   # Dimensionless: end time of the simulation
 theta = np.pi/3 #Slope angle: in rad
 print("Time T: ", T)
 print("Critical upper Reynolds Number:", 5/4*np.cos(theta)/np.sin(theta))
@@ -47,7 +47,7 @@ else:
 
 ###Some configurations and Usefull fonctions
 
-plt.rc('font', size=13) # Set the font size for all the plots 
+plt.rc('font', size=11) # Set the font size for all the plots 
 
 
 #Function for setting the time and space steps
@@ -85,18 +85,62 @@ def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
     '''Function to compute sinusoidal periodic initial condition'''
     return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) 
 
+
+
+
+
 ## Animation Functions 
+
 def round_fct(r, nb_decimal):
     '''Detect the power of 10 and round the number nb_decimal further. 
     Coded to have titles of animation not to big.
-    Expl: round_fct(0.000123456, 4) = 0.000123 (or 0.0001234 I don't remember)'''
-    if r==0:
+    Expl: round_fct(0.000123456, 4) = 0.000123 '''
+
+    if r ==0:
         return 0
+
+    r_str = format(abs(r), ".20f") #avoid to have a scientific writing of abs(r)
+
+
+    bool_point = False #If the point in the string is passed
+    bool_zero = True #if there is only 0
+    pos_log10 = False # sign of log10(abs(r))
+    idx_point, idx_last_zero = -1, -1
+
+    for i in range(len(r_str)): # loop to 
+        if r_str[i] == "." and not(bool_point):
+            bool_point = True
+            idx_point = i
+        elif r_str[i] != "0" and not(bool_point):
+            print("POSPOS", i)
+            bool_zero = False
+            pos_log10 = True
+        elif r_str[i]!= '0' and bool_zero and bool_point:
+            print("LAST ZERO")
+            bool_zero = False
+            if i-1 == idx_point:
+                idx_last_zero = i-2
+            else:
+                idx_last_zero = i-1
+
+    # print("idx_point", idx_point)
+    # print("idx_last_zero", idx_last_zero)
+        
+    if pos_log10:
+        if nb_decimal == 1:
+            correct_str = r_str[:idx_point]
+        else:
+            correct_str = r_str[:idx_point+nb_decimal]
     else:
-        # print("NUMBER R", r)
-        power_10 = int(np.log10(abs(r)))
-        factor = 10**(power_10)
-        return round(r/factor, nb_decimal)*factor
+        correct_str = r_str[: idx_last_zero+nb_decimal+1]
+
+    if r>0:
+        result = float(correct_str)
+    else:
+        result = -float(correct_str)
+    
+    return result
+
 
 def func_anim(_time_series, _anim_space_array, _anim_time_array, 
               title, title_x_axis = None, title_y_axis= None, _legend_list = None):
