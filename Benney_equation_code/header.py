@@ -98,6 +98,8 @@ def round_fct(r, nb_decimal):
 
     if r ==0:
         return 0
+    elif r is None:
+        return None
 
     r_str = format(abs(r), ".20f") #avoid to have a scientific writing of abs(r)
 
@@ -112,11 +114,9 @@ def round_fct(r, nb_decimal):
             bool_point = True
             idx_point = i
         elif r_str[i] != "0" and not(bool_point):
-            print("POSPOS", i)
             bool_zero = False
             pos_log10 = True
         elif r_str[i]!= '0' and bool_zero and bool_point:
-            print("LAST ZERO")
             bool_zero = False
             if i-1 == idx_point:
                 idx_last_zero = i-2

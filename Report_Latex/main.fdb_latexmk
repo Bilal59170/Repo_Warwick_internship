@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 0 "main.bcf" "main.bbl" "main" 1739199477.48273 -1
-  "bibliography.bib" 1739102816 7262 8fba1d60d4997bb6664625b40dd38317 ""
-  "main.bcf" 1739199477 110729 5bd77c1a7e1a833e7c164508422c91ca "pdflatex"
+["biber main"] 0 "main.bcf" "main.bbl" "main" 1739379576.73281 -1
+  "bibliography.bib" 1739265222 7262 8fba1d60d4997bb6664625b40dd38317 ""
+  "main.bcf" 1739379576 110808 0c05f33bfb7df01290dc61c5c6e80f02 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1739199475.14636 "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" "main.pdf" "main" 1739199477.48346 0
+["pdflatex"] 1739379574.28456 "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" "main.pdf" "main" 1739379576.7336 0
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1739192253 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1739039912 14064 bce51e000c5c2dc411f152d7485cb117 ""
   "C:/Users/Bilal_BM_user/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1739039842 12021666 70d6ecc2498bbd0c2587c497e79898ac ""
@@ -209,6 +209,8 @@
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
   "Control_experiments/LQR_beta_0.95.png" 1739189648 44685 50b3089a73cf6ba0dac31a630bb6ebea ""
+  "Control_experiments/Pos_part2_LQR_beta_0.95.png" 1739267413 45369 35675f2f9436c7c1ab5c20f665513cfc ""
+  "Control_experiments/lambda_k_BS_AJ.png" 1739373352 48331 973eb340c383ac24dc11fb7e44fccd9a ""
   "KS_eq/KS_extrema_Fourier_coef.png" 1739102638 95654 272b62917eb1b20fd6757855eac55c50 ""
   "KS_eq/plot_decay_nu_1_k_1png.png" 1739102638 49275 4f2b5d6b76d6037e72eed280ffb4d26e ""
   "KS_eq/plot_dispersion_nu_1_1-4.png" 1739102638 50719 d0149dfbb6ce25e5ba43169fc4575a55 ""
@@ -219,14 +221,14 @@
   "Verif_scheme/plot_FD_BDF_Nx_1024.png" 1739102638 58337 9a42dca3ce7faf03ab186e658e1fc5f6 ""
   "Verif_scheme/plot_FD_BDF_Nx_128.png" 1739102638 66212 e8d5b96aa02e8164300227d6c9f27f76 ""
   "Verif_scheme/plot_FD_BDF_Nx_512.png" 1739102638 61319 61edb8ea0810b6bb3317c20ac026e283 ""
-  "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" 1739199472 101567 c5e0700ac39f09c5f819f5ba88468bbc ""
+  "c:/Users/Bilal_BM_user/Documents/_Documents/Travail_et_ecole/ecole/ENPC/ENPC_3_cesure/1er_stage/Research/Work/Programs/Repo_Warwick_internship/Report_Latex/main.tex" 1739379571 110609 9f8ae02b6fb4b084ab61ea7c9f15484a ""
   "cartoon_thin_film.png" 1739102638 906324 d3033f1fe2065b2db0965c21925516f1 ""
-  "main.aux" 1739199477 21251 dfe7a76ba20164ce58c81b3a52e64527 "pdflatex"
-  "main.bbl" 1739195306 28543 e1c43a0c9665f09c9bfb17c04e053b05 "biber main"
-  "main.out" 1739199477 7330 c7dffe6caff6ad35461b938f904ddf88 "pdflatex"
-  "main.run.xml" 1739199477 2307 fa280d158a7733084a6a66e2106e4193 "pdflatex"
-  "main.tex" 1739199472 101567 c5e0700ac39f09c5f819f5ba88468bbc ""
-  "main.toc" 1739199477 3557 2f16b120ae87c73fe0775496b070a992 "pdflatex"
+  "main.aux" 1739379576 25029 3ae7ece3f994999a183f16903dfe9033 "pdflatex"
+  "main.bbl" 1739268563 28543 e1c43a0c9665f09c9bfb17c04e053b05 "biber main"
+  "main.out" 1739379576 7933 e134316ae6c47c6ec58ba9497f0abf88 "pdflatex"
+  "main.run.xml" 1739379576 2307 fa280d158a7733084a6a66e2106e4193 "pdflatex"
+  "main.tex" 1739379571 110609 9f8ae02b6fb4b084ab61ea7c9f15484a ""
+  "main.toc" 1739379576 3800 ff3ade60556c4c3d94e456d11db6e65d "pdflatex"
   (generated)
   "main.aux"
   "main.bcf"

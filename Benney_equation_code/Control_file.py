@@ -7,6 +7,8 @@ import time
 from scipy.sparse import csc_matrix
 from header import *
 
+print("\n\n****  Control_file.py: beginning of the print ****\n")
+
 
 
 ######## Positive Linear Control ############
@@ -234,19 +236,25 @@ def dispersion_benney_BS(k, alpha=0):
 alpha_B_BS = 16*Ca*(Re-Re_0)**2/75
 alpha_B_AJ = 24/15*(Re-Re_0)
 
-domain_k = np.linspace(0, k_0*2, 100)
-plt.plot(domain_k, dispersion_benney_BS(domain_k).real, label=r"$\alpha = 0$")
-plt.plot(domain_k, dispersion_benney_BS(domain_k, alpha_B_BS).real, label=r"$\alpha = \alpha_B$")
-plt.xlabel("k"), plt.ylabel(r"$\lambda_k$")
-plt.ylim(bottom=-1)
-plt.axhline(y=0 ,color='k'), plt.axvline(x=k_0, color='k')
-plt.legend(), plt.title("Dispersion relation of blowing and suction control")
-plt.show()
+if True: 
+    domain_k = np.linspace(0, k_0*2, 100)
+    fig, ax = plt.subplots(1, 2, figsize = (15, 5))
 
-plt.plot(domain_k, dispersion_benney_air_jets(domain_k).real, label=r"$\alpha = 0$")
-plt.plot(domain_k, dispersion_benney_air_jets(domain_k, alpha_B_AJ).real, label=r"$\alpha = \alpha_B$")
-plt.xlabel("k"), plt.ylabel(r"$\lambda_k")
-plt.ylim(bottom=-1)
-plt.axhline(y=0 ,color='k'), plt.axvline(x=k_0, color='k')
-plt.legend(), plt.title("Dispersion relation of blowing and suction control")
-plt.show()
+    ax[0].plot(domain_k, dispersion_benney_BS(domain_k).real, label=r"$\alpha = 0$")
+    ax[0].plot(domain_k, dispersion_benney_BS(domain_k, alpha_B_BS).real, label=r"$\alpha = \alpha_{BS}$")
+    ax[0].set_xlabel("k"), plt.ylabel(r"$\lambda_k$")
+    ax[0].set_ylim(bottom=-1)
+    ax[0].axhline(y=0 ,color='k'), plt.axvline(x=k_0, color='k')
+    ax[0].legend(), ax[0].set_title(r"Expression of $\lambda_k$ for"+"\n blowing and suction control")
+    # ax[0].show()
+
+    ax[1].plot(domain_k, dispersion_benney_air_jets(domain_k).real, label=r"$\alpha = 0$")
+    ax[1].plot(domain_k, dispersion_benney_air_jets(domain_k, alpha_B_AJ).real, label=r"$\alpha = \alpha_{AJ}$")
+    ax[1].set_xlabel("k"), plt.ylabel(r"$\lambda_k$")
+    ax[1].set_ylim(bottom=-1)
+    ax[1].axhline(y=0 ,color='k'), plt.axvline(x=k_0, color='k')
+    ax[1].legend(), plt.title(r"Expression of $\lambda_k$ for"+"\n air jets control")
+
+    plt.show()
+
+

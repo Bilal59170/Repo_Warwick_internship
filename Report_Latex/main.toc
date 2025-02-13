@@ -1,38 +1,40 @@
 \contentsline {section}{\numberline {1}Introduction}{4}{section.1}%
-\contentsline {section}{\numberline {2}Study of the KS equation}{6}{section.2}%
-\contentsline {subsection}{\numberline {2.1}The system and the KS equation}{6}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}The numerical scheme}{7}{subsection.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.1}Decomposition in Fourier series}{7}{subsubsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.3}Description of the scheme}{9}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Simulations and Results}{11}{subsection.2.4}%
-\contentsline {subsubsection}{\numberline {2.4.1}Dispersion relation}{11}{subsubsection.2.4.1}%
-\contentsline {subsubsection}{\numberline {2.4.2}$\nu \geq 1$}{11}{subsubsection.2.4.2}%
-\contentsline {subsubsection}{\numberline {2.4.3}$\nu <1$}{13}{subsubsection.2.4.3}%
-\contentsline {section}{\numberline {3}The Benney equation with air jets actuators}{15}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Derivation of the Benney Equations with and without control}{15}{subsection.3.1}%
-\contentsline {subsubsection}{\numberline {3.1.1}Benney equation without control}{15}{subsubsection.3.1.1}%
-\contentsline {subsubsection}{\numberline {3.1.2}Benney equation with a control term}{18}{subsubsection.3.1.2}%
-\contentsline {subsubsection}{\numberline {3.1.3}Linear Theory}{19}{subsubsection.3.1.3}%
-\contentsline {section}{\numberline {4}Numerical simulations}{22}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Description of the numerical framework}{22}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Description of the scheme}{23}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Verification and validation of the schemes}{26}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Control}{31}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Continuous and discrete Control system }{31}{subsection.5.1}%
-\contentsline {subsubsection}{\numberline {5.1.1}The exponential system}{31}{subsubsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.2}Link with the falling liquid system}{32}{subsubsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.2}LQR Control}{34}{subsection.5.2}%
-\contentsline {subsubsection}{\numberline {5.2.1}LQR Control and Riccati equation}{34}{subsubsection.5.2.1}%
-\contentsline {subsubsection}{\numberline {5.2.2}Numerical experiment}{36}{subsubsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.3}Proportional Control}{37}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Positive control system}{39}{subsection.5.4}%
-\contentsline {subsubsection}{\numberline {5.4.1}Positive control system}{40}{subsubsection.5.4.1}%
-\contentsline {subsubsection}{\numberline {5.4.2}Reformulation into a QP optimization problem}{41}{subsubsection.5.4.2}%
-\contentsline {section}{\numberline {A}The code}{43}{appendix.A}%
-\contentsline {subsection}{\numberline {A.1}Scheme for the KS equation}{43}{subsection.A.1}%
-\contentsline {section}{\numberline {B}The governing equations}{44}{appendix.B}%
-\contentsline {subsection}{\numberline {B.1}KBC and mass conservation}{44}{subsection.B.1}%
-\contentsline {subsection}{\numberline {B.2}Dynamic boundary conditions}{45}{subsection.B.2}%
-\contentsline {section}{\numberline {C}Derivation of the reduced order models}{47}{appendix.C}%
-\contentsline {subsection}{\numberline {C.1}Benney equation}{47}{subsection.C.1}%
-\contentsline {subsection}{\numberline {C.2}The KS equation}{47}{subsection.C.2}%
+\contentsline {section}{\numberline {2}Study of the KS equation}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The system and the KS equation}{7}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}The numerical scheme}{8}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Decomposition in Fourier series}{8}{subsubsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.3}Description of the scheme}{10}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Simulations and Results}{12}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Dispersion relation}{12}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}$\nu \geq 1$}{12}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}$\nu <1$}{14}{subsubsection.2.4.3}%
+\contentsline {section}{\numberline {3}The Benney equation with air jets actuators}{16}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Derivation of the Benney Equations with and without control}{16}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Benney equation without control}{16}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Benney equation with a control term}{19}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Linear Theory}{20}{subsubsection.3.1.3}%
+\contentsline {section}{\numberline {4}Numerical simulations}{23}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Description of the numerical framework}{23}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Description of the scheme}{24}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Verification and validation of the schemes}{27}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Control}{32}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Continuous and discrete Control system }{32}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}The exponential system}{32}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Link with the falling liquid system}{33}{subsubsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.2}LQR Control}{35}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}LQR Control and Riccati equation}{35}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Numerical experiment}{37}{subsubsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.3}Proportional Control}{39}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}The linear theory}{40}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}Numerical simulations for normal and positive part proportional control}{42}{subsubsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.4}Positive control system}{44}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}Positive control system}{44}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.2}Reformulation into a QP optimization problem}{45}{subsubsection.5.4.2}%
+\contentsline {section}{\numberline {A}The code}{48}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Scheme for the KS equation}{48}{subsection.A.1}%
+\contentsline {section}{\numberline {B}The governing equations}{49}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}KBC and mass conservation}{49}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Dynamic boundary conditions}{50}{subsection.B.2}%
+\contentsline {section}{\numberline {C}Derivation of the reduced-order models}{52}{appendix.C}%
+\contentsline {subsection}{\numberline {C.1}Benney equation}{52}{subsection.C.1}%
+\contentsline {subsection}{\numberline {C.2}The KS equation}{52}{subsection.C.2}%

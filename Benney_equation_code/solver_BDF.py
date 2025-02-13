@@ -270,7 +270,7 @@ print("Gain matrix (scalar) and the expected solution:", K, R**(-1/2))
 print("Solution of Riccati equation and the expected solution:", S, R**(1/2))
 
 
-def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_x):
+def matrices_ctrl_A_B(list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_x):
     '''
     input: 
     - beta: weight parameter between the target state (h=1) and minimize the ctrl (cf SOR paper) 
@@ -281,26 +281,41 @@ def matrices_ctrl(beta, list_Re_Ca_theta, array_actuators_index, actuator_fct, N
     dx, domain_x = L_x/N_x, np.linspace(0, L_x, N_x, endpoint=False) #periodic BC
     position_actuators = domain_x[array_actuators_index]
     Re, Ca, theta = list_Re_Ca_theta[0], list_Re_Ca_theta[1], list_Re_Ca_theta[2]
-    # k = np.size(position_actuators) #number of actuators
 
     coef_array = np.array([-2/(2*dx), (2*np.cos(theta)/(3*np.sin(theta))-8*Re/15)/(dx**2), -1/(3*Ca*dx**4)])
     A_norm_cos_exp_fct = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
-    # assert (np.trapz(y=A_norm_cos_exp_fct*actuator_fct(domain_x)[0], x=domain_x) ==1 ), "fct matrices ctrl: error in integration"
 
-    mat_D = A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[0] # shape (N_x, k)
-
-    print(mat_D.shape)
     
     ##Matrixes
     # A and Q: size (N_x, N_x); B: (N_x, k); R: (k, k)
     A = (coef_array[0]*mat_FD_periodic(N_x, [0, -1, 1]) + coef_array[1]*mat_FD_periodic(N_x, [-2, 1, 1])
             + coef_array[2]*mat_FD_periodic(N_x, [6, -4, -4, 1, 1])) 
     B = 1/3*A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[2] 
+
+
+    return A, B
+
+
+def matrices_ctrl_Q_R(beta, array_actuators_index, actuator_fct, N_x, L_x):
+    '''
+    input: 
+    - beta: weight parameter between the target state (h=1) and minimize the ctrl (cf SOR paper) 
+    - list_Re_Ca_theta: the list [Re, Ca, theta] of the parameters.
+    - L_x, N_x: The space length resp. number of points
+    output: The control matrices (A, B, Q, R) corresponding to the LQR system fitting [Re, Ca, theta]'''
+
+    dx, domain_x = L_x/N_x, np.linspace(0, L_x, N_x, endpoint=False) #periodic BC
+    position_actuators = domain_x[array_actuators_index]
+
+    A_norm_cos_exp_fct = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
+    mat_D = A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[0] # shape (N_x, k)
+    
+    ##Matrixes
+    # A and Q: size (N_x, N_x); B: (N_x, k); R: (k, k)
     Q = beta*dx*np.identity(N_x) #cf SOR paper for the discrete cost
-    #S in the Obsidian file
     R =(1-beta)*dx*(mat_D.T)@(mat_D)
 
-    return A, B, Q, R
+    return Q, R
 
 
 

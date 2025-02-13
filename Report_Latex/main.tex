@@ -26,11 +26,11 @@
         \vspace*{1cm}
             
         \Huge
-        \textbf{Student Visit Report}
+        \textbf{Research Visit Report}
             
         \vspace{0.5cm}
         \LARGE
-        Thin Liquid Films, Numerical Simulation and Control
+        Thin Liquid Films Modelling, Simulation and Control
             
         \vspace{1.5cm}
             
@@ -39,7 +39,7 @@
         \vfill
             
         With the Supervision of \\
-        Dr.Susana Gomes \& Dr.Radu Cimpeanu
+        Dr. Susana Gomes \& Dr. Radu Cimpeanu
             
         \vspace{0.8cm}
             
@@ -56,9 +56,17 @@
 \newpage
 
 {\large \textbf{Abstract}} \\
-{\normalsize The purpose of this report is to detail what I worked on during my visit at the University of Warwick with Dr. Susana Gomes and Dr. Radu Cimpeanu in the Mathematical Institute of Warwick. First of all, I simulated numerically a reduced order model of the Navier-stokes equations called the Kuramoto Shivashinski equation. Observing its numerical behaviour allowed me to familiarize with a simple reduced order model for thin film fluids. Then, I leant on the problem of stabilizing a falling liquid film with blowing air jets control, which is the main study of my report. To do so, I adapted another reduced order model, called the Benney equation, to air jet perturbation. Then, we constructed a control from the Benney equation of the system that stabilizes the system as wanted.} \\
+{\normalsize The purpose of this report is to detail what I worked on during my visit at the 
+University of Warwick with Dr. Susana Gomes and Dr. Radu Cimpeanu in the Mathematical Institute
+ of Warwick. First of all, I re-derived and simulated numerically a reduced-order model of the 
+ Navier-Stokes equations called the Kuramoto-Sivashinski equation. Observing its numerical behaviour
+  allowed me to familiarize myself with a simple reduced-order model for thin film flows. Then, I 
+  focussed on the problem of stabilizing a falling liquid film with blowing air jets control, 
+  which is the main study of my report. To do so, I adapted another reduced-order model, called 
+  the Benney equation, to air jet perturbation. Then, we constructed a control from the Benney 
+  equation of the system that stabilizes the system as wanted.} \\
 \vspace{0.8cm} \\
-{\large \textbf{Keywords}: \normalsize Feedback control, Stabilization, Thin liquid films, Air jets control, Asymptotic analysis, Reduced order modelling, LQR control, positive control.}
+{\large \textbf{Keywords}: \normalsize Feedback control, Stabilization, Thin liquid films, Air jets control, Asymptotic analysis, Reduced-order modelling, LQR control, positive control.}
 
 
 \newpage
@@ -69,54 +77,56 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-Thin film fluids flows are flows which thickness are small compared to their length, this approximation being known as
- thin film approximation. We study in this report the stabilization of a thin fluid falling down an inclined plane of 
- slope angle $\theta$. Our goal is to make  a wavy thin film fluid flat by the use of controlled perturbation 
+Thin film fluid flows are flows in which thicknesses are small compared to their length, this approximation being known as the
+ thin film approximation. In this report, we study the stabilization of a thin fluid falling down an inclined plane of 
+ slope angle $\theta$. Our goal is to make a wavy thin film fluid flat by the use of controlled perturbation 
  induced by air jets. Thin film systems can typically be found in coating processes (e.g for LCD screens), heat transfer,
-  and many more applications.\\
+  and many more applications. These processes are used in industry, so the way of inducing perturbation must be pratical, 
+  relatively easy to set up. That is why we are using air jets as a control mechanism, as it it more covenient to use compared to
+  blowing and suction of liquid, another way of control that we will talk just after.  \\
 
-The literature covering thin film system is significantly large. Indeed, these systems provide a way to bypass the complexity 
+The literature covering thin film systems is significantly large. Indeed, these systems provide a way to bypass the complexity 
 of the Navier-Stokes equations by simplifying them with asymptotic theory, using the thin film approximation. Consequently, 
-one can perform deeper mathematical studies and less computationally heavy numerical experiments. Three types of reduced order 
-models, here listed with increasing complexity, are often studied: the KS (Kuramoto Shivashinski) equation, the Benney equation,
- and the Weighted Residuals. Naturally, simpler equations allows deeper mathematical and numerical studies of the equations. As 
- for the control of these flows, there is a rich literature on fluid blowing and suction based control, i.e injecting or sucking 
- fluid from the base of the plane. In her thesis, Dr.Susana Gomes built a control that could stabilize the KS system to any 
- wanted state (\cite{Susana_thesis}). However, the controls derived from this equations aren't efficient for the Benney and 
- Weighted Residual systems as the structure of the equation are probably too different. In \cite{Thompson_2016_prop_ctrl}, A.Thompson 
- and al. studied proportional control and LQR control for the Benney and Weighted Residual Systems. They studied both the continuous 
+one can perform deeper mathematical studies and less computationally heavy numerical experiments, with the cost of neglecting some of 
+the physical phenomenom in the Naveier-Stokes equation.Three types of reduced-order models, here listed with increasing complexity, are 
+often studied: the KS (Kuramoto-Sivashinski) equation, the Benney equation, and the Weighted Residuals. Naturally, simpler equations allow deeper 
+mathematical and numerical studies of the equations. As for the control of these flows, there is a rich literature on fluid blowing and suction-based control,
+ i.e injecting or sucking fluid from the base of the plane. In her thesis, Dr.Susana Gomes built a control that could stabilize the KS system to any 
+ wanted state (\cite{Susana_thesis}). However, the controls derived from these equations aren't efficient for the Benney and 
+ Weighted Residual systems as the structure of the equation is probably too different. In \cite{Thompson_2016_prop_ctrl}, A. Thompson 
+ et al. studied proportional control and LQR control for the Benney and Weighted Residual Systems. They studied both the continuous 
  case and discrete case, i.e with a continuum or finite number of actuators. They carried out stability analysis on the Benney and
   Weighted Residual systems and found that they could stabilize both systems with finite numbers of actuators and observations. 
-  Finally, O.Holroyd and al. used in \cite{holroyd2023linearquadraticregulationcontrol} LQR control on Benney and Weighted Residual 
-  systems with full observations coupled with Direct Numerical Simulation (DNS) update to link the reduced order models to more 
+  Finally, O. Holroyd et al. used in \cite{holroyd2023linearquadraticregulationcontrol} LQR control on Benney and Weighted Residual 
+  systems with full observations coupled with Direct Numerical Simulation (DNS) update to link the reduced-order models to more 
   realistic simulations, which they call "numerical experiments". They found that the control works successfully beyond the linear
    theory stability range. Further in \cite{holroyd2024stabilisationfallingliquidfilms}, they tackled the problem of partial observability,
-    and likewise, built control scheme that would stabilize the system, although in a smaller domain of Reynolds numbers. All in all, the
+    and likewise, built a control scheme that would stabilize the system, although in a smaller domain of Reynolds numbers. All in all, the
 blowing and suction method of actuation is thus backed with solid results. Further improvement on this control method would probably 
-be to test it on a 3D system, remove the periodicity along the plane axis, and test it in a real experimental setting. These improvement 
-are obviously non easy to do and would need much work like in \cite{Experimental_DNS_Reduced_order_modelling_paper} where Fabian.D and al. 
-constructed an experimental setup and made comparison between experimental results, DNS results and reduced order model results. 
+be to test it on a 3D system, remove the periodicity along the plane axis, and test it in a real experimental setting. These improvements 
+are obviously not easy to do and would need much work like in \cite{Experimental_DNS_Reduced_order_modelling_paper} where F. Denner et al. 
+constructed an experimental setup and made comparisons between experimental results, DNS results and reduced-order model results. 
 \\
 
-However, blowing and sucking fluid from the base of the plane doesn't seem practical in an industrial context. One would need to drill several holes into the plane and create efficient fluid blowing and sucking pipes. Hence, we are interested in another way of introducing perturbation to the system: \underline{blowing air through pipes above the plane}. This method seem to be more practical in an industrial framework as blowing air jet seems to be far more used and easy to construct and use than liquid blowing and sucking pipes. It introduces two main difficulties. Firstly, the control has to be positive as we want blowing air jets only. Secondly, we would need to solve Navier-Stokes in the gas domain to have the link between the power of the air jet and its effect on the liquid-gaz interface which is namely the normal and tangential pressure it induces on the liquid. In \cite{Dewetting_Ojiako}, Chinasaka.J and al. showed with deep numerical analysis that the tangential part of the pressure has a non negligible effect (same amplitude as 10\% of the normal stress) on the liquid-gaz interface flat water trapped in a beacon. However, this is probably due to the fact that the water is immobile, trapped, and the air jet are strong enough to induce large deformation, until dewetting which is not the case in our system.  
-In \cite{Moving_pressure_source}, D.Lunz and al. studied the effects of an oscillating actuators on a falling liquid film and carried out a analysis depending on the oscillation frequency. They simplified the problem by only modelling the normal stress induced by the gas on the liquid.  In this report, we also chose to simplify the system and only consider normal pressure, and we justify this choice later. To the best of the author's knowledge, no control paper has been drawn up with this specific system and way of control. 
+However, blowing and sucking fluid from the base of the plane does not seem practical in an industrial context. One would need to drill several holes into the plane and create efficient fluid blowing and sucking pipes. Hence, we are interested in another way of introducing perturbation to the system: \underline{blowing air through pipes above the plane}. This method seems to be more practical in an industrial framework as blowing air jet seems to be far more used and easy to construct and use than liquid blowing and sucking pipes. It introduces two main difficulties. Firstly, the control has to be positive as we want blowing air jets only. Secondly, we would need to solve Navier-Stokes in the gas domain to have the link between the power of the air jet and its effect on the liquid-gas interface which is namely the normal and tangential pressure it induces on the liquid. In \cite{Dewetting_Ojiako}, J. Chinasaka et al. showed with deep numerical analysis that the tangential part of the pressure has a non-negligible effect (same amplitude as 10\% of the normal stress) on the liquid-gas interface flat water trapped in a beacon. However, this is probably due to the fact that the water is immobile, trapped, and the air jet is strong enough to induce large deformation, until dewetting which is not the case in our system.  
+In \cite{Moving_pressure_source}, D. Lunz et al. studied the effects of oscillating actuators on a falling liquid film and carried out an analysis depending on the oscillation frequency. They simplified the problem by only modelling the normal stress induced by the gas on the liquid.  In this report, we also chose to simplify the system and only consider normal pressure, and we justify this choice later. To the best of the author's knowledge, no control paper has been drawn up with this specific system and way of control. 
 \\
 
-The report is structured in two main parts. First, we model and observe in \eqref{Section_KS_eq} the KS equation 
+The report is structured in two main parts. First, we model and observe the KS equation in \eqref{Section_KS_eq} 
 as an introductory work. We solve the equation numerically using an Implicit-Explicit method provided in 
 \cite{Scheme_for_KS} and observe the main behaviours (steady states, progressive waves) of the KS equation, except its chaotic 
 behaviour. Secondly, we study the inclined plane system: in \eqref{Section_Benney_eq}, we derive the Benney equation with a 
-normal gaz pressure control term. We introduce the normal and tangential terms of the gas stress, neglect the tangential 
+normal gas pressure control term. We introduce the normal and tangential terms of the gas stress, neglect the tangential 
 term, and choose a classic scaling to make the normal term appear in the equation.  Then, in \eqref{Section_Numerical_simu}, 
 we construct numerical simulation scheme and carry out tests to ensure its accuracy. Finally, in \eqref{Section_Control}, we 
 use the linearised Benney equation to compute a linear controls. We find that LQR state feedback control works well and stabilizes
- exponentially quickly the system. As that method gives control of any sign, we need to restraint the control to positive values to 
+ exponentially quickly the system. As the respective method gives control of any sign, we need to restrict the control to positive values to 
  have blowing only air jets. We find that LQR optimal control with just the positive part of the control applied at each time step stabilizes 
  successfully the system too, although with less efficiency. However, using this method, we are not sure that the state (i.e the height the the 
- liquid film) of the system will stay positive. Hence, we lean on another way of linear feedback control, using theory of positive control systems. 
+ liquid film) of the system will stay positive. Hence, we lean on another way of linear feedback control, using the theory of positive control systems. 
 \\
 
-Throughout all that document, I denote: 
+Throughout the present document, I denote: 
 \begin{itemize}
     \item dimensional quantities with a * (e.g $x^*$), 
     \item non-dimensional one without anything (e.g x), 
@@ -127,11 +137,11 @@ Throughout all that document, I denote:
 \section{Study of the KS equation}\label{Section_KS_eq}
 
 
-In this section of the report, we study the Kuramoto Shivashinki (KS) equation which is known to be one of the simplest equations having an chaotic behaviour.  The goal of this part is not to get new results or make deep analysis as it is more an introductory part of my visit. Here, we will use specific numerical scheme and change parameters to observe the various behaviours of the numerical solutions of this equation. 
+In this section of the report, we study the Kuramoto Shivashinki (KS) equation which is known to be one of the simplest equations having chaotic behaviour.  The goal of this part is not to get new results or make deep analysis as it is more an introductory part of my visit. Here, we will use specific numerical scheme and change parameters to observe the various behaviours of the numerical solutions of this equation. 
 
 \subsection{The system and the KS equation}
 
-The KS or Kuramoto-Shivashinski equation was first introduced by G.Shivashinsky and D.M.Michelson in 1977 in \cite{Shiv_Michelson_KS_eq} to describe flame fronts, and in 1978 by Y.Kuramoto in \cite{Kuramoto_KS_eq} to study chaotic behaviors in chemical reactions. Several other type of KS equation exists, e.g stochastic KS equation that adds  a linear stochastic term. For more details, see the thesis of Dr.Susana Gomes \cite{Susana_thesis}. One of its version is
+The KS or Kuramoto-Sivashinski equation was first introduced by G.Shivashinsky and D.M.Michelson in 1977 in \cite{Shiv_Michelson_KS_eq} to describe flame fronts, and in 1978 by Y.Kuramoto in \cite{Kuramoto_KS_eq} to study chaotic behaviors in chemical reactions. Several other type of KS equation exists, e.g stochastic KS equation that adds  a linear stochastic term. For more details, see the thesis of Dr.Susana Gomes \cite{Susana_thesis}. One of its versions is
 
 \begin{equation}\label{KS_eq_L}
 \left\{
@@ -145,7 +155,7 @@ The KS or Kuramoto-Shivashinski equation was first introduced by G.Shivashinsky 
 
 
 Here, we use this equation to model Falling Liquid Flow down an inclined plane in a 2D setting. The plane has a finite length L along its axis, the x-axis, which constitutes the flowing direction of the liquid. We consider the liquid being L-periodic. 
-The KS equation can be derived from the Benney equation, which is a reduced order equation obtained from the 2D Navier Stokes equations. The Benney equation is presented latter in part \ref{Section_Benney_eq}. We put the derivation of the KS equation in appendix. 
+The KS equation can be derived from the Benney equation, which is a reduced-order equation obtained from the 2D Navier Stokes equations. The Benney equation is presented latter in part \ref{Section_Benney_eq}. We put the derivation of the KS equation in appendix. 
 
 Here, nor the slope angle $\theta$ or other parameters like Reynolds or Capillary numbers appear due to the way the KS equation is derived as the change of variable (not possible for all value of Reynolds number and theta) make all the variables disappear and the only variable which can be changed is the nondimensionnal length L of the domain. 
 \\
@@ -162,7 +172,7 @@ One of the benefits of the KS equation is that it is a weakly non linear equatio
     \right.
 \end{equation*}
 
-were the only non linearity is the same as the one in the KS equation.
+where the only nonlinearity is the same as the one in the KS equation.
 
 \textbf{Rescaling}
 Let introduce what we call the instability parameter \begin{equation}
@@ -1079,7 +1089,7 @@ We chose to take
 \begin{equation}
     C = I_d
 \end{equation}
-which means that we have a \underline{ full observation of our state}, which is a strong assumption. Indeed, as we will see later in the next section (\ref{sub_section_link_ctr_FLF}), the state x will be the height of the film. Having full observation means that we can, at all time, measure exactly the height. These kind of assumptions can be realistic with laboratory equipment, like in (\cite{experimental_paper}) where they use precise optical measurements and vision algorithms to measure accurately the height of the liquid film. However, in an industrial framework, it is not sure that this hypothesis is still realistic. It becomes even more difficult in the case of the Weighted Residuals model, another reduced order model of the Navier-Stokes equations, as one would have to measure exactly the height h and the flux q. 
+which means that we have a \underline{ full observation of our state}, which is a strong assumption. Indeed, as we will see later in the next section (\ref{sub_section_link_ctr_FLF}), the state x will be the height of the film. Having full observation means that we can, at all time, measure exactly the height. These kind of assumptions can be realistic with laboratory equipment, like in (\cite{experimental_paper}) where they use precise optical measurements and vision algorithms to measure accurately the height of the liquid film. However, in an industrial framework, it is not sure that this hypothesis is still realistic. It becomes even more difficult in the case of the Weighted Residuals model, another reduced-order model of the Navier-Stokes equations, as one would have to measure exactly the height h and the flux q. 
 \\
 
 As we want to use a feedback control strategy, the control is of the form 
@@ -1226,7 +1236,7 @@ and
 \textbf{The Riccati equation.}Now we present how we find the optimal control associated with the discrete cost c by solving a matrix equation. We know from \cite{A_Thompson_FLF_blowing_suction} (part 3.2) for example, that if find a symmetric positive semi-definite matrix P solution to the problem
 
 \begin{equation}\label{eq_Riccati_eq}
-    \text{Find } P\in \mathcal{M}_{N_x}, \quad 0=A^TP+PA+R-PBR^{-1}B^TP, 
+    \text{Find } P\in \mathcal{M}_{N_x}, \quad 0=A^TP+PA+Q-PBR^{-1}B^TP, 
 \end{equation}
 
  we can build a gain matrix of this form:
@@ -1246,13 +1256,13 @@ we try to apply only the positive part of the LQR control, to mimic blowing only
 We find that this control also stabilizes the system, but is less efficient. 
 \\
 
-\textbf{Classic LQR Control.} We implemment the LQR control by solving the Riccati equation, 
-as described at the end of the previous section. We test several weight parameters $\beta
-\in \{0.2, 0.5, 0.95 \}$\footnote{Let us precise that the program doesn't find a solution for
+\textbf{Classic LQR Control.} We implement the LQR control by solving the Continuous Algebrai Riccati Equation
+(CARE), as described at the end of the previous section. We test several weight parameters (every 5\% of $\beta$)
+\footnote{Let us precise that the program doesn't find a solution for
 Riccati equation for some values of $\beta$ like 0.1 or 0.5. That is why we take here $\beta=0.2$
 as a 'small' $\beta$.} to observe how this parameter affects the stabilization of the system,
 but also the total quadratic cost of the control. Here, we don't take into account the shape functions
- of the actuators and just look at the their amplitudes as we just want to compare the cost obtained 
+ of the actuators and just look at the amplitudes as we just want to compare the cost obtained 
  with different values of $\beta$.: 
 \begin{equation}
     \kappa_u = \int_{0}^{T} \int_{0}^{L}u^2 dx dt,
@@ -1268,12 +1278,12 @@ Here, \textit{"amplitudes\_spectral"} the amplitudes of the shape function with 
 numerical scheme.  
 \\
 
-We consider that the system is stabilized when its maximal amplitude is lower than $\delta=1$, the 
+We consider that the system is stabilized when its maximal amplitude is lower than $\delta=1.10^{-3}$, the 
 amplitude of the initial perturbation. We take 
 
 
 \begin{equation}
-    T_{start} = 160, \quad T=300
+    T_{start} = 160, \quad T=300,
 \end{equation}
 
 the starting time of the control (to let the perturbation grow until a sufficient large state) and
@@ -1284,72 +1294,138 @@ present in \eqref{tab:LQR_cost_beta} the cost for different $\beta$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{Control_experiments/LQR_beta_0.95.png}
+    \includegraphics[width=0.6\linewidth]{Control_experiments/LQR_beta_0.95.png}
     \caption{Stabilization of the Benney system with an LQR control of parameter $\beta=0.95$.
     We made an exponential regression (so linear in a log scale) to see the scale of dampening.
     Let us stress out that the decrease rate is with respect to the classic neperian logarithm
     while the log scale in this plot is with respect to the logarithm in base 10. Therefore,
-    the slope angle doesn't match with what we see in the plot (need to rescale it with log(10)) }
+    the slope angle doesn't match with what we see in the plot as we would need to rescale it with log(10). }
     \label{fig:LQR_beta_0.95}
 \end{figure}
 \vspace{0.5cm}
 
 
 \begin{table}[ht]
-    \caption{Array of the cost with different values of $\beta$}
+    \caption{LQR Control: Array of the cost $\kappa_u$ and dampening rate $d_r$ with different values of $\beta$ each 5\%
+    when the solver finds a solution to the Riccati equation.}
     \label{tab:LQR_cost_beta}
     \centering
-        \begin{tabular}{ |c|c|c|c| }
+        \begin{tabular}{ |c|c|c|c|c|c| }
         \hline
-             $\beta$ & 0.95 & 0.5 & 0.2  \\
+        $\beta$ & 0.2 & 0.3 & 0.35 & 0.4 & 0.5 \\
+        $\kappa_u$ & 3.0284 & 3.0086 & 3.0323 & 3.0340 &3.0385 \\ 
+        $d_r$ & 10.5 & 10.5 & 10.5 & 10.5 & 10.6\\
         \hline
-        $\kappa_u$ & 3.2744 & 3.03386 & 3.0285 \\ 
-
+        $\beta$ & 0.55 & 0.65 & 0.75 & 0.8 & 0.95 \\
+        $\kappa_u$ & 3.0415 & 3.0501 & 3.0654 & 3.0789 &3.2743 \\ 
+        $d_r$ & 10.7 & 10.8 & 11 & 11.2 & 13.9\\
         \hline
         \end{tabular}
 \end{table}
 
-We see that $\kappa_u$ is increasing with $\beta$, which is expected as we lower the weight
-on the cost of the control to have a better stabilization.\\
 
-The LQR control stabilizes well the Benney system, and the videos of the 3 controls can be seen in the 
+
+
+We see that $\kappa_u$ is increasing with $\beta$, which is expected as we lower the weight
+on the cost of the control to have a better stabilization. Let us also notice that the result
+doesn't really change depending on $\beta$, except for $\beta = 0.95$ where we have a significant
+increase of the damping rate $d_r$.\\
+
+The LQR control stabilizes well the Benney system, and the videos of the controls can be seen in the 
 \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github repository}. As said before, 
 this result is not sufficient as it gives not only blowing, but also suction air control. 
 \\
 
 
 \textbf{Positive part of LQR Control.}
-Now, we only take the positive part of the LQR control too construct a blowing only air jet control.
+Now, we take the positive part of the LQR control to construct a blowing only air jet control, i.e
+\begin{equation}
+    u_{pos} = |-R^{-1}B^TP\tilde{h}|^+ = |Ku|^+
+\end{equation}
+P being the solution of the continuous algebraic Riccati equation.
+
 We find that the system stabilizes also exponentially but around 3-4 times slower, with the coefficient 
-of the exponential regression bein around 3 in the positive part case against 14 in the normal case. We 
-tried to carry out simulations with T = 1000 in order to see the decrease of the amplitude until the
+of the exponential regression bein around 3 in the positive part case against 14 in the normal case (cf repo Github
+for the plot). We tried to carry out simulations with $T = 1000$ in order to see the decrease of the amplitude until the
 end. However, the configuration given by \eqref{var_final_config_tests} doesn't seem to be enough as the 
 system Benney system with variables \eqref{eq_value_variables_num_verif} blocks before t=160 (the time on when
 the system wasn't blocking with $N_x =512$ and $N_x=1024$), which seems to mean that the number of 
 time (here $N_t = N_x = 512$) and steps point isn't enough for T=1000. 
 
 From a physical point of vue, it was expected that the control will be less efficient as we remove half 
-of the energy of the normal LQR control. 
+of the energy of the normal LQR control. That is why we changed the control by taking the positive 
+part of the control times a coefficient : 
+
+\begin{equation}
+    u_{pos} = \zeta_+|Ku|^+, \quad \zeta_+ = 2.
+\end{equation}
+
+We took $\zeta_+ =2$ to compensate the lack of energy, as said before. Of course, the compensation is not exact
+as we don't have exactly half of the energy taken by the blowing and half from the suction \footnote{ We could have measured 
+that total amount of energy used for sucking, and then put it directly on $\zeta_+$ but we didn't have the time to do
+so.}. As we can see in figure \eqref{fig:Pos_part2_LQR_beta_0.95}, we retrieve the dampening rate of the initial LQR control method.
+However, as expected, \underline{the cost are higher} than the classical LQR method, of around \underline{$\frac{4-3}{3} = 33\%$}, 
+as we can see in the array below. 
+
+\begin{table}[ht]
+    \caption{Positive part of LQR Control: array of $\kappa_u$ and $d_r$ for varying $\beta$ and $\zeta_+ = 2$.}
+    \label{tab:LQR_cost_beta_pospart}
+    \centering
+        \begin{tabular}{ |c|c|c|c|c|c| }
+        \hline
+        $\beta$ & 0.2 & 0.3 & 0.35 & 0.4 & 0.5 \\
+        $\kappa_u$ & 4.2887 & 4.2887 & 4.2956 & 4.2986 &4.3065 \\ 
+        $d_r$ & 10.9 & 10.9 & 10.9 & 11 & 11\\
+        \hline
+        $\beta$ & 0.55 & 0.65 & 0.75 & 0.8 & 0.95 \\
+        $\kappa_u$ & 4.3117 & 4.3266 & 4.3532 & 4.3762 & 4.6957 \\ 
+        $d_r$ & 11.1 & 11.2 & 11.4 & 11.6 & 14.2\\
+        \hline
+        \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{Control_experiments/Pos_part2_LQR_beta_0.95.png}
+\caption{Plot of the logarithmic amplitude of |h-1| controlled with the positive part 
+of LQR control times $\zeta_+ = 2$. We retrieve the same efficiency than the normal LQR, but with 
+higher cost (cf the array of $\kappa_u$). }
+\label{fig:Pos_part2_LQR_beta_0.95}
+\end{figure}
+
+In conclusion, we found a method that stabilizes exponentially the Benney system with blowing only air jets.
+However, a more detailled study of the cost should be made to find better values of $\zeta_+$.
+that would give cheaper cost and higher dampening rate. 
+
+Finally, in the same spirit as in the section III/D of \cite{Thompson_2016_prop_ctrl} but here with the Benney system and not Weighted Residuals,
+let us underline that we don't fully stabilize the Benney system, but just bring it to another state. Therefore, if we stop the control when the amplitude 
+is small but with the system being in a growing exponential mode (like the initial condition \eqref{eq_value_variables_num_verif}),
+the system will just grow up exponentially again. 
 
 
 \subsection{Proportional Control}
-We want now to compare the LQR result with proportionnal control. Indeed, we saw in the videos of the dynamics 
-of the liquid film height that the actuators seemed to have a behavior very close to the one of proportionnal 
+We saw in the videos of the dynamics of the liquid that the actuators seemed to have a behavior very similar to the one of proportionnal 
 control (sucking when there is a trough, blowing when there is a crest). Therefore, we lean on proportionnal control,
-a simpler control mechanims, to see if the complexity of the LQR was necessary to have good results.
+a simpler control mechanims, to see if the complexity of the LQR control was necessary to have good results.
+We implement the proportional control strategy and compare the results obtained with LQR control to 
+the one obtained with proportional control.
 
-We now do proportional control i.e control of the type 
+\subsubsection{The linear theory}
+
+
+We now do proportional control, i.e control of the type 
 \begin{equation}\label{N_s_prop_ctrl}
     \tilde{N}_s = \alpha\tilde{h} = \alpha \frac{h-1}{\delta}, \quad \alpha >0.
 \end{equation}
 
-Physically, $\tilde{N}_s >0$ when there is a crest i.e when $\tilde{h}>0$, so we push when there is a crest and suck when there is a trough which is quite a basic and intuitive think to do to flatten the fluid. 
+Physically, $\tilde{N}_s >0$ when there is a crest i.e when $\tilde{h}>0$, so we push when there is a crest
+ and suck when there is a trough, which is a quite basic and intuitive strategy to follow to flatten the fluid. 
 \\
 
  We do exactly the same type of analysis as \cite{Thompson_2016_prop_ctrl} where they did proportional control with fluid blowing and suction actuation. To find a criterion on $\alpha$, we make a stability analysis on linearized Benney equation \eqref{Benney_ctrl_linearised} and take the feedback form of $\tilde{N}_s$ \eqref{N_s_prop_ctrl}:  
 
 \begin{equation}
-\tilde{h}_{,t} = \left[ -2\partial_x + \left( \frac{8}{15}(Re_0-Re)+\frac{\alpha}{3}\right)\partial_{xx} - \frac{1}{3Ca}\partial_{xxxx}\right]\tilde{h} 
+\tilde{h}_{,t} = \left[ -2\partial_x + \left( \frac{8}{15}(Re_0-Re)+\frac{\alpha}{3}\right)\partial_{xx} - \frac{1}{3Ca}\partial_{xxxx}\right]\tilde{h}.
 \end{equation}
 
 So, similarly to \eqref{subsubsection_linear_theory} the dispersion relation becomes
@@ -1358,11 +1434,28 @@ So, similarly to \eqref{subsubsection_linear_theory} the dispersion relation bec
     \forall k\in \mathbb{N},\quad \lambda_k = -2ik+ k^2\left(\frac{8}{15}(Re-Re_0)-\frac{\alpha}{3}-\frac{k^2}{3Ca}\right).
 \end{equation}
 
-To stabilize the system in the linear approximation for any type of perturbations, we want $$\forall k \in \mathbb{N}^*, \mathfrak{R}(\lambda_k) <0$$
+We can see in figure \eqref{fig:prop_ctrl_lambda_k} a plot of the effect of the proportional control on the $\lambda_k$ for the air jet 
+and liquid blowing and suction controls.
+
+
+\begin{figure}[h]
+\includegraphics[width=1\textwidth]{Control_experiments/lambda_k_BS_AJ.png}
+\caption{Plots of the $\mathfrak{R}(\lambda(k))$ with $\alpha = 0$ and $\alpha = \alpha_{AJ} $ in the left plot, and $\alpha = 0$ 
+and $\alpha = \alpha_{BS}$ in the right plot. We can see that while the curve is just shifted down the y-axis in the blowing and 
+suction case, its curvature is changed in the air jet case. It was expected as the $\alpha$ coefficient appears as a second order 
+term (i.e in $k^2$) so it has an influence on the second derivative of $\mathfrak{R}(\lambda(k))$, so on its curvature.}
+\label{fig:prop_ctrl_lambda_k}
+\end{figure}
+
+
+To stabilize the system in the linear approximation for any type of perturbations, we want $$\forall k \in \mathbb{N}^*, \mathfrak{R}(\lambda_k) <0,$$
 
 which is equivalent (except for $k=0$) to take 
-\begin{equation}
+
+\begin{equation}\label{eq:alpha_AJ}
+    \boxed{
     \alpha > \alpha_{AJ}= \frac{24}{15}(Re-Re_0).
+    }
 \end{equation}
 
 
@@ -1371,42 +1464,143 @@ In comparison, the coefficient $\alpha$ for blowing and suction in paper \cite{T
     \alpha_{BS} = \frac{16Ca(Re-Re_0)^2}{75}.
 \end{equation}
 
-We see that $\alpha_{AJ}$ doesn't depend on the capillary number depends linearly on $(Re-Re_0)$, while $\alpha_{BS}$ depends linearly on Ca and quadratically on $(Re-Re_0)$. Physically speaking, is it surprising that the Capillary number appears in the blowing and suction mechanism but not in the air jets one as the air jet interact directly with the liquid surface. Mathematically speaking, we remark that any proportional control which affects only the second derivative will not depend on Ca \footnote{Only a control on the even derivative will have an effect in the amplitude in this linear theory, whereas the control on the odd derivative could act on the speed of the wave (the imaginary part of $\lambda_k$). Maybe that a control on the 4th derivative could be better than the air jet or blowing and suction one.}. Let us now evaluate these coefficient with the value that we used with the numerical scheme verification \eqref{eq_value_variables_num_verif}. We have 
+We see that $\alpha_{AJ}$ doesn't depend on the capillary number and depends linearly on $(Re-Re_0)$, while $\alpha_{BS}$
+ depends linearly on Ca and quadratically on $(Re-Re_0)$. Physically speaking, is it surprising that the Capillary number 
+ appears in the blowing and suction mechanism but not in the air jets one as the air jet interact directly with the liquid 
+ surface. Mathematically speaking, we remark that any proportional control which only affects the second derivative will not 
+ depend on Ca \footnote{Only a control on the even derivative will have an effect in the amplitude in this linear theory, whereas 
+ the control on the odd derivative could act on the speed of the wave (the imaginary part of $\lambda_k$). Maybe that a control on 
+ the 4th derivative could be better than the air jet or blowing and suction one.}. Let us now evaluate these coefficient with the 
+ value that we used with the numerical scheme verification \eqref{eq_value_variables_num_verif}. We have 
 
 $$\alpha_{AJ} = \frac{24}{15}(5-0.72) = 6.9, \quad \alpha_{BS} = \frac{16\times 1.10^{-3}}{75}(5-0.72)^2= 0.0039.$$
 
-The blowing and suction actuation seem to be far more
 
 
-% \begin{figure}[h]
-% \includegraphics[width=1\textwidth]{}
-% \caption{Plots of the $\mathfrak{R}(\lambda(k))$ with $\alpha = 0$ and $\alpha = \alpha_{AJ} $ in the left plot, and $\alpha = 0$ and $\alpha = \alpha_{BS}$ in the right plot. We can see that while the curve is just shifted down the y-axis in the blowing and suction case, its curvature is changed in the air jet case. It is expected as the $\alpha$ coefficient appears as a second order term (i.e in $k^2$) so it has an influence on the second derivative of $\mathfrak{R}(\lambda(k))$, so on its curvature.}
-% \label{fig:prop_ctrl_dispersion}
-% \end{figure}
 
-In the blowing and suction case,  the coefficient $\alpha_{AJ}$ is the maximal coefficient where there exists a mode $k$ sucht that $\mathfrak{R}(\lambda(k)) \geq 0.$. For an $\alpha$ above that threshold, all the modes are exponentially decreasing and the solution flattens towards the Nusselt solution. It is not the case of the air jet actuation method where we will always have $\lambda_0=0.$ Indeed, a non zero order 0 mode would imply having a different mass as the one of the Nusselt solution as we add something whose average is different than zero. Therefore, it was expected that $\lambda_0 = 0$ because the air jet actuation conserves the mass of the liquid so its mean height will not change. We can see in \eqref{fig:prop_ctrl_dispersion} that the control changes the curve of the dispersion relation but not its value on $k=0$.
+
+
+In the blowing and suction case,  the coefficient $\alpha_{AJ}$ is the maximal coefficient where there exists a mode $k$ sucht 
+that $\mathfrak{R}(\lambda(k)) \geq 0.$. For an $\alpha$ above that threshold, all the modes are exponentially decreasing and the 
+solution flattens towards the Nusselt solution. It is not the case of the air jet actuation method where we will always have 
+$\lambda_0=0.$ Indeed, a non zero order 0 mode would imply having a different mass as the one of the Nusselt solution as we add 
+something whose average is different than zero. Therefore, it was expected that $\lambda_0 = 0$ because the air jet actuation 
+conserves the mass of the liquid so its mean height will not change. We can see in \eqref{fig:prop_ctrl_lambda_k} that the control c
+hanges the curve of the dispersion relation but not its value on $k=0$.
 \\
 
-In both air jet and blowing/suction cases, the $\alpha$ coefficient is not enough to stabilize the real discrete system. Indeed, this coefficient was built with the assumption that we have actuators on all the points of the continuous domain (called "distributed control" in \cite{Thompson_2016_prop_ctrl}). However, this is not the case a continuous actuation is not possible (at least to the author's knowledge) and we want to have few actuators ( around 5) so that it can be convenient for industrial purposes. 
+\textbf{Discrete system.} In both air jet and blowing/suction cases, the $\alpha$ coefficient is not enough to stabilize the real 
+discrete system. Indeed, this coefficient was built with the assumption that we have actuators on all the points of the continuous 
+domain (called "distributed control" in \cite{Thompson_2016_prop_ctrl}). However, this is not the case a continuous actuation is not
+ possible (at least to the author's knowledge) and we want to have few actuators ( around 5) so that it can be convenient for industrial
+ purposes. 
 
 Therefore, we go back to the discrete system that we set in the previous section \eqref{eq_discrete_ctrl_FLF}. The idea of proportional control is that all actuators have the same proportional answer $\alpha$ to the height. Therefore, the gain matrix is here 
 \begin{equation}
-    K = \alpha I_{k, N_x} \in \mathcal{M}_{k,N_x}
+    K = \alpha I_{k, N_x} \in \mathcal{M}_{k,N_x}.
 \end{equation}
 
 Hence, the poll placement problem \eqref{eq_pole_placement} becomes: 
 
 
-\begin{equation}\label{eq_pole_placement}
+\begin{equation}\label{eq:pole_placement_prop_ctrl}
 \boxed{
-    \text{Find }\alpha \in \mathbb{R}_+,  \quad \forall v \in Sp(A+\alpha BI_{k, N_x}), \mathfrak{R}(v) <0
+    \text{Find }\alpha^{num}_{AJ} \in \mathbb{R}_+,  \quad \forall v \in Sp(A+\alpha^{num}_{AJ} BI_{k, N_x}), \mathfrak{R}(v) <0,
     }
 \end{equation}
 
+with $\alpha_{AJ}^{num}$ the solution of \eqref{eq:pole_placement_prop_ctrl}.
 
+
+\subsubsection{Numerical simulations for normal and positive part proportional control}
+We carry out simulations for the proportional control, then, we only keep the positive part of it, and
+compare the result to the those of the LQR control.
+\\
+
+
+For the normal proportional control, we tested $\alpha = \alpha_{AJ}= 6.8$ from the linear theory, 
+and $\alpha^{num}_{AJ} = 14.92,$ computed by solving \eqref{eq:pole_placement_prop_ctrl} with the
+ \texttt{scipy.optimize} function. We found that $\alpha = \alpha_{AJ}$ wasn't sufficient 
+to stabilize the system, in contrary to $\alpha_{AJ}^{num}$, yet with a weak dampening rate (around 1.7).
+We tested several values of $\alpha$ and we saw that we could obtain the same dampening rates with 
+\\
+
+For the normal proportional control, we found that we can reach the same dampening rate $d_r$ as the LQR control
+strategy with about the same costs $\kappa_u$ (quantities in red in the table \eqref{tab:propctrl_cost}). We test higher values
+of $\alpha$ and see that we can reach very high dampening rate. For example for $\alpha = 100$, $d_r \approx 30$ 
+with $\kappa_u \approx 6$.
+\\
+
+Then, we carried out simulation by only taking the positive painrt of the proportional control, the obtained result
+being presented in the table \eqref{tab:pos_part_propctrl_cost}. We found again that we reach the same dampening rate than
+the one obtained with LQR control method (around 12). We write in red in the table \eqref{tab:pos_part_propctrl_cost} where
+we reach these dampening rates. However, the positive proportional control is still more costly than the 
+positive LQR control, with $\kappa_u$ around $\frac{6-4.5}{4}= 37.5 \%$.
+
+
+\begin{table}[ht]
+    \caption{Proportional control: array of the cost $\kappa_u$ and the dampening rate $d_r$ with different $\alpha$}
+    \label{tab:propctrl_cost}
+    \centering
+        \begin{tabular}{ |c|c|c|c|c|c|c|c|c| }
+        \hline
+        $\alpha$ & $\alpha_{AJ}= 6.8$\footnote{The simulation gets stuck as h becomes too high.}& 9 & 11 & 13& $\alpha_{AJ}^{num}=14.92$ & 17& 19& 21\\
+        $\kappa_u$ & X & 4.3888 & 4.4924 & 4.1929& 3.7112 & 3.3083& 3.0667 & 2.9399 \\
+        $d_r$ & -2.6 & -0.8 & -0.3 & 0.9& 1.7 & 2.6& 3.6 & 4.6 \\ 
+        \hline
+        $\alpha$ & 23& 25 & 27 & 29 & 31& {\color{red}33} & {\color{red} 35}& {\color{red} 37}\\
+        $\kappa_u$ & 2.8883 & 2.8838 & 2.9094 & 2.9546& 3.0132 & {\color{red}3.0813}& {\color{red}3.1563} & {\color{red}3.2365} \\ 
+        $d_r$ & 5.7 & 6.7 & 7.8 & 8.8 & 9.9 & {\color{red}10.9} & {\color{red}12} & {\color{red}13}\\
+        \hline
+        $\alpha$ & 39& 41 & 43 & 45 & 47& 49 & 51& 53\\
+        $\kappa_u$ & 3.3207 & 3.4081 & 3.4979 & 3.5898& 3.6833 & 3.7783& 3.8745 & 3.9718 \\ 
+        $d_r$ & 14.1 & 15.1 & 16.1 & 17.1 & 18.1 & 19.1 & 20.1 & 21\\
+        \hline
+        \end{tabular}
+\end{table}
+
+
+\begin{table}[ht]
+    \caption{Positive part of proportional control: Array of the cost $\kappa_u$ and the dampening 
+    rate $d_r$ with different $\alpha$}
+    \label{tab:pos_part_propctrl_cost}
+    \centering
+        \begin{tabular}{ |c|c|c|c|c|c|c|c| }
+        \hline
+        $\alpha$ & $\alpha_{AJ}= 6.8$ & 9 & 11 & 13& $\alpha_{AJ}^{num}=14.92$ & 17& 25\\
+        $\kappa_u$ & X & 4.8036 & 4.9509 & 5.4336& 5.8049 & 6.0576 & 5.8105 \\
+        $d_r$ & X & -0.8 & -0.3 & -0.1& 0.026 & 0.2 & 1.1 \\ 
+        \hline
+        $\alpha$ & 33& 40 & 50 & 70 & {\color{red}80} & {\color{red}90} & {\color{red}100}\\
+        $\kappa_u$ & 5.0504 & 4.7140 & 4.6527 & 5.0808& {\color{red}5.3877} & {\color{red}5.7204}& {\color{red}6.0724} \\ 
+        $d_r$ & 2.3 & 3.6 & 5.4 & 9.0 & {\color{red}10.7} & {\color{red}12.2} & {\color{red}13.7}\\
+        \hline
+        \end{tabular}
+\end{table}
+
+\vspace{0.5cm}
+
+All in all, we carried out numerical simulations to test proportional control actuation on the Benney system.
+For the normal proportional control, we found that we could reach the same dampening rate than the LQR control.
+However, the strategy using the positive part of the proportional feedback control seemed to be more costly
+than the strategy using the positive part of the LQR control. Hence, as we are interested in blowing only air jets control, 
+the proportional control seem to be less effective than the LQR control. Moreover, the LQR methodology could be enhanced by
+finding a better $\zeta_+$ than $\zeta_+ = 2$. 
+
+Finally, let us note that these results probably highly rely on the initial condition \eqref{eq_value_variables_num_verif}
+that we took. Ideally, it would have been better to carry out these tests on different configuration of 
+$Re$ and $Ca$, and also different initial conditions (e.g travelling waves or non sinusoïdal steady states).  
 
 \subsection{Positive control system}
-We saw that we could stabilize the system with blowing-only air jets. We constructed the proportional and LQR control from the linear theory with a space and time continuum (i.e no discretization) so these methods are backed with analytical results. However, we don't have any theoretical backup for the positive controls that we built by taking the positive part of the proportional and LQR controls. In this section, we try to find a gain matrix that would keep the control positive and make the Benney system asymptotically stable. We find a system of linear inequalities that would give the wanted solution. We try to solve it numerically by reformulating it as a classic QP (Quadratic Programming) optimization problem.
+We saw that we could stabilize the system with blowing-only air jets. We constructed the
+proportional and LQR control from the linear theory with a space and time continuum 
+(i.e no discretization) so these methods are backed with analytical results. However,
+we don't have any theoretical backup for the positive controls that we built by taking 
+the positive part of the proportional and LQR controls. In this section, we try to find a 
+gain matrix that would keep the control positive and make the Benney system asymptotically 
+stable. We find a system of linear inequalities that would give the wanted solution. We try 
+to solve it numerically by reformulating it as a classic QP (Quadratic Programming) optimization
+problem.
 
 
 \subsubsection{Positive control system}
@@ -1706,7 +1900,7 @@ $$    \frac{(v_{,x} + u_{,y})(1-{h_{,x}}^2)+2h_{,x}(v_{,y}-u_{,x})}{1+h_{,x}^2}=
 
 It's the same for $-T_{sy}$ with some indices swapping. Let us underline that the choice of the direction of $\underline{n}$ can change the $\pm$ before the $T_{sx}$ if we do not always take an direct orthonormal triplet $(N_s, T_{sx}, T_{sy})$. It's thus important to watch out to the significance these quantities (what does that mean if it's >0, <0). 
 
-\section{Derivation of the reduced order models}
+\section{Derivation of the reduced-order models}
 \subsection{Benney equation}
 We present here only the scaling and the difference between the uncontrolled and the normal external pressure controlled cases. For more details, see the paper of "Falling liquid films with blowing and suction" from Alice.T and al. or the calculus on paper that I made. 
 

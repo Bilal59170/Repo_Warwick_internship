@@ -10,10 +10,11 @@ import solver_BDF
 import Control_file as file_ctrl
 from header import * 
 
+import scipy.optimize 
 from sklearn.linear_model import LinearRegression
 
 
-print("\n\n#### BEGINING OF THE PRINT ###\n")
+print("\n\n****  main_benney_eq_Ctrl.py: beginning of the print ****\n")
 
 
 ###################################
@@ -22,17 +23,20 @@ print("\n\n#### BEGINING OF THE PRINT ###\n")
 
 #####################################
 
+print("\n##### Simulation settings #####")
 ### Boolean variables to control what action to do. Watch out to load the good file.
 bool_FB_Control = True # bool of Feedback Control
 bool_open_loop_control = False # open loop control i.e predicted
 
 ##Control
 bool_pos_part = True
-bool_LQR = True # LQR control & positive part of LQR control
+# LQR control & positive part of LQR control
+bool_LQR = False 
+#proportionnal control
+bool_prop_ctrl = True
 #Positive ctrl with linear system
 bool_positive_Ctrl, bool_solve_save_solus_opti, bool_load_solus_opti = False, False, False
-#proportionnal control
-bool_prop_ctrl = False
+
 
 
 
@@ -66,7 +70,7 @@ mode_fq= 1
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, delta, 0*delta, mode_fq, mode_fq #delta from the header
 Initial_Conditions = sincos(
         domain_x, h_mean, ampl_c, ampl_s, (2*np.pi/L_x)*freq_c, (2*np.pi/L_x)*freq_s)
-if True:#Plot of initial condition
+if False:#Plot of initial condition
     plt.plot(domain_x, Initial_Conditions)
     plt.title("IC (t=0) for the normalized height h (Ac, As, fc, fs)"+
     "=({Ac} {As}, {fc}, {fs})".format(Ac=ampl_c, As=ampl_s, fc=freq_c, fs=freq_s))
@@ -75,7 +79,7 @@ if True:#Plot of initial condition
 
 
 ##########  Control  ##########
-
+print("\n ##### Control settings #####")
 ###Global parameters of the control independent from the type of control 
 ##External pressure parameters and external normal pressure function
 sigma_Ns = 0.01
@@ -104,35 +108,34 @@ else:
 
 
 A_Ns = None
-coef_pos_part_ctrl = 1 #Multiplicative coefficient of the gain matrix (for LQR and proportional control)
-#used when we take the positive part of a control. Try to compense the loss of energy (so should be around 2 maybe).
+beta, alpha_prop_ctrl, coef_pos_part_ctrl = None, None, None #defined later in their respective control (LQR, proportional..)
+
+
 
 if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(x(t))
-    beta = 0.95 #Only matter for LQR Control, not the positive one. 
-
-
-
-    from solver_BDF import matrices_ctrl
-
-    # assert (Amplitudes_Ns is None), "fct solver_BDF: Problem of input" #Not supposed to be in input as computed by the ctrl
-    A, B, Q, R = matrices_ctrl(beta, list_Re_Ca_theta= [Re, Ca, theta], array_actuators_index=array_used_points,
-                                actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x), 
+    
+    A, B = solver_BDF.matrices_ctrl_A_B(list_Re_Ca_theta = [Re, Ca, theta], array_actuators_index= array_used_points,
+                              actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
                                 N_x=N_x, L_x=N_x*dx)
-
-
     
     if bool_LQR:
-        if bool_LQR:
-            print("## LQR Control ##")
+        beta = 0.95 #Only matter for LQR Control, not the positive one. 
+        Q, R = solver_BDF.matrices_ctrl_Q_R(beta = beta, array_actuators_index= array_used_points,
+                                             actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
+                                            N_x=N_x, L_x=N_x*dx)
+
+        if bool_pos_part:
+            print("### Type of control: Positive part of LQR Control ###")
         else:
-            print("## Positive part of LQR Control ##")
+            print("### Type of control: LQR Control ###")
+
         print("Solving Riccati equation")
         K, _, _ = ct.lqr(A, B, Q, R) #gain matrix
         print("Dimension of the gain matrix:", K.shape)
         print("highest term of K", np.max(K))
 
     elif bool_positive_Ctrl: ### Positive Control with QP optimization problem
-        print("POSITIVE Linear CONTROL")
+        print("Type of control: Positive Linear Control")
 
         #Nb of unstable modes:
         A_eigval = np.linalg.eigvals(A)
@@ -169,24 +172,54 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
         file_ctrl.is_Metzler_and_Hurwitz(A_deltaBK)
   
     elif bool_prop_ctrl:
-        print("Proportionnal Control")
+        if bool_pos_part:
+            print("### Type of control: positive part of proportional control ###")
+        print("### Type of control: Proportionnal Control ###")
         #Computation of the constant alpha
-        # def gain_mat_prop_ctrl()
-        # prop_fct = lambda alpha: max(np.linalg.eig(A)[2].real)
+        def gain_mat_prop_ctrl(alpha):
+            K = np.zeros((k_nb_act, N_x))
+            for i in range(k_nb_act):
+                K[i, array_used_points[i]] = alpha
+            return K
         
-        K = np.zeros((k_nb_act, N_x))
-        #We have -K@h in the solver, so we put -alpha here to have N_s=alpha (h-1)/delta.
-        for i in range(k_nb_act):
-            K[i, array_used_points[i]] = -6*file_ctrl.alpha_B_AJ 
+        
+        prop_fct = lambda alpha: max(np.linalg.eigvals(A+B@gain_mat_prop_ctrl(alpha)).real)
+        result_prop_ctrl_opti = scipy.optimize.root(fun= prop_fct, x0= file_ctrl.alpha_B_AJ) 
+        alpha_prop_num = result_prop_ctrl_opti["x"][0]
+        root_method_CV = result_prop_ctrl_opti["success"]
+        root_method_errors= np.max(np.absolute(prop_fct(alpha_prop_num)))
+
+        if False:
+            X_array = np.linspace(file_ctrl.alpha_B_AJ, 3*alpha_prop_num, 10)
+            evaluation_array = np.array([prop_fct(x) for x in X_array])
+            plt.axvline(x= alpha_prop_num, color = 'k')
+            plt.plot(X_array, evaluation_array)
+            plt.show()
+
+        print("alpha num, alpha linear theory:", alpha_prop_num, file_ctrl.alpha_B_AJ)
+        print("Method converged: ", root_method_CV)
+        print("error of the method: ", root_method_errors)
+
+
+        alpha_prop_ctrl = 11 #Coefficient for the proportional control
+        K = gain_mat_prop_ctrl(-alpha_prop_ctrl)
 
     if bool_pos_part:
+        #Multiplicative coefficient of the gain matrix (for LQR and proportional control)
+        #used when we take the positive part of a control. Try to compense the loss of energy (so should be around 2 maybe).
+        coef_pos_part_ctrl = 1
         K = coef_pos_part_ctrl*K #cf the definition of po_part_coef for explanations
+
 
 else:  #No Control
     idx_time_start_ctrl = None
     A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
     K=None #no feedback matrix
 
+print("The parameters for the Controls:")
+print("- beta : ", beta)
+print("- alpha_prop_ctrl: ", alpha_prop_ctrl)
+print("- coef_pos_part_ctrl: ", coef_pos_part_ctrl)
 
 
 
@@ -219,14 +252,14 @@ bool_solve_save_FD, bool_load_FD = False, False
 bool_anim_display_FD, bool_save_anim_FD = False, False
 
 #Spectral method
-bool_solve_save_Sp, bool_load_Sp = False, True
-bool_anim_display_Sp, bool_save_anim_Sp = False, False
+bool_solve_save_Sp, bool_load_Sp = True, False
+bool_anim_display_Sp, bool_save_anim_Sp = False, True
 
 
 
 
 
-def file_anim_name_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _beta, _coef_pos_part_ctrl):
+def file_anim_name_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _alpha, _beta, _coef_pos_part_ctrl):
     '''Function to write automatically the file names to avoid making typos. 
     Returns the names of the animation and the file with numerical values.'''
 
@@ -235,17 +268,23 @@ def file_anim_name_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _beta, _c
     assert (Ctrl_name in ["LQR", "prop", "positive"] ), "file_anim_name_ctrl fct: problem in the name of the Control."
     
     _str_pos_part = ""
+    title_file_LQR, title_file_prop_ctrl = "", ""
+
     if pos_part:
         _str_pos_part = "pospart"+str(_coef_pos_part_ctrl)
-    if Ctrl_name != "LQR":
-        _beta = "None"
+
+    if Ctrl_name == "LQR":
+        title_file_LQR = r"_beta{}".format(_beta,4)
+
+    if Ctrl_name == "prop":
+        title_file_prop_ctrl = r"_alpha{}".format(round_fct(_alpha,3))
 
     title_file = ('Benney_equation_code\\Control_verifications\\Ctrl_'+ Ctrl_name + _str_pos_part + '_' +
-                    method + '_' + 'BDF{order_BDF}_Nx{N_x}_beta{beta}.txt'.format(
-            order_BDF=_order_BDF, N_x=_N_x, beta=_beta))
+                    method + '_' + 'BDF{order_BDF}_Nx{N_x}'.format(order_BDF=_order_BDF, N_x=_N_x)
+                    +title_file_prop_ctrl+ title_file_LQR + '.txt')
     title_anim = ('Benney_equation_code\\Control_verifications\\Anim_Ctrl_'+ Ctrl_name + _str_pos_part + '_' +
-                    method + '_' + 'BDF{order_BDF}_Nx{N_x}_beta{beta}.mp4'.format(
-            order_BDF=_order_BDF, N_x=_N_x, beta=_beta))
+                    method + '_' + 'BDF{order_BDF}_Nx{N_x}'.format(order_BDF=_order_BDF, N_x=_N_x)
+                    +title_file_prop_ctrl+ title_file_LQR + '.mp4')
     
     return title_file, title_anim
 
@@ -263,7 +302,7 @@ elif bool_positive_Ctrl:
 
 ### Solving & animation
 title_file, title_anim = file_anim_name_ctrl('FD', Ctrl_name=Ctrl_name, pos_part=bool_pos_part,
-                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _beta=beta,
+                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _alpha = alpha_prop_ctrl,_beta=beta,
                                              _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
 
@@ -311,7 +350,7 @@ if bool_save_anim_FD:
 ###### SPECTRAL METHOD #########
 ### Solving
 title_file, title_anim = file_anim_name_ctrl('Sp', Ctrl_name=Ctrl_name, pos_part=bool_pos_part,
-                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _beta=beta,
+                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _alpha = alpha_prop_ctrl, _beta=beta,
                                              _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
 title_amplitude = title_file[:-4]+"_Ampl.txt"
@@ -409,7 +448,7 @@ print("******** Tests & Experiments& Control theory verification ***********")
 
 bool_reg_lin = True
 
-def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _beta, _coef_pos_part_ctrl):
+def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _alpha, _beta, _coef_pos_part_ctrl):
     '''Function to write automatically the file names to avoid making typos. 
     Returns the names of the animation and the file with numerical values.'''
 
@@ -418,22 +457,37 @@ def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _beta, _coef_
     assert (Ctrl_name in 
             ["LQR", "prop", "positive"] ), "file_anim_name_ctrl fct: problem in the name of the Control."
     
+
     str_pos_part, str_pos_part_plot = "", ""
+    title_plot_pos_part = ""
+    title_file_LQR, title_plot_LQR = "", ""
+    title_file_prop_ctrl, title_plot_prop_ctrl = "", ""
+
+
     if pos_part:
         str_pos_part, str_pos_part_plot = ("pospart"+str(_coef_pos_part_ctrl), 
-                                           str(_coef_pos_part_ctrl)+" times the positive part of ")
-    if Ctrl_name != "LQR":
-        _beta = "None"
+                                           " positive part of ")
+        title_plot_pos_part = r", $\zeta_+$={}".format(_coef_pos_part_ctrl)
+
+    if Ctrl_name == "LQR":
+        title_file_LQR = r"_beta{}".format(_beta)
+        title_plot_LQR = r", beta={}".format(_beta)
+    if Ctrl_name == "prop":
+        title_file_prop_ctrl = r"_alpha{}".format(_alpha)
+        title_plot_prop_ctrl = r", $\alpha$={}".format(_alpha)
+
+
 
     title_plot_file = ('Benney_equation_code\\Control_verifications\\Plot_Ctrl_'+ Ctrl_name + str_pos_part + '_' +
-                    method + '_' + 'BDF{order_BDF}_Nx{N_x}_beta{beta}.png'.format(
-            order_BDF=_order_BDF, N_x=_N_x, beta=_beta))
+                    method + '_' + 'BDF{order_BDF}_Nx{N_x}'.format(order_BDF=_order_BDF, N_x=_N_x)+
+                      title_file_LQR+ title_file_prop_ctrl+ '.png')
     
     if Ctrl_name =="prop":
         Ctrl_name = "proportional"
 
-    title_plot = ("Log(max|h-1|) with"+str_pos_part_plot + Ctrl_name+ " control ,with \n"+
-                        r"N_x={N_x}, $\beta$={beta}".format(N_x=N_x, beta=beta))
+    title_plot = ("Log(max|h-1|) with "+str_pos_part_plot + Ctrl_name+ " control , \n with "+
+                        r"N_x={N_x}".format(N_x=N_x)+title_plot_LQR + title_plot_prop_ctrl+
+                        title_plot_pos_part)
     
     return title_plot_file, title_plot
 
@@ -479,7 +533,7 @@ plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t)-1|)$")
 if bool_FB_Control:
     title_plot_file, title_plot = title_plot_ctrl(
         method='Sp', Ctrl_name= Ctrl_name, pos_part=bool_pos_part, _N_x=N_x, _order_BDF=order_BDF_scheme,
-            _beta=beta, _coef_pos_part_ctrl=coef_pos_part_ctrl)
+            _alpha = round_fct(alpha_prop_ctrl,3), _beta=beta, _coef_pos_part_ctrl=coef_pos_part_ctrl)
     plt.title(title_plot)
     plt.axvline(x=time_start_ctrl, color='k')
 
