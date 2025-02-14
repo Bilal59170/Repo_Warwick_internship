@@ -49,21 +49,21 @@
         Warwick Mathematics Institute\\
         University of Warwick\\
         United Kingdom\\
-        Date to fill in
+        14th February 2025
     \end{center}
 \end{titlepage}
 
 \newpage
 
 {\large \textbf{Abstract}} \\
-{\normalsize The purpose of this report is to detail what I worked on during my visit at the 
+{\normalsize The purpose of this report is to detail what we worked on during my visit at the 
 University of Warwick with Dr. Susana Gomes and Dr. Radu Cimpeanu in the Mathematical Institute
- of Warwick. First of all, I re-derived and simulated numerically a reduced-order model of the 
+ of Warwick. First of all, we re-derived and simulated numerically a reduced-order model of the 
  Navier-Stokes equations called the Kuramoto-Sivashinski equation. Observing its numerical behaviour
-  allowed me to familiarize myself with a simple reduced-order model for thin film flows. Then, I 
+  allowed me to familiarize myself with a simple reduced-order model for thin film flows. Then, we 
   focussed on the problem of stabilizing a falling liquid film with blowing air jets control, 
-  which is the main study of my report. To do so, I adapted another reduced-order model, called 
-  the Benney equation, to air jet perturbation. Then, we constructed a control from the Benney 
+  which is the main study of this report. To do so, we adapted another reduced-order model, called 
+  the Benney equation, to air jet perturbations. Then, we constructed a control from the Benney 
   equation of the system that stabilizes the system as wanted.} \\
 \vspace{0.8cm} \\
 {\large \textbf{Keywords}: \normalsize Feedback control, Stabilization, Thin liquid films, Air jets control, Asymptotic analysis, Reduced-order modelling, LQR control, positive control.}
@@ -76,23 +76,26 @@ University of Warwick with Dr. Susana Gomes and Dr. Radu Cimpeanu in the Mathema
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Introduction}
+\section{Introduction}\label{section_intro}
 Thin film fluid flows are flows in which thicknesses are small compared to their length, this approximation being known as the
  thin film approximation. In this report, we study the stabilization of a thin fluid falling down an inclined plane of 
  slope angle $\theta$. Our goal is to make a wavy thin film fluid flat by the use of controlled perturbation 
  induced by air jets. Thin film systems can typically be found in coating processes (e.g for LCD screens), heat transfer,
   and many more applications. These processes are used in industry, so the way of inducing perturbation must be pratical, 
   relatively easy to set up. That is why we are using air jets as a control mechanism, as it it more covenient to use compared to
-  blowing and suction of liquid, another way of control that we will talk just after.  \\
+  blowing and suction of liquid, another way of control that we describe in the paragraph below.  \\
 
 The literature covering thin film systems is significantly large. Indeed, these systems provide a way to bypass the complexity 
 of the Navier-Stokes equations by simplifying them with asymptotic theory, using the thin film approximation. Consequently, 
 one can perform deeper mathematical studies and less computationally heavy numerical experiments, with the cost of neglecting some of 
-the physical phenomenom in the Naveier-Stokes equation.Three types of reduced-order models, here listed with increasing complexity, are 
-often studied: the KS (Kuramoto-Sivashinski) equation, the Benney equation, and the Weighted Residuals. Naturally, simpler equations allow deeper 
-mathematical and numerical studies of the equations. As for the control of these flows, there is a rich literature on fluid blowing and suction-based control,
- i.e injecting or sucking fluid from the base of the plane. In her thesis, Dr.Susana Gomes built a control that could stabilize the KS system to any 
- wanted state (\cite{Susana_thesis}). However, the controls derived from these equations aren't efficient for the Benney and 
+the physical phenomenom described by the Navier-Stokes equation. Three types of reduced-order models, here listed with increasing complexity, are 
+often studied: the KS (Kuramoto-Sivashinski) equation, the Benney equation, and the Weighted Residuals. These models are for example presented in the
+book of S.Kalliadasis and al. \cite{Kalliadasis2011FallingLF}, where the authors the Benney and Weighted Residuals models in part 1.3 ("Mathematical Modeling and Methodologies"
+), uses the Benney methodology in chapter 5, and weighted Residual methodology in chapter 6 (see part 6.5).
+ Naturally, simpler equations allow deeper mathematical and numerical studies of the equations. As for the control of these flows, there is a rich literature on fluid blowing and suction-based control,
+ i.e injecting or sucking fluid from the base of the plane. In \cite{gomes2015stabilisingnontrivialsolutionsgeneralised}, Susana Gomes and al.
+ built a control that could stabilize the KS system with a finite number of actuators to any arbitrary state including travelling waves.
+  However, the controls derived from these equations aren't efficient for the Benney and 
  Weighted Residual systems as the structure of the equation is probably too different. In \cite{Thompson_2016_prop_ctrl}, A. Thompson 
  et al. studied proportional control and LQR control for the Benney and Weighted Residual Systems. They studied both the continuous 
  case and discrete case, i.e with a continuum or finite number of actuators. They carried out stability analysis on the Benney and
@@ -103,23 +106,35 @@ mathematical and numerical studies of the equations. As for the control of these
    theory stability range. Further in \cite{holroyd2024stabilisationfallingliquidfilms}, they tackled the problem of partial observability,
     and likewise, built a control scheme that would stabilize the system, although in a smaller domain of Reynolds numbers. All in all, the
 blowing and suction method of actuation is thus backed with solid results. Further improvement on this control method would probably 
-be to test it on a 3D system, remove the periodicity along the plane axis, and test it in a real experimental setting. These improvements 
+be to test it on a 3D system, removing the periodicity along the plane axis, and test it in a real experimental setting. These improvements 
 are obviously not easy to do and would need much work like in \cite{Experimental_DNS_Reduced_order_modelling_paper} where F. Denner et al. 
 constructed an experimental setup and made comparisons between experimental results, DNS results and reduced-order model results. 
 \\
 
-However, blowing and sucking fluid from the base of the plane does not seem practical in an industrial context. One would need to drill several holes into the plane and create efficient fluid blowing and sucking pipes. Hence, we are interested in another way of introducing perturbation to the system: \underline{blowing air through pipes above the plane}. This method seems to be more practical in an industrial framework as blowing air jet seems to be far more used and easy to construct and use than liquid blowing and sucking pipes. It introduces two main difficulties. Firstly, the control has to be positive as we want blowing air jets only. Secondly, we would need to solve Navier-Stokes in the gas domain to have the link between the power of the air jet and its effect on the liquid-gas interface which is namely the normal and tangential pressure it induces on the liquid. In \cite{Dewetting_Ojiako}, J. Chinasaka et al. showed with deep numerical analysis that the tangential part of the pressure has a non-negligible effect (same amplitude as 10\% of the normal stress) on the liquid-gas interface flat water trapped in a beacon. However, this is probably due to the fact that the water is immobile, trapped, and the air jet is strong enough to induce large deformation, until dewetting which is not the case in our system.  
-In \cite{Moving_pressure_source}, D. Lunz et al. studied the effects of oscillating actuators on a falling liquid film and carried out an analysis depending on the oscillation frequency. They simplified the problem by only modelling the normal stress induced by the gas on the liquid.  In this report, we also chose to simplify the system and only consider normal pressure, and we justify this choice later. To the best of the author's knowledge, no control paper has been drawn up with this specific system and way of control. 
+However, blowing and sucking fluid from the base of the plane does not seem practical in an industrial context. One would need to drill several
+ holes into the plane and create efficient fluid blowing and sucking pipes. Hence, we are interested in another way of introducing perturbation
+  to the system: \underline{blowing air through pipes above the plane}. This method seems to be more practical in an industrial framework as blowing
+   air jet seems to be far more used and easy to construct and use than liquid blowing and sucking pipes. It introduces two main difficulties. 
+   Firstly, the control has to be positive as we want blowing air jets only. Secondly, we would need to solve the Navier-Stokes equations in the gas domain to 
+   have the link between the input power of the air jet and its effect on the liquid-gas interface which is namely the normal and tangential pressure it 
+   induces on the liquid. In \cite{Dewetting_Ojiako}, J. Chinasaka et al. showed with deep numerical analysis that the tangential part of the pressure 
+   has a non-negligible effect (same amplitude as 10\% of the normal stress) on the liquid-gas interface of a flat water film trapped in a beacon. However, this
+    is probably due to the fact that the water is immobile and trapped, with the air jet being strong enough to induce large deformation, until dewetting, which 
+    is not the case in our system.  
+In \cite{Moving_pressure_source}, D. Lunz et al. studied the effects of oscillating actuators on a falling liquid film and carried out an analysis about the effect of 
+the oscillation frequency on the gas-liquid interface. They simplified the problem by only modelling the normal stress induced by the gas on the liquid.  In this report, we also chose
+ to simplify the system and only consider normal pressure, and we justify this choice later. To the best of the author's knowledge, no control paper has been 
+ drawn up with this specific system and way of control. 
 \\
 
-The report is structured in two main parts. First, we model and observe the KS equation in \eqref{Section_KS_eq} 
-as an introductory work. We solve the equation numerically using an Implicit-Explicit method provided in 
+The report is structured in two main parts. First, we model and observe the KS equation in part \ref{Section_KS_eq} 
+as an introductory work. We solve the equation numerically using an implicit-explicit method provided in 
 \cite{Scheme_for_KS} and observe the main behaviours (steady states, progressive waves) of the KS equation, except its chaotic 
-behaviour. Secondly, we study the inclined plane system: in \eqref{Section_Benney_eq}, we derive the Benney equation with a 
+behaviour. Secondly, we study the inclined plane system: in part \ref{Section_Benney_eq}, we derive the Benney equation with a 
 normal gas pressure control term. We introduce the normal and tangential terms of the gas stress, neglect the tangential 
-term, and choose a classic scaling to make the normal term appear in the equation.  Then, in \eqref{Section_Numerical_simu}, 
-we construct numerical simulation scheme and carry out tests to ensure its accuracy. Finally, in \eqref{Section_Control}, we 
-use the linearised Benney equation to compute a linear controls. We find that LQR state feedback control works well and stabilizes
+term, and choose a classic scaling to make the normal term appear in the equation.  Then, in part \ref{Section_Numerical_simu}, 
+we construct a numerical simulation scheme and carry out tests to ensure its accuracy. Finally, in part \ref{Section_Control}, we 
+use the linearised Benney equation to compute a linear controls. We find that the LQR state feedback controls works well and stabilizes
  exponentially quickly the system. As the respective method gives control of any sign, we need to restrict the control to positive values to 
  have blowing only air jets. We find that LQR optimal control with just the positive part of the control applied at each time step stabilizes 
  successfully the system too, although with less efficiency. However, using this method, we are not sure that the state (i.e the height the the 
@@ -130,23 +145,32 @@ Throughout the present document, I denote:
 \begin{itemize}
     \item dimensional quantities with a * (e.g $x^*$), 
     \item non-dimensional one without anything (e.g x), 
-    \item derivation with a "," e.g. $f_{,xy} = \frac{\partial^2 f}{\partial x\partial y}.$
+    \item differentiation with a "," e.g. $f_{,xy} = \frac{\partial^2 f}{\partial x\partial y}.$
+    \item $\mathcal{M}_{n,m}$ (resp. $\mathcal{M}_n$) the set of real matrices with n lines and m rows (resp. n lines and n rows).
+    \item We use all the classic notations that we do not recall here (e.g the set of real numbers $\mathbb{R}$..).
 \end{itemize}
 
 \newpage
 \section{Study of the KS equation}\label{Section_KS_eq}
 
 
-In this section of the report, we study the Kuramoto Shivashinki (KS) equation which is known to be one of the simplest equations having chaotic behaviour.  The goal of this part is not to get new results or make deep analysis as it is more an introductory part of my visit. Here, we will use specific numerical scheme and change parameters to observe the various behaviours of the numerical solutions of this equation. 
+In this section of the report, we study the Kuramoto Sivashinski (KS) equation which is known to be one of the simplest equations having 
+chaotic behaviour.  The goal of this part is not to get new results or make deep analysis as it is more an introductory part of this report. 
+Here, we will use specific numerical scheme and change parameters to observe the various behaviours of the numerical solutions of this equation. 
 
 \subsection{The system and the KS equation}
 
-The KS or Kuramoto-Sivashinski equation was first introduced by G.Shivashinsky and D.M.Michelson in 1977 in \cite{Shiv_Michelson_KS_eq} to describe flame fronts, and in 1978 by Y.Kuramoto in \cite{Kuramoto_KS_eq} to study chaotic behaviors in chemical reactions. Several other type of KS equation exists, e.g stochastic KS equation that adds  a linear stochastic term. For more details, see the thesis of Dr.Susana Gomes \cite{Susana_thesis}. One of its versions is
+The KS or Kuramoto-Sivashinski equation was first introduced by G.Sivashinski and D.M.Michelson in 1977 in \cite{Shiv_Michelson_KS_eq} to describe 
+flame fronts, and in 1978 by Y.Kuramoto in \cite{Kuramoto_KS_eq} to study chaotic behaviors in chemical reactions. Several other type of KS equation 
+exists, e.g stochastic KS equation that adds a linear stochastic term. For more details, see the thesis of Dr.Susana Gomes \cite{Susana_thesis} to see the study 
+of several type of KS equations.
+
+One of its versions is
 
 \begin{equation}\label{KS_eq_L}
 \left\{
 \begin{aligned}
-    u_{,t} + u_{,xxxx}  + u_{,xx} + uu_{,x} = 0 \\
+    u_{,t} + u_{,xxxx}  + u_{,xx} + uu_{,x} = 0, \\
     u(x+L)=u(x). 
 \end{aligned}
 \right.
@@ -154,14 +178,21 @@ The KS or Kuramoto-Sivashinski equation was first introduced by G.Shivashinsky a
 
 
 
-Here, we use this equation to model Falling Liquid Flow down an inclined plane in a 2D setting. The plane has a finite length L along its axis, the x-axis, which constitutes the flowing direction of the liquid. We consider the liquid being L-periodic. 
-The KS equation can be derived from the Benney equation, which is a reduced-order equation obtained from the 2D Navier Stokes equations. The Benney equation is presented latter in part \ref{Section_Benney_eq}. We put the derivation of the KS equation in appendix. 
+Here, we use this equation to model falling liquid flowing down an inclined plane in a 2D setting. The plane has a finite length L along its axis, the x-axis, 
+which constitutes the flowing direction of the liquid. We consider the liquid being L-periodic. The KS equation can be derived from the Benney equation, which 
+is a reduced-order equation obtained from the 2D Navier Stokes equations. The Benney equation is presented later in part \ref{Section_Benney_eq}. We put the 
+derivation of the KS equation in appendix. 
 
-Here, nor the slope angle $\theta$ or other parameters like Reynolds or Capillary numbers appear due to the way the KS equation is derived as the change of variable (not possible for all value of Reynolds number and theta) make all the variables disappear and the only variable which can be changed is the nondimensionnal length L of the domain. 
+Here, nor the slope angle $\theta$ or other parameters like Reynolds or Capillary numbers appear due to the way the KS equation is derived as the change of 
+variable (not possible for all value of Reynolds number and theta) make all the variables disappear and the only variable which can be changed is the nondimensionnal 
+length L of the domain. 
 \\
 
-\textbf{Description of the terms}
-One of the benefits of the KS equation is that it is a weakly non linear equation which means that its non-linearities aren't too complex compared to other long wave models like the Benney equation or the Weighted Residuals. This weak nonlinearity $uu_{,x}$ allows in one hand deep mathematical studies, as said in introduction, but also chaotic behaviors (non linear part). This non linearity is called "Burger non linearity" referring to the Burgers equation:
+\underline{\textbf{Description of the terms.}}
+One of the benefits of the KS equation is that it is a weakly non linear equation which means that its non-linearities, here $uu_{,x}$ aren't too complex compared 
+to other long wave models like the Benney or the Weighted Residuals one. In one hand, the simple character of the non lineariy in the KS equation allows deep
+ mathematical studies, as said before in the introduction.\ref{section_intro}. Nevertheless, the non linear aspect seems to bring complex behaviours, here chaotic 
+ one. This non linearity is called "Burger non linearity" referring to the Burgers equation:
 
 \begin{equation*}
     \left\{
@@ -172,9 +203,9 @@ One of the benefits of the KS equation is that it is a weakly non linear equatio
     \right.
 \end{equation*}
 
-where the only nonlinearity is the same as the one in the KS equation.
+where the non-linear term is the same as in the KS equation.
 
-\textbf{Rescaling}
+\underline{\textbf{Rescaling.}}
 Let introduce what we call the instability parameter \begin{equation}
     \nu = \left( \frac{2\pi}{L}\right)^2.
 \end{equation}
@@ -195,41 +226,53 @@ We keep the same notation and remove the " $\tilde{}$ " from the letters. We are
 \right.
 \end{equation}
 
-We see that the factor $\nu$ appeared in the equation. Its value will change the behaviour of the numerical solution, from steady states to chaos, as we will see in the simulations. That is why it is called "instability parameter".
+We see that the factor $\nu$ appeared in the equation. Its value will change the behaviour of the numerical solution, from steady states to chaos, as we will 
+see in the simulations. That is why it is called "instability parameter".
+\\
 
-\underline{\textbf{The system.}} We are studying this equation in the domain $[0, 2\pi)$ which is equivalent to study it on [0, L) with $L=\frac{2\pi}{\sqrt{\nu}}$. We will input periodic sinusoidal initial conditions and observe how they will behave depending on the frequency of the Initial condition and the value of $\nu$. We don't set a particular final time T as it could change depending on what we want to see.
+\underline{\textbf{The system.}} We are studying this equation in the domain $[0, 2\pi)$ which is equivalent to study it on [0, L) with $L=\frac{2\pi}{\sqrt{\nu}}$. 
+We will input periodic sinusoidal initial conditions and observe how they will behave depending on the frequency of the initial condition and the value of $\nu$. We 
+don't set a particular final time T as it could change depending on what we want to see.
+
+
 \subsection{The numerical scheme}
-In this section, we use the scheme described in \cite{Scheme_for_KS}. In the cited paper, the authors use it for a more complex system of equations as they try to model the dynamics of the fluids height and a surfactant. 
-Here, we don't justify that the numerical scheme is appropriate for the KS equation. One just needs to take a null surfactant concentration and look at the explanation of the cited paper (essentially need to prove the regularity of the linear and non linear operators that describes the equation).  
+In this section, we use the scheme described in \cite{Scheme_for_KS}. In the cited paper, the authors use it for a more complex system of equations as they try to 
+model the dynamics of the fluids height and a surfactant. Here, we don't justifythat the numerical scheme is appropriate for the KS equation, at the opposite 
+of \cite{Scheme_for_KS} .
+To do so, one would need to prove the regularity of the linear and non linear operators in the KS equation, which is already done in the cited paper.  
 
 \subsubsection{Decomposition in Fourier series}
-We rewrite the KS equation \ref{KS_eq_2pi}: 
+We rewrite the KS equation \eqref{KS_eq_2pi}: 
 
 \begin{equation}\label{KS_eq_2pi_1/nu}
 \left\{
 \begin{aligned}
-    u_{,t}  + \nu u_{,xxxx} + u_{,xx} + \frac{1}{\nu}u=\frac{1}{\nu}u -uu_{,x}  \\
+    u_{,t}  + \nu u_{,xxxx} + u_{,xx} + \frac{1}{\nu}u=\frac{1}{\nu}u -uu_{,x},  \\
     u(x+2\pi)=u(x). 
 \end{aligned}
 \right.
 \end{equation}
 
-We added the $\frac{1}{\nu}u$ term because we reproduced the scheme constructed in \cite{Scheme_for_KS}. It seems that it is useful to prove that the implicit-explicit scheme of \cite{KS_scheme_C_A} can be used on the KS equation. The quantities on the left will be treated implicitly and the one on the right explicitly as we will se later.
+We added the $\frac{1}{\nu}u$ term because we reproduced the scheme constructed in \cite{Scheme_for_KS}. It seems that it is useful to prove
+ that the implicit-explicit scheme of \cite{KS_scheme_C_A} can be used on the KS equation. The quantities on the left will be treated 
+ implicitly and the one on the right explicitly as we will se later.
 \\
 
-As the function u in the KS equation (\ref{KS_eq_2pi}) is $2\pi$-periodic, we decompose it into its Fourier series. As u is real, we can decompose it for sin and cos components:
+As the function u in the KS equation (\ref{KS_eq_2pi}) is $2\pi$-periodic, we decompose it into its Fourier series. As u is real, we can 
+decompose it for sin and cos components:
 
 \begin{equation}\label{u_Fourier_serie}
     u(x, t) = \sum_{j=1}^{+\infty} u_j^ccos(jx) + u_j^ssin(jx) + \bar{u}(t),
 \end{equation}
 
 
-$$u^c=(u_j^c)_{j\in \mathbb{N}^*}, u^s= (u_j^s)_{j\in\mathbb{N}^*}, \bar{u}$$ being respectively the cos, sin components and the mean value of u. 
+$$u^c=(u_j^c)_{j\in \mathbb{N}^*}, u^s= (u_j^s)_{j\in\mathbb{N}^*}, \bar{u},$$ being respectively the cos, sin components and the mean value 
+of u. 
 
 As we studying the steady state u=0, we take centered sinusoidal initial conditions and suppose here that $$\bar{u}=0.$$
 
 
-Using the Fourier series in \ref{KS_eq_2pi}, we have that
+Using the Fourier series in \eqref{KS_eq_2pi}, we have that
 
 \begin{align*}
   u_{,t}  + \nu u_{,xxxx} + u_{,xx} + \frac{1}{\nu}u &= \sum_{j=1}^{\infty} (\frac{du_j^c}{dt} + (\nu j^4 - j^2)u_j^c +\frac{1}{\nu}u_j^c)cos(jx) \\ &+ \sum_{j=1}^{\infty}(\frac{du_j^s}{dt} + (\nu j^4 - j^2)u_j^s +\frac{1}{\nu}u_j^s)sin(jx)\\ &= \sum_{j=1}^{\infty} (\frac{1}{\nu}u_j^c- F_j^c)cos(jx)  +(\frac{1}{\nu}u_j^s- F_j^s)sin(jx) \\ &= \frac{1}{\nu}u - uu_{,x},
@@ -238,19 +281,20 @@ Using the Fourier series in \ref{KS_eq_2pi}, we have that
 with 
 \begin{align*}
 F_j^c = -\frac{j}{2} \sum_{m+n=j}u_m^cu_n^s + \frac{j}{2} \sum_{m-n=j}(u_m^cu_n^s - u_n^cu_m^s), \\
-F_j^s = \frac{j}{4} \sum_{m+n=j}(u_m^cu_n^c - u_m^su_n^s)+ \frac{j}{2} \sum_{m-n=j}(u_m^cu_n^c + u_n^su_m^s)
+F_j^s = \frac{j}{4} \sum_{m+n=j}(u_m^cu_n^c - u_m^su_n^s)+ \frac{j}{2} \sum_{m-n=j}(u_m^cu_n^c + u_n^su_m^s),
 \end{align*}
 
 the Fourier cross terms induced by the weak non-linearity of the KS equation. 
 
-By projecting the inequality on $(cos(jx)_{j\in \mathbb{N}^*}, (sin(jx)_{j \in \mathbb{N}^*})$,  Orthogonal family of vectors in $L^2([0,2\pi), \mathbb{R})$, we have an infinite number of Ordinal Differential Equations (ODEs): 
+By projecting the inequality on $\Big((cos(jx))_{j\in \mathbb{N}^*}, (sin(jx))_{j \in \mathbb{N}^*}) \Big)$, orthogonal 
+family of vectors in $L^2([0,2\pi), \mathbb{R})$, we have an infinite number of ordinal differential equations (ODEs): 
 
 \begin{equation}\label{ODE_KS}
     \forall j \in \mathbb{N}^*,\quad 
     \left\{
     \begin{aligned}
-        \frac{du_j^c}{dt} + (\lambda_j + \frac{1}{\nu})u_j^c = \frac{1}{\nu}u_j^c + F_j^c \\
-        \frac{du_j^s}{dt} + (\lambda_j + \frac{1}{\nu})u_j^s = \frac{1}{\nu}u_j^c + F_j^s
+        \frac{du_j^c}{dt} + (\lambda_j + \frac{1}{\nu})u_j^c = \frac{1}{\nu}u_j^c + F_j^c, \\
+        \frac{du_j^s}{dt} + (\lambda_j + \frac{1}{\nu})u_j^s = \frac{1}{\nu}u_j^c + F_j^s,
     \end{aligned}
     \right.
 \end{equation}
@@ -260,72 +304,89 @@ with
     \forall j\in \mathbb{N}^*, \quad \lambda_j = \nu j^4 - j^2 = \nu j^2(j-\frac{1}{\sqrt{\nu}})(j+\frac{1}{\sqrt{\nu}}).
 \end{equation}
 
- First of all, we don't simplify the $u_j^c$, $u_j^s$ in the equation as one will be implicit and the other explicit in the numerical scheme that we will describe in an instant. 
+We don't simplify the $u_j^c$, $u_j^s$ in the equation as one will be implicit and the other explicit in the 
+ numerical scheme that we will describe in an instant. 
 
-Let us underline that the equations in (\ref{ODE_KS}) have exponential solutions of rate $\lambda_j$ when there is no weak non linearity terms $F_j^{c,s}$ i.e equations of the form \begin{equation}\label{KS_exponential_ODE}
+Let us underline that the equations in (\ref{ODE_KS}) have exponential solutions of rate $\lambda_j$ when there is no weak non linearity 
+terms $F_j^{c,s}$ i.e equations of the form 
+
+\begin{equation}\label{KS_exponential_ODE}
     \forall j\in \mathbb{N}, \quad \frac{du_j^{c,s}}{dt} = -\lambda_ju_j^{c,s}.
 \end{equation}
 
-\underline{\textbf{Sign of the } $\boldsymbol{\lambda_j}.$} If we neglect the non-linearities, we remark that we would have an exponential dampening on the $j^{th}$ mode if and only if $$-\lambda_j > 0. $$
+\underline{\textbf{Sign of the } $\boldsymbol{\lambda_j}.$} If we neglect the non-linearities, we notice that we would have an exponential
+ dampening on the $j^{th}$ mode if and only if $$-\lambda_j > 0. $$
 
-When $\forall j \in \mathbb{N}^*,\lambda_j <0,$ we are expecting the non-linearities will be indeed negligible if we take a low number of initial mode as the the $F_j^{c,s}$ will be small at the beginning so the derivatives of the $u_j^{c,s}$ will still be negative. 
-At the opposite, if $\exists j \in \mathbb{N}, \quad \lambda_j >0$ then if we take the non-linearities small enough at the beginning,$u_j$ will grow and its effect will spread in the other $u_i$ through the non-linearities $F_j^c$ and $F_j^s$. Therefore, we will try later to control the signs of the $\lambda_j$.
+When $\forall j \in \mathbb{N}^*,\lambda_j <0,$ we are expecting the non-linearities to be indeed negligible if we take a low number of 
+initial mode as the the $F_j^{c,s}$ will be small at the beginning so the derivatives of the $u_j^{c,s}$ will still be negative. 
+At the opposite, if there exists $j$ in  $\mathbb{N}$ such that $\lambda_j >0$, then, if we take the non-linearities small enough at the beginning,
+$u_j$ will grow and its effect will spread in the other $u_i$ through the non-linearities $F_j^c$ and $F_j^s$. Therefore, we will try 
+later to test cases with different signs of the $\lambda_j$ by changing the parameter $\nu$.
 
 
 
 \subsection{Description of the scheme}
 
-Here, we first present the equations (\ref{ODE_KS}) in a specific way, discretize it for it to be suitable for numerical program, and then introduce the numerical scheme that we are going to use. 
+Here, we first present the equations (\ref{ODE_KS}) in a specific way, discretize them for them to be suitable for numerical program, 
+and then introduce the numerical scheme that we are going to use. 
 \\
 
 we set 
 \begin{equation}
     U = (u^c, u^s) \in \mathbb{R}^{\mathbb{N}^*} \times\mathbb{R}^{\mathbb{N}^*}
-\end{equation} the grouping of the 2 vectors of the Fourier coefficients of u .
+\end{equation} the grouping of the 2 Fourier coefficients vectors u .
 
-Equations (\ref{ODE_KS}) can be rewritten as 
+Equations \eqref{ODE_KS} can be rewritten as 
 
 \begin{equation}
-    \frac{dU}{dt} + A(U) = B(U)
+    \frac{dU}{dt} + A(U) = B(U),
 \end{equation}
 with 
 
-$$AU = \left((\lambda_j + \frac{1}{\nu})u^c_j, (\lambda_j + \frac{1}{\nu})u^c_j\right)_{j \in \mathbb{N}}, \quad B(U) = \left(\frac{1}{\nu}u_j^c + F_j^c, \frac{1}{\nu}u_j^s + F_j^s\right)_{j\in \mathbb{N}}$$
-so A and B are respectively a linear and non-linear operators.
+$$AU = \left((\lambda_j + \frac{1}{\nu})u^c_j, (\lambda_j + \frac{1}{\nu})u^c_j\right)_{j \in \mathbb{N}}, \quad B(U) = 
+\left(\frac{1}{\nu}u_j^c + F_j^c, \frac{1}{\nu}u_j^s + F_j^s\right)_{j\in \mathbb{N}},$$
+so A and B are respectively a linear and a non-linear operators.
 \\
 
-\textbf{The numerical Scheme.} We describe now the numerical scheme used by \cite{Scheme_for_KS}. They used a Implicit-Explicit multi-step method introduced and analyzed in \cite{KS_scheme_C_A} by G.Akrivis and M.Crouzeix. We will see it is an implicit BDF (Backward Differentiation Formula) scheme of order 
+\underline{\textbf{The numerical Scheme.}} We describe now the numerical scheme used by \cite{Scheme_for_KS}. They used a Implicit-Explicit
+ multi-step method introduced and analyzed in \cite{KS_scheme_C_A} by G.Akrivis and M.Crouzeix. We will see it is an implicit BDF (Backward 
+ Differentiation Formula) scheme of order 
+
 \begin{equation}
     p_{BDF} \in \mathbb{N}^*
-\end{equation} for the time derivative and the linearity, combined with a multi-step explicit scheme for the non-linearity. 
+\end{equation} 
+
+for the time derivative and the linearity, combined with a multi-step explicit scheme for the non-linearity. 
 \\
 
-Let us now set $N_x, N_t$ the number of space and time points respectively. Then $$dt = \frac{T}{N_t-1},\quad dx = \frac{2\pi}{N_x}.$$ 
+Let us now set $N_x, N_t$ the number of space and time points respectively. Then the time and space steps are respectively 
+$$dt = \frac{T}{N_t-1},\quad dx = \frac{2\pi}{N_x}.$$ 
 
-Let us then set $$\forall n\in [|0, N_t-1|], \quad U^n = U(ndt) = ((u_j^c(ndt)_{j\in \mathbb{N}}, (u_j^s(ndt))_{j\in \mathbb{N}}).$$
+Let us then set $$\forall n\in [|0, N_t-1|], \quad U^n = U(ndt) = \Big( (u_j^c(ndt))_{j\in \mathbb{N}}, (u_j^s(ndt))_{j\in \mathbb{N}}\Big).$$
 
 We introduce the polynomials of degree $p_{BDF}$
  \begin{equation}
      \alpha = \sum_{i=1}^{p_{BDF}} \frac{1}{j}X^{p_{BDF}-1}(X-1)^j, \quad  \beta = X^{p_{BDF}}, \quad \gamma = X^p_{BDF} - (X-1)^{p_{BDF}} \in \mathbb{R}_{p_{BDF}}[X].
  \end{equation}
 
-The numerical scheme for the time is constructed with $(\alpha, \beta)$ with implicit scheme and the non linearity is managed with $(\alpha, \gamma)$. Both schemes are of order $p_{BDF}$:
+The numerical scheme for the time is constructed with the coefficients of $\alpha$ and $\beta$ with and implicit scheme whereas the non
+ linearity is discretized with the coefficient of $\alpha$ and $\gamma$ explicitly (no $U^{n+p_{BDF}}$). Both schemes are of order $p_{BDF}$:
 
 \begin{equation}
-    \sum_{i=0}^p \alpha_i U^{n+i} + dt\beta_{p_{BDF}}AU^{n+p} = dt\sum_{i=0}^{p-1} \gamma_iB(U^{n+i}), \quad n\in [|0, N-p|]
+    \sum_{i=0}^{p_{BDF}} \alpha_i U^{n+i} + dt\beta_{p_{BDF}}AU^{n+p_{BDF}} = dt\sum_{i=0}^{p_{BDF}-1} \gamma_iB(U^{n+i}), \quad n\in [|0, N-p_{BDF}|]
 \end{equation}
 
-with $\alpha_i, \beta_i, \gamma_i$ being the coefficients of order i of $\alpha, \beta,$ and $\gamma$ respectively. The scheme is therefore: 
+with $\alpha_i, \beta_i, \gamma_i$ being the coefficients of order i of $\alpha, \beta,$ and $\gamma$ respectively. Hence the scheme is: 
 \\
 
 \begin{equation}
     \boxed{
-    \sum_{i=0}^p \alpha_i U^{n+i} + dtAU^{n+p} = dt\sum_{i=0}^{p-1} \gamma_iB(U^{n+i}), \quad n\in [|0, N-p|]
+    \sum_{i=0}^{p_{BDF}} \alpha_i U^{n+i} + dtAU^{n+p_{BDF}} = dt\sum_{i=0}^{p_{BDF}-1} \gamma_iB(U^{n+i}), \quad n\in [|0, N-p_{BDF}|]
     }
 \end{equation}
 
-We then truncate U up to a certain order to do numerical computations. We get $$U^{d, n} = \left((u_j^c(ndt))_{j\in [|1,d|]}, (u_j^s(ndt))_{j\in [|1,d|]} \right)\in \mathbb{R}^{2d},$$ 
-$A^d$ and $B^d$ the new operators defined naturally from A and B with the new truncated non linear coefficients:
+Now we truncate U up to a certain order to carry on numerical computations. We get $$U^{d, n} = \Big((u_j^c(ndt))_{j\in [|1,d|]}, (u_j^s(ndt))_{j\in [|1,d|]} \Big)\in \mathbb{R}^{2d},$$ 
+$A^d$ and $B^d$ the new discrete operators defined naturally from A and B with the new truncated non linear coefficients:
 
 \begin{equation}
 \left\{
@@ -337,52 +398,70 @@ $A^d$ and $B^d$ the new operators defined naturally from A and B with the new tr
 \end{equation}
 
 
-As we use the FFT algorithm (Fast Fourier Transform), the highest mode left is $d =\lfloor N_t/2 \rfloor.$ For more precision on the code, see the appendix \ref{KS_computation_numerics} on how we implemented it, or see also the code on the \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github page}. 
+As we use the FFT algorithm (Fast Fourier Transform), the highest mode left is $d =\lfloor N_x/2 \rfloor.$ For more precision on the code, 
+see the appendix \ref{KS_computation_numerics} on how we implemented it, or see also the code on the
+ \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github page}. 
 
 \subsection{Simulations and Results}
 We implement all the simulations in a python file. They can be found in \href{https://github.com/Bilal59170/Repo_Warwick_internship}{this Github repository}.
 
 \subsubsection{Dispersion relation}
-We recall the expression of the $\lambda_j:$
+We recall the expression of the $-\lambda_j:$
 
 \begin{equation}
-    -\lambda_j = -\nu j^2(j-\frac{1}{\sqrt{\nu}})(j+\frac{1}{\sqrt{\nu}})
+    -\lambda_j = -\nu j^2(j-\frac{1}{\sqrt{\nu}})(j+\frac{1}{\sqrt{\nu}}).
 \end{equation}
 
-As we said earlier, we want to know the sign of the $\lambda_j$. We know it just by analyzing the polynomials of order 4 in j. We have that
+As said earlier, we want to know the sign of the $\lambda_j$ to have an idea of the behaviour of the system .
+We know it just by analyzing the polynomials of order 4 in j. We have that
 
 \begin{equation}
 \left\{
 \begin{aligned}
     -\lambda(j) > 0 \quad  \text{on } (0, \frac{1}{\nu}) \quad \text{(exp. growth)},\\
     -\lambda(j) < 0 \quad  \text{on } (\frac{1}{\nu}, +\infty)  \quad \text{(exp. decay)},\\
-    -\lambda(j) = 0 \quad \text{on } \{0, \frac{1}{\sqrt{\nu}}\}
+    -\lambda(j) = 0 \quad \text{on } \{0, \frac{1}{\sqrt{\nu}}\}.
 \end{aligned}
 \right.
 \end{equation}
 
-which means that for $\nu < 1$, having j such that $-\lambda_j > 0$ is impossible. As we study a periodic function, it is a superposition of natural integer modes (cf the Fourier series of u in \ref{u_Fourier_serie}). Hence, any periodical input would be exponentially dampened in a system if there wasn't any the non-linearities. 
+Let us note that for $\nu \geq 1$, having j in $\mathbb{N}^*$ such that $-\lambda_j > 0$ is impossible. As we study a periodic function,
+ it is a superposition of natural integer modes (cf the Fourier series of u in \ref{u_Fourier_serie}). Hence, any periodical input would 
+ be exponentially dampened in a system with $\nu <1 $ if there were no non linearities. 
 
-We show on figure \ref{fig:KS_eq_lambda_growing_and_dampening} two profiles of $\lambda_j$ for different values of $\nu$, with and without divergent modes.
+We show on figure \ref{fig:KS_eq_lambda_growing_and_dampening} two profiles of $\lambda_j$ for different values of $\nu$, with and without
+divergent modes. We will now separate our observations in two parts: $\nu \geq1$ and $\nu <1$.
 \\
 
 \begin{figure}[h]
 \includegraphics[width=1\textwidth]{KS_eq/plot_dispersion_nu_1_1-4.png}
-\caption{Two curves of -$\lambda(j)$ for $\nu=1$ and $\nu=\frac{1}{4}$. The first case gives no exponentially growing regime, but the second case does with $\lambda_1 >0$. } 
+\caption{Two curves of $-\lambda_j = -\nu j^2(j-\frac{1}{\sqrt{\nu}})(j+\frac{1}{\sqrt{\nu}})$ for $\nu=1$ and $\nu=\frac{1}{4}$. 
+As expected, we have all the $\lambda_j$ non positive for $j \in \mathbb{N}$ for the case $\nu \leq 1$ that could maybe give
+an exponential decreasing. As for the case $\nu < 1$, we see that $\lambda_1 >0$ so the first mode can possibly grow at the begining if the 
+ non linear terms are not to large and negative.} 
 \label{fig:KS_eq_lambda_growing_and_dampening}
 \end{figure}
 
-We will now separate our observations in two parts: $\nu \geq1$ and $\nu <1$.
 
 \subsubsection{\texorpdfstring{$\nu \geq 1$}{nu >= 1}}
 
-As said before, we are expecting to have exponential decays. We will here measure the characteristic decay of curves as if they were decaying exponentially by computing an exponential regression (linear regression on a log scale). Then, we compare the coefficients to the expected rate. 
+As said before, we are expecting the system to have a behaviour similar to an exponential decay. Here, we measure the characteristic 
+decay of curves as if they were decaying exponentially by computing an exponential regression (linear regression on a log scale). Then,
+ we compare the coefficients to the expected rate. 
 
-We carry out these tests for $\nu =1$. We compared the dampening values for $k \in {0, 1, 2, 3, 4, 5}.$We use initial condition sin(kx) and cos(kx). Except k=0, we found that for both initial conditions, the exponential regime and the curve of $u_{max}$ were identical until a floor value (around $10^{-16}$) where the solution would become flat, maybe because of the float precisions in the operations.
+We carry out these tests for $\nu =1$. We compared the dampening values for $k \in \{0, 1, 2, 3, 4, 5\}.$ We set an the initial condition 
+sin(kx) and cos(kx). Except for k=0, we found that for both initial conditions, the exponential regime and the curve of $u_{max}$ were identical 
+until a floor value (around $10^{-16}$) where the solution would become flat, maybe because of the float precisions in the operations.
+\\
 
-We are expecting of having $$log(u_{max}) = log(u_{max}(0)e^{-\lambda_k t}) = log(u_{max}(0)) -  \lambda_k t$$ with $u_{max}(t) = \max_{x\in[0,2\pi]}|u(.,t)|.$ Hence we compare the coefficient a and b from the linear regression y = ax+b to $-\lambda_k$ and $log(u_{max}(0))$ respectively with these relative errors terms: $$\eta_a = \frac{|a-(-\lambda_k)|}{|-\lambda_k|}, \eta_b = \frac{|b-log(u_{max}(0)|}{|log(u_{max(0)})|}.$$  The determination coefficient $r^2$ of the linear regression was always very high (at least 0.9999 and 1 is a perfect matching) so we don't display it. 
+We expect to have an exponential decreasing, so  $$\log(u_{max}) = \log(u_{max}(0)e^{-\lambda_k t}) = \log(u_{max}(0)) -  \lambda_k t,$$
+ with $u_{max}(t) = \max_{x\in[0,2\pi]}|u(.,t)|.$ Hence we compare the coefficient a and b from the linear regression y = ax+b to $-\lambda_k$ 
+ and $log(u_{max}(0))$ respectively with these relative errors terms: 
+ $$\eta_a = \frac{|a-(-\lambda_k)|}{|-\lambda_k|}, \eta_b = \frac{|b-\log(u_{max}(0))|}{|\log(u_{max}(0))|}.$$  The determination coefficient $r^2$ of
+ the linear regression was always very high (at least 0.9999 and 1 is a perfect matching) so we don't display it. 
 
-\begin{center}
+\begin{table}
+\centering
 \begin{tabular}{ |c|c|c| } 
  \hline
     Modes j  & $\eta_a$ (in \%) & $\eta_b$ (in \%)  \\
@@ -392,9 +471,15 @@ We are expecting of having $$log(u_{max}) = log(u_{max}(0)e^{-\lambda_k t}) = lo
  4 & $(1.10^{-6}, 1.10^{-5})$ & (0.01, 0.01) \\ 
  \hline
 \end{tabular}
-\end{center}
+\caption{Table of the error terms $\eta_a = \frac{|a-(-\lambda_k)|}{|-\lambda_k|}, \eta_b = \frac{|b-\log(u_{max}(0))|}{|\log(u_{max}(0))|}$ for 
+(cos(kx), sin(kx)) as initial condition, for $k \in \{2, 3, 4\}$.}
+\end{table}
 
-We see that we have very low error so the non-linearities in that case are quite negligible. We see that the errors are a bit higher for sin than cos initial condition, maybe because they are no crossed term (i.e $u_m^s u_n^c$ and not $u_m^c u_n^c$) in  the non linearity $F_j^s$ than in $F_j^s$. For instance, if we take sin(2x) as initial condition, non zero term will appear in $F_4^s=\frac{4}{4}(-{u_2^s}^2)$ but $F_4^c=0$. This is the case for an infinite number of modes after j=2. Therefore, the effect of the non-linearities appears the most for little modes as they make higher modes appear which creates a chain reaction . That is maybe why the relative error rate are decreasing when we test higher modes. 
+We see that the errors terms $\eta_a, \eta_b$ are very low so the non-linearities in that case are quite negligible. We see that the errors are a bit higher if we take sin 
+as initial condition compared to cos. This is probably because they are no crossed term (i.e $u_m^s u_n^c$ and not $u_m^c u_n^c$) in  the non linearity 
+$F_j^s$ than in $F_j^s$. For instance, if we take sin(2x) as initial condition, non zero terms will appear in $F_4^s=\frac{4}{4}(-{u_2^s}^2)$ but $F_4^c=0$. 
+This is the case for an infinite number of modes after j=2. Therefore, the effect of the non-linearities appears the most for little modes as they make higher 
+modes appear which creates a chain reaction . That is maybe why the relative error rate are decreasing when we test higher modes. 
 
 
 
@@ -415,24 +500,34 @@ We see that we have very low error so the non-linearities in that case are quite
         \caption{Case nu=1, k=1}
         \label{fig:image2}
     \end{minipage}
-    \caption{Figure of the exponential decay of $log(max|u(.,t)|)$ and its comparison with the linear regime in the case where the initial condition is a mode of order 1 (right) i.e cos or sin and 2 (left). \\
-    The left part behave almost exactly like the linear regime. As for the right plot, instead of staying still, the initial condition decreases in norm because of the non-linearities. The black horizontal dots are delimiting the domain where the linear regression has been made.}
+    \caption{Plot of the exponential decay of $\max|u(.,t)|$ in $\log_{10}$ scale and its comparison with the linear regime in the case where the initial 
+    condition is a mode of order 1 (right) i.e cos or sin and 2 (left). The left part behave almost exactly like the 
+    linear regime. As for the right plot, instead of staying still, the initial condition decreases in norm because of
+     the non-linearities. The black horizontal dots are delimiting the domain where the linear regression has been
+      made.}
     \label{fig:both_images}
 \end{figure}
 
-In opposite to the previous cases, the case j=1 is different to the linear regime which should be just stationary. In the same spirit than the remark above, we think that all the non-linearities $F_{j'}$ of the modes after $j'>j=1$ are non zero. The main mode j=1 doesn't become small quickly like the previous cases, so the non-linearities $F_{j'}$ become non negligible too and make the function non stationary. However, we don't know why they make the function decrease.
+In opposite to the previous cases, the case j=1 is different to the linear regime which should be just stationary. In the same spirit than 
+the remark above, we think that all the non-linearities $F_{j'}$ of the modes after $j'>j=1$ are non zero. The main mode j=1 doesn't become 
+small quickly like the previous cases, so the non-linearities $F_{j'}$ become non negligible too and make the function non stationary. 
+However, we don't know why they make the function decrease as it is not obvious that the non linearities should be negative in this case.
 
 \subsubsection{\texorpdfstring{$\nu <1$}{nu < 1}}
-We now look at the case we $\nu <1$. It is expected to have far more complex behaviour than when $\nu \geq 1$ as we can have here exponentially growing modes interacting with each other. We will observe that the system seems to be more unstable with $\nu = (\frac{2\pi}{L})^2$ decreasing, i.e when L increases. 
-We just observe three behaviour: exponential dampening (linear regime), stabilization around a non-zero state, and progressive wave.
+We now look at the case $\nu <1$. It is expected to have far more complex behaviour than when $\nu \geq 1$ as we can have here exponentially 
+growing modes interacting with each other. We observe that the system seems to be more unstable with $\nu = (\frac{2\pi}{L})^2$ decreasing, i.e when L increases. 
+We notice three behaviours: exponential dampening (linear regime), stabilization around a non-zero steady state, and a progressive wave.
 \\
 
-In opposition to the tests above, we are fixing a mode value (j=1 e.g) and change the value of $\nu$. Here is a graph of $\lambda_1(\nu)$ depending on nu < 1: 
+In opposition to the tests above, we are fixing a mode value (j=1 e.g) and change the value of $\nu$. We show in figure \ref{fig:KS_eq_nu_inf_1} 
+a plot of $\nu \mapsto -\lambda_k(\nu)$ with $k \in \{ 1, 2, 3, 4\}$ and $\nu < 1$.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.5\textwidth]{KS_eq/plot_lambda_nu.png}
-\caption{Plot of $-\lambda_j(\nu)$ for j $\in$ \{1, 2, 3, 4\}. We see that there are more and more positive modes when $\nu$ is decreasing. Further more, the equation is more sensitive when$\nu$  is small compared to $\nu$ near 1 as the same perturbation $\delta \nu$ around small $\nu$ could give several additional pseudo exponential growing modes.   }
+\caption{Plot of $-\lambda_j(\nu) = -\nu j^2(j^2-1), \quad j\in \{1, 2, 3, 4\}.$\\ We see that there are more and more positive modes when $\nu$ is decreasing. Further more, the equation is more sensitive
+ when$\nu$  is small compared to $\nu$ near 1 as the same perturbation $\delta \nu$ around small $\nu$ could give several 
+ additional pseudo exponential growing modes.   }
 \label{fig:KS_eq_nu_inf_1}
 \end{figure}
 
@@ -440,23 +535,33 @@ In opposition to the tests above, we are fixing a mode value (j=1 e.g) and chang
 \begin{figure}[h]
 \centering
 \includegraphics[width=1\textwidth]{KS_eq/KS_extrema_Fourier_coef.png}
-\caption{\textbf{Case of progressive wave with }$\boldsymbol{\nu=7/24}$: \\ We see here 3 behaviours. Growing, decreasing and stabilization around a non flat state, and than a progressive wave behaviour. Indeed, we can see that the extrema if the cos and sin modes are oscillating at a fixed frequency which shows the progressive characteristic of the wave (we also saw it in video).}
-\label{fig:KS_eq_nu_inf_1}
+\caption{Plot of $\max(|u_s(.,t)|), \max(|u_c(.,t)|)$ with $k=1$, $\nu = 13/48$ with u turning into a progressive wave. \\
+ We can see here 3 behaviours. The numerical solution u first grows, then, decreases and stabilizes around a non-zero steady state to finally
+ turn into a travelling wave. Indeed, we can see that the extrema of the cos and sin parts of the Fourier modes are oscillating at a fixed frequency.
+ Moreover, we can see in a video (cf \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github repository}) the progressive wave.}
+\label{fig:KS_eq_nu_inf_1_prog_wave}
 \end{figure}
 
 
-We see in \eqref{fig:KS_eq_nu_inf_1} that the case $\nu=\frac{1}{4}$ is interesting as we would have a second divergent mode. We make tests with $\nu$ getting closer to 1/4 by above ($\{\frac{1}{2}, \frac{1}{3}, \frac{7}{24} = \frac{1/3+1/4}{2}, \frac{13}{48} = \frac{7/24 + 1/4}{2}\}$). We observe two behaviours:
+We see in \eqref{fig:KS_eq_nu_inf_1} that the case $\nu=\frac{1}{4}$ gives a second divergent mode $k=2$. We carry out tests with $\nu$ getting closer to 1/4 by above 
+($\{\frac{1}{2}, \frac{1}{3}, \frac{7}{24} = \frac{1/3+1/4}{2}, \frac{13}{48} = \frac{7/24 + 1/4}{2}\}$). We observe two behaviours:
 \begin{itemize}
     \item When $\nu$ is "far" from $\frac{1}{4}$: u grows exponentially and then stabilizes around a wavy steady state.
-    \item When $\nu$ is "close" to $\frac{1}{4}$: There is also a linear regime and a stabilization around a steady. However the equilibrium breaks and it becomes a traveling wave (cf 
+    \item When $\nu$ is "close" to $\frac{1}{4}$: There is also a linear regime and a stabilization around a non-zero steady state. 
+    However the equilibrium breaks and it becomes a traveling wave as we can see in figure \ref{fig:KS_eq_nu_inf_1_prog_wave}.
 \end{itemize}
 
 
-We don't go further for this little study of the KS equation. We analyzed the KS equation through the Fourier decomposition of u. We tried to interpret the numerical results by seeing the equation on each mode as being almost exponential. The case $\nu \geq1$ seemed to give simple result of exponential decay, while the case $\nu <1$ was more difficult to justify as modes are influencing each other in a non negligible way. 
+We don't go further for this little study of the KS equation. We analyzed this weakly linear equation through the Fourier decomposition of u and tried to
+ interpret the numerical results by observing the equation through each mode as being similar to an exponential regime. The case $\nu \geq1$ seemed to give simple result 
+ of exponential decay, while the case $\nu <1$ was more difficult to interpret as modes are influencing each other in a non negligible way. The numerical solution had indeed 
+ a more complex behaviour as it would stabilize around non-sero steady state or turn into a traveling wave.
 
-We didn't test the other case when $\nu <\frac{1}{4}$. The KS equation seems to be more unstable as $\nu$ decreases, i.e when L increase. Hence, the domain $\nu \in (0,\frac{1}{4}] $ should be even more rich in term of behaviour as we add other exponentially growing modes.
+We didn't test the case $\nu <\frac{1}{4}$. The KS equation seems to be more unstable as $\nu$ decreases, i.e when L increase. Hence, the domain $\nu \in (0,\frac{1}{4}] $ 
+should be even richer in term of behaviour as we add other exponentially growing modes.
 
-As the KS equation is weakly linear, many mathematical studies have been carried out to study its chaotic behaviour (that we don't see here), like the study of bifurcation. We again refer to the thesis of Dr.Gomes (\cite{Susana_thesis}) for a real study of this equation.
+As the KS equation is weakly linear, many mathematical studies have been carried out to study its chaotic behaviour (that we don't see here), like the study of bifurcation.
+ We again refer to the thesis of Dr.Gomes (\cite{Susana_thesis}) for a real study of this equation and its various versions, like the stochastic KS equation.
 
 
 
@@ -470,17 +575,19 @@ As the KS equation is weakly linear, many mathematical studies have been carried
 
 
 
-\subsection{Derivation of the Benney Equations with and without control}
-\subsubsection{Benney equation without control}
+\subsection{Derivation of the Benney Equationswithout control}
+% \subsubsection{Benney equation without control}
 
-We are studying a liquid flowing down an inclined plane of angle $\theta$ in 1D from the horizontal. The system of axis $(x^*, y^*$) is such that $x^*$ points downstream and $y^*$ is normal to the plane going upward. 
+We are studying a liquid flowing down an inclined plane of angle $\theta$ from the horizontal. We limit ourselves to 
+the 2D problem by studying the 1D liquid film flowing down the plane (now a line). 
+The system of axis $(x^*, y^*$) is such that $x^*$ points downstream and $y^*$ is normal to the plane going upward. 
 \\
 
 \vspace{0.5cm}
-{\textbf{Set of dimensionnalised equations.}}
+{\underline{\textbf{Set of dimensionnalised equations.}}}
 We study\\ 
 
-The Navier-Stokes equations (2nd law of Newton and incompressibility equation):
+The Navier-Stokes equations (Second law of Newton and incompressibility equation):
 
 \begin{equation}
 \left\{
@@ -489,13 +596,13 @@ The Navier-Stokes equations (2nd law of Newton and incompressibility equation):
     \rho(v^*_{,t^*}+u^*v^*_{,x^*}+v^*v^*_{,y^*}) &= -p^*_{,y^*} + \mu_l(v^*_{,x^*x^*} + v^*_{,y^*y^*}) - \rho cos(\theta)g\\\
     u^*_{,x^*} + v^*_{,y^*} &= 0 \quad 
 \end{aligned}
-\right.
+\right. .
 \end{equation}
 
 We take a no slip boundary conditions at the wall so at y = 0\footnote{in the case of a control with blowing and suction from the plane, $v^*\neq 0$ }: 
 
 \begin{equation}
-    u^*=0, v^*=0
+    u^*=0, v^*=0.
 \end{equation} 
 
 The normal and tangential Dynamic Boundary Condition or the dynamic stress balance at the interface are : 
@@ -503,28 +610,28 @@ The normal and tangential Dynamic Boundary Condition or the dynamic stress balan
 \begin{equation}
 \left\{
 \begin{aligned}
--p^*_l + \frac{2\mu_l}{1+{h^*_{,x^*}}^2}(u^*_{,x^*}{h^*_{,x^*}}^2 - h^*_{,x^*}(u^*_{,y^*} + v^*_{,x^*})+v^*_{,y^*}) &= \frac{\gamma h^*_{,x^*x^*}}{(1+{h^*_{,x^*}}^2)^{3/2}}\\
-(v^*_{,x^*} + u^*_{,y^*})(1-{h^*_{,x^*}}^2)+2h^*_{,x^*}(v^*_{,y^*}-u^*_{,x^*})&=0
+-p^*_l + \frac{2\mu_l}{1+{h^*_{,x^*}}^2}(u^*_{,x^*}{h^*_{,x^*}}^2 - h^*_{,x^*}(u^*_{,y^*} + v^*_{,x^*})+v^*_{,y^*}) &= \frac{\gamma h^*_{,x^*x^*}}{(1+{h^*_{,x^*}}^2)^{3/2}},\\
+(v^*_{,x^*} + u^*_{,y^*})(1-{h^*_{,x^*}}^2)+2h^*_{,x^*}(v^*_{,y^*}-u^*_{,x^*})&=0.
 \end{aligned}
 \right.
 \end{equation}
 \\
 
-The Kinematic Boundary condition is: 
+The Kinematic Boundary condition: 
 \begin{equation}
 h^*_{,t^*} = v^*-u^*h^*_{,x^*}.
 \end{equation}
 
 
 \vspace{0.5cm}
-\textbf{Nondimensionalisation and scaling}
+\underline{\textbf{Nondimensionalisation and scaling.}}
 
 
 We now make a change of variable in order to manipulate dimensionless quantities. We denote 
 \begin{itemize}
     \item $\mathcal{L^*}$ characteristic horizontal length
-    \item $\mathcal{H^*}= h_N^* $ typical fluid height (and typical vertical length) which is also the \textit{Nusselt solution} i.e film height at steady state that we fix as we want.
-    \item $\mathcal{U^*} := U^*_N=\frac{\rho g{h_N^*}^2 sin(\theta)}{2\mu_l}$ typical horizontal velocity and also velocity of the Nusselt solution. 
+    \item $\mathcal{H^*}= h_N^* $ typical fluid height (and typical vertical length) which is also the \textit{Nusselt solution} which is the height of the uniform steady solution of the equations 
+    \item $\mathcal{U^*} := U^*_N=\frac{\rho g{h_N^*}^2 sin(\theta)}{2\mu_l}$  velocity of the Nusselt solution. 
     \item $\mathcal{P^*}$ typical pressure of the liquid \\
 \end{itemize}
 
@@ -536,40 +643,43 @@ Moreover, we make the \textbf{Thin-Film Approximation} which is to take $\mathca
 }
 \end{equation}
 
-Therefore, we get these non-dimensional quantities:: 
+Therefore, we get this system of non-dimensional quantities:: 
 \begin{align*}
     x^* &= \mathcal{L^*}x, \quad y^*= \epsilon \mathcal{L^*}y, \\
     u^* &= \mathcal{U^*}u,  \quad v^*= \epsilon \mathcal{U^*}v, \\
-    p_l^* &= \mathcal{P^*}p_l
+    p_l^* &= \mathcal{P^*}p_l,
 \end{align*}
 
 where we took the typical vertical velocity equal to $\mathcal{V}^*:=\epsilon\mathcal{U}^*.$ We now take some convenient form for the typical pressure: $\mathcal{P^*} = \frac{\mu_lU^*}{h_N^*}$ and set the nondimensionalised quantities (Reynolds and Capillary numbers): 
 
 \begin{equation}
     \boxed{
-    Re = \frac{\rho \mathcal{U^*} h_N}{\mu_l} \quad Ca = \frac{\mu_l \mathcal{U^*}}{\gamma}.
+    Re = \frac{\rho \mathcal{U^*} h_N}{\mu_l}, \quad Ca = \frac{\mu_l \mathcal{U^*}}{\gamma}.
     }
 \end{equation}
 \\
 
-We choose the scaling 
-\begin{equation}
-Re=O(1) \text{ and } Ca=O(\epsilon^2). 
+We choose the \textbf{scaling} 
+\begin{equation}\label{scaling_Re_Ca}
+    \boxed{
+Re=O(1) \text{ and } Ca=O(\epsilon^2).
+    } 
 \end{equation}
 
-The first scaling allow to consider inertia whereas the second one underlines surface effect in the order 1 approximation in $\epsilon$ that we will carry out. 
+The first scaling allow to consider inertia whereas the second one underlines the effect of surface tension in the order 1 approximation in $\epsilon$ that 
+is used to derive the Benney equations. 
 Indeed, the effect of interest here are \textbf{viscosity}, \textbf{surface tension}, \textbf{gravity} and \textbf{inertia}. These 4 effects are balanced by the 3 quantities Re, Ca and $U_N$ the Nusselt velocity which is a function of the slope angle $\theta$.
 \\
             
- \textbf{Non-dimensional governing equations.} We present the new equation with dimensionless variable.
+ \underline{\textbf{Non-dimensional governing equations.}} We present now the new equation with dimensionless variables.
 
 First, we have the Navier-Stokes equation:
 \begin{equation}\label{eq NavierStokes1}
 \left\{
 \begin{aligned}
-    Re(u_{,t}+uu_{,x}+vu_{,y}) &= -p_{,x} + u_{,xx} + u_{,yy} + 2\\
-    Re(u_{,t}+uu_{,x}+vu_{,y}) &= -p_{,x} + u_{,xx} + u_{,yy} + 2 + v_{,yy} - \rho cos(\theta)g\\
-     u_{,x} + v_{,y} &= 0 
+    Re(u_{,t}+uu_{,x}+vu_{,y}) &= -p_{,x} + u_{,xx} + u_{,yy} + 2,\\
+    Re(u_{,t}+uu_{,x}+vu_{,y}) &= -p_{,x} + u_{,xx} + u_{,yy} + 2 + v_{,yy} - \rho cos(\theta)g,\\
+     u_{,x} + v_{,y} &= 0 .
 \end{aligned}
 \right.
 \end{equation}
@@ -577,50 +687,57 @@ First, we have the Navier-Stokes equation:
 
 Then, the no slip condition: 
 \begin{equation}\label{eq_no_slip}
-    u=0, \quad v=0 \quad \text{at y=0,}
+    u=0, \quad v=0 \quad \text{at y=0}.
 \end{equation}
 
-the Dynamic stress balance at the interface: 
-
- 
+The Dynamic stress balance at the interface: 
 
 \begin{equation}\label{eq DBC}
 \left\{
 \begin{aligned}
-    - p_l + \frac{2}{1+{h_{,x}}^2}(u_{,x}{h_{,x}}^2 - h_{,x}(u_{,y} + v_{,x})+v_{,y}) &= \frac{1}{Ca} \frac{h_{,xx}}{(1+{h_{,x}}^2)^{3/2}}\\
-    (v_{,x} + u_{,y})(1-{h_{,x}}^2)+2h_{,x}(v_{,y}-u_{,x})&=0
+    - p_l + \frac{2}{1+{h_{,x}}^2}(u_{,x}{h_{,x}}^2 - h_{,x}(u_{,y} + v_{,x})+v_{,y}) &= \frac{1}{Ca} \frac{h_{,xx}}{(1+{h_{,x}}^2)^{3/2}},\\
+    (v_{,x} + u_{,y})(1-{h_{,x}}^2)+2h_{,x}(v_{,y}-u_{,x})&=0.
 \end{aligned}
 \right.,
 \end{equation}
 
 
-and finally, the Kinematic Boundary condition (KBC): 
+Finally, the Kinematic Boundary condition (KBC): 
 \begin{equation}\label{eq KBC}
     h_{,t} = v-uh_{,x}.
 \end{equation}
 
-From \ref{eq KBC} and \ref{eq NavierStokes1} and  \ref{eq_no_slip}, i.e the KBC, incompressibility, and no slip equations, we can construct the 1D mass conservation equation: 
+From \eqref{eq KBC} and \eqref{eq NavierStokes1} and  \eqref{eq_no_slip}, i.e the KBC, incompressibility, and no slip equations, we can construct the 1D mass conservation equation: 
 \begin{equation}\label{eq mass conservation}
-    h_{,t} + q_{,x} = 0
+    h_{,t} + q_{,x} = 0,
 \end{equation}
 
-with $$q(x, t) = \int_{y=0}^{h_(x, t)} u(x, y, t)dy$$ the horizontal flux of the flowing liquid.
+with 
+\begin{equation}\label{eq:Benney_flux}
+    q(x, t) = \int_{y=0}^{h_(x, t)} u(x, y, t)dy.
+\end{equation}
+the horizontal flux of the flowing liquid.
 
 \vspace{0.5cm}
-{\textbf{Benney equation}}
+\underline{\textbf{Benney equation.}}
 
-With the chosen scaling, we perform order 1 asymptotics in $\epsilon$ on the governing equations and compute the order 1 flux. These computations can be found in \cite{A_Thompson_FLF_blowing_suction}. It leads us to the so called Benney equations: 
+With the chosen scaling, we perform order 1 asymptotics in $\epsilon$ on the governing equations and compute the order 1 flux.
+ These computations can be found in the appendix of the paper of A.Thompson and al. \cite{A_Thompson_FLF_blowing_suction}. 
+ It leads us to the so called Benney equations: 
 
 \begin{equation}
     \boxed{
+    \left\{
 \begin{aligned}
-    h_{,t}+q_{,x} &= 0\\
+    h_{,t}+q_{,x} &= 0,\\
     q(x, t) &= \frac{h^3}{3}(2-2h_{,x}cot(\theta) + \frac{h_{,xxx}}{Ca})+Re\frac{8h^6h_{,x}}{15}.
 \end{aligned}
+    \right.
 }
 \end{equation}
 
-i.e
+Or, explicitly with the variable h\footnote{For another reduced-order model called Weighted Residuals, 
+the system of equation is not explicit with respect to the height h, so the unknown are the height h and the flux q.}: 
 
 \begin{equation}\label{Benney_eq}
 \boxed{
@@ -633,13 +750,17 @@ i.e
 
 
 
-\subsubsection{Benney equation with a control term}
-We want to stabilize the fluid by applying some air jet controlled perturbation. However, we do not model the air and just take a specific form of the normal pressure (e.g. gaussian). Let us write 
+\subsection{Benney equation with a control term}
+We want to stabilize the fluid by applying some air jet controlled perturbation. However, we do not model the air and just take a specific form of the normal pressure (which will be defined later with 
+a shape function d in \eqref{eq:shapefunction_for_airjets}). 
+\\
 
+\underline{\textbf{Tangential and Normal component of the air jet.}}
 \begin{equation}
     \underline{s_g}= -\underline{n}.\underline{\underline{\sigma_l}}
 \end{equation}
-with $\underline{\underline{\sigma_l}}$ the tensor of constraint of the liquid, and $\underline{n}$ the normal \underline{from the liquid to the gas} We take as normal and tangential vectors $(\underline{n}, \underline{t})$ a normalized, orthogonal and direct couple. We then isolate the normal and tangential components of the external gas pressure. 
+with $\underline{\underline{\sigma_l}}$ the strain tensor of the liquid, and $\underline{n}$ 
+the normal \underline{from the liquid to the gas}. We take as normal and tangential vectors $(\underline{n}, \underline{t})$ a normalized, orthogonal and direct couple. We then isolate the normal and tangential components of the external gas pressure. 
 
  \begin{equation}
      \underline{n}=\frac{1}{\sqrt{1+h_{,x}^2}}(-h_{,x}, 1), \quad \underline{t} = \sqrt{1+h_{,x}^2}(1, h_{,x}),
@@ -651,14 +772,14 @@ with $\underline{\underline{\sigma_l}}$ the tensor of constraint of the liquid, 
     }
 \end{equation}
 
-Let us emphasize that we took the sign convention of $N_s$ such that it is positive with a compressive force, as $\underline{s_g}$ is defined with a -\underline{n} which points \underline{from the gas to the liquid}. 
+Let us emphasize that we took the sign convention of $N_s$ such that it is positive with a compressive force, as
+ $\underline{s_g}$ is defined with a -\underline{n} which points from the gas to the liquid. 
 
 As for the governing equations, only the KBC changes: 
-
 \begin{equation}\label{eq DBC_Control}
     \left\{
     \begin{aligned}
-    -p_l + \frac{2}{1+{h_{,x}}^2}(u_{,x}{h_{,x}}^2 - h_{,x}(u_{,y} + v_{,x})+v_{,y}) &= \frac{1}{Ca} \frac{h_{,xx}}{(1+{h_{,x}}^2)^{3/2}}-N_s \\
+    -p_l + \frac{2}{1+{h_{,x}}^2}(u_{,x}{h_{,x}}^2 - h_{,x}(u_{,y} + v_{,x})+v_{,y}) &= \frac{1}{Ca} \frac{h_{,xx}}{(1+{h_{,x}}^2)^{3/2}}-N_s, \\
     \frac{(v_{,x} + u_{,y})(1-{h_{,x}}^2)+2h_{,x}(v_{,y}-u_{,x})}{1+h_{,x}^2} &= -T_s.
     \end{aligned}
     \right.
@@ -666,16 +787,19 @@ As for the governing equations, only the KBC changes:
 
 Howewer, only the normal KBC changes in reality as we take  
 \begin{equation}
+    \boxed{
 T_s=0
+    }
 \end{equation} 
 which means that we neglect the tangential part of the stress of the gas on the liquid.  This approximation has been made by the paper 
 of D.Lunz \& al. \cite{Moving_pressure_source} but it has been shown on another system studied by Chinasa J. Ojiako \& al. in
  (\cite{Dewetting_Ojiako}) that the tangential component of the air jet pressure has non negligible effects on the profile of the liquid. 
  We decide not to take into account the tangential stress for two reasons.
 \begin{itemize}
-    \item Firstly, we think that the tangential part of the air stress on the liquid was important (around 10\% of the normal
-     stress $N_s$) in the case of the paper of Chinasa J. Ojiako because the air was blown on immobile flat water, so the trough 
-     produced by the air jet would prevent air from escaping by the sides. This effect is probably largely attenuated in our system 
+    \item Firstly, we think that the tangential part of the air stress on the liquid was non negligible (around 10\% of the normal
+     stress $N_s$) in the case of the paper of Chinasa J. Ojiako and al. because the air was blown on immobile flat water trapped into a beacon, so the trough 
+     produced by the air jet would prevent air from escaping by the sides. We think that this competetition between the liquid and the 
+     air trying to escape makes $T_s$ non negligible. This effect is probably largely attenuated in our system 
      since the fluids are here driven by gravity and inertia, so there are much fluid movement that would allow the gas to come out 
      easily by the sides. 
     \item Secondly, considering $T_s$ would add too much complexity to our model. We prefer to construct a simple model on which
@@ -683,70 +807,78 @@ of D.Lunz \& al. \cite{Moving_pressure_source} but it has been shown on another 
 \end{itemize}
 
 
-\textbf{Benney equation with control.}
+\underline{\textbf{Benney equation with control.}}
 The computation of the pressure is different (cf Appendix) and it gives at order 1 in $\epsilon$:
 
 \begin{equation}\label{Benney_ctrl_flux}
 \boxed{
+    \left\{
 \begin{aligned}
-    h_{,t}+q_{,x} &= 0\\
-    q(x, t) &= \frac{h^3}{3}(2-p_{l0,x})+Re\frac{8h^6h_{x,}}{15}
+    h_{,t}+q_{,x} &= 0,\\
+    q(x, t) &= \frac{h^3}{3}(2-p_{l0,x})+Re\frac{8h^6h_{x,}}{15},
 \end{aligned}
+\right.
 }
 \end{equation}
 
 with 
 \begin{equation}
-p_{l0}= N_s + 2(h-y)cot(\theta) - \frac{h_{,xx}}{Ca},
+p_{l0}= N_s + 2(h-y)cot(\theta) - \frac{h_{,xx}}{Ca}
 \end{equation}
-the pressure term approximated at order 0.
+the pressure term approximated at order 0 in $\epsilon$.
 
 Hence, the Benney equation with only h as unknown is 
 \begin{equation}\label{Benney_eq_ctrl}
 \boxed{
 \begin{aligned}
     h_{,t} &+ h_{,x}h^2 \left( 2-N_{s, x}-2h_{,x}cot(\theta) + \frac{h_{,xxx}}{Ca}\right) \\ &- \frac{h^3}{3}\left(N_{s, xx} + 2h_{,xx}cot(\theta)  - \frac{h_{,xxxx}}{Ca} \right)
-    + \frac{8Re}{15} \left( 6h^5 {h_{,x}}^2 + h^6 h_{,xx} \right) = 0
+    + \frac{8Re}{15} \left( 6h^5 {h_{,x}}^2 + h^6 h_{,xx} \right) = 0.
 \end{aligned}
-}.
+}
 \end{equation}
 
-\subsubsection{Linear Theory}\label{subsubsection_linear_theory}
+\subsection{Linear Theory}\label{subsubsection_linear_theory}
 In this section, we present some theory relying on the linearisation of the Benney equation. 
 
 We write the height as a perturbed state from the Nusselt height 1 : 
 \begin{equation}\label{h_linear_decomposition}
+    \boxed{
     h = 1+\delta \tilde{h},\quad N_s = \delta \tilde{N}_s
+    }
 \end{equation}
 
-Let us underline that $\delta$ and $\epsilon$ aren't linked. The $\epsilon$ parameter gives the relation between the Nusselt height and L and ensures (when very small) that the derivation of the Benney equation is valid. As for $\delta$, it is a parameter that appears after the nondimensionalisation and just ensures that the perturbation has small amplitude compared to 1, the normalized Nusselt height. 
+Let us underline that $\delta$ and $\epsilon$ aren't linked. The $\epsilon$ parameter gives the relation between 
+the Nusselt height and L and ensures (when very small) that the derivation of the Benney equation is valid. As for $\delta$, 
+it is a parameter that appears after the nondimensionalisation and ensures that the perturbation has small amplitude compared 
+to 1, the normalized Nusselt height. 
 
-We then keep the term of the Benney equation with control (\ref{Benney_eq_ctrl}) until order 1 in $\delta$ included. It gives a linear equation that we will use for the control:
+We  keep the term of the Benney equation with control (\ref{Benney_eq_ctrl}) until order 1 in $\delta$ included. It gives a linear equation that we will use for the control:
 
 \begin{equation}\label{Benney_ctrl_linearised}
+    \boxed{
     \tilde{h}_{,t} = \left[ -2\partial_x + (\frac{2cot(\theta)}{3}-\frac{8Re}{15})\partial_{xx} - \frac{1}{3Ca}\partial_{xxxx}\right]\tilde{h} + \left[ \frac{1}{3}\partial_{xx}\right]\tilde{N}_s
+    }
 \end{equation}
 \\
 We study here the case $$\tilde{N}_s = 0.$$
-We decompose $\tilde{h}$ as $$\tilde{h}(x,t) = \sum_{k\in\mathbb{Z}}c_k(t)e^{i\nu kx}$$
+We decompose $\tilde{h}$ as $$\tilde{h}(x,t) = \sum_{k\in\mathbb{Z}}c_k(t)e^{i\nu kx}.$$
 
-with $\nu =\frac{2\pi}{L}$ as $\tilde{h}$ is L-periodic.So (time derivation+ Fourier base identification)we have $\mathbb{Z}$ number of ODEs: 
+ with $\nu =\frac{2\pi}{L}$ as $\tilde{h}$ is L-periodic. So by differentiative with respect to t and isolating the Fourier coefficientwe,  
+wehave $\mathbb{Z}$ number of ODEs: 
 \begin{equation}\label{Fourier_mode}
-    c_{k, t}(t) = \lambda_k c_k(t)
+    c_{k, t}(t) = \lambda_k c_k(t).
 \end{equation}
-with 
 
+Denoting for all integer $k$, $k_L = \nu k$, the $\lambda_k$ can be written as 
 \begin{equation*}
 \begin{aligned}
-    \forall k\in \mathbb{Z},\\
-    \lambda_k &= (ik_L)^4(\frac{-1}{3Ca})+(ik_L)^2(\frac{2}{3}cot(\theta)-\frac{8Re}{15})-2k_Li \\
-    &= (\frac{8Re}{15}-\frac{2}{3}cot(\theta) -\frac{k_L^2}{3Ca})k_L^2 - 2k_Li, \\ \\
-    k_L &= \nu k.
+    \forall k\in \mathbb{Z}, \lambda_k &= (ik_L)^4(\frac{-1}{3Ca})+(ik_L)^2(\frac{2}{3}cot(\theta)-\frac{8Re}{15})-2k_Li \\
+    &= (\frac{8Re}{15}-\frac{2}{3}cot(\theta) -\frac{k_L^2}{3Ca})k_L^2 - 2k_Li. \\ \\
 \end{aligned}
 \end{equation*}
 
 Let us set \begin{equation}
-    Re_0 = \frac{5}{4}cot(\theta)
+    Re_0 = \frac{5}{4}cot(\theta), 
 \end{equation}
 like in A.Thompson and al. paper \cite{Thompson_2016_prop_ctrl}.
 
@@ -759,11 +891,11 @@ The dispersion equation is then
 The \textbf{stability} of the linear system is determined by a condition on the real part of the eigenvalues: $$\mathcal{R}(\lambda_k)\leq0.$$
 
 $\mathcal{R}(\lambda_k) = P(\lambda_k^2)$ with P a polynomial of order 2 going to minus infinity at infinity. Hence, the unstable/diverging modes k verify 
-\begin{equation}
+\begin{equation}\label{eq:k_0_critical_wave_number}
 |k|\leq k_0 := \sqrt{Ca(\frac{8}{5}Re-2cot(\theta)} = \sqrt{\frac{8Ca}{5}(Re-Re_0)}.
 \end{equation}
 
-We see that if $Re<Re_0$, there is no unstable modes. Having a larger Reynolds number would give more place to inertia and so more chance to have a chaotic flow. Therefore, we call $Re_0$ the unstable Reynolds number.
+We see that if $Re<Re_0$, there is no unstable modes. Hence, having a larger Reynolds number would give more place to inertia and so more chance to have a chaotic flow. Therefore, we call $Re_0$ the unstable Reynolds number.
 
 \newpage
 
@@ -772,37 +904,52 @@ We see that if $Re<Re_0$, there is no unstable modes. Having a larger Reynolds n
 
 
 \section{Numerical simulations}\label{Section_Numerical_simu}
-\subsection{Description of the numerical framework}
+In this part of the report, we present the numerical scheme that we use to solve the Benney equation 
+\eqref{Benney_eq_ctrl} on python. Then, we carry out different tests to evaluate its accuracy. All the system
+ settings are in the python file \textit{header.py} and the verifications are in the file \textit{benney\_eq\_verif.py}
+ in the \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github repository}. THe solver is implemented
+ in the file \textit{solver\_BDF.py} .
+
+
+ \subsection{Description of the numerical framework}
 We code the simulations on python. We describe in this part of the report the numerical settings and the numerical schemes.
 \\
 
-\textbf{Physical variables}
+\underline{\textbf{Physical variables.}}
  We list here the global variables that we use in the code and how we use them related to the physics of the system :
 
 \begin{itemize}
     \item System: $L,T,\theta$
     \item Fluid characteristics: $\rho_l, \mu_l, \gamma$
-    \item Nusselt height and Speed: $h_N, U_N$ 
+    \item Nusselt height and speed: $h_N, U_N$ 
 \end{itemize}
 
 
-The Buckingham's Pi theorem tells us that we essentially need 3 nondimensionalised groupings to describe all the physical variables (cf derivation of the nondimensionalised equation). All the information can here be summarized in $$Re = \frac{\rho_l U_N H_N}{\mu_l}, \quad Ca=\frac{mu_l U_N}{\gamma}, \quad U_N=\frac{\rho_l g h_N^2 sin(\theta)}{2\mu_l}$$ as $U_N$ can have the same use as the Froude number $Fr = \frac{U_N}{\sqrt{\rho_l g}}$ to balance kinetic and gravitational energy if Ca and Re are fixed. However, it is obvious that we want to fix $\theta$ first and not define it from $U_N$ as we want to have a vision of the system we're simulating. 
+The Buckingham's Pi theorem tells us that we essentially need 3 nondimensionalised groupings to describe all the
+ physical variables (cf derivation of the nondimensionalised equation). All the information can here be summarized
+  in $$Re = \frac{\rho_l U_N H_N}{\mu_l}, \quad Ca=\frac{mu_l U_N}{\gamma}, \quad U_N=\frac{\rho_l g h_N^2 sin(\theta)}{2\mu_l},$$
+   as $U_N$ can have the same use as the Froude number $Fr = \frac{U_N}{\sqrt{\rho_l g}}$ to balance kinetic and gravitational 
+   energy if Ca and Re are fixed. However, it is obvious that we want to fix $\theta$ first and not define it from $U_N$ as we 
+   want to have a vision of the system we're simulating. 
 \\
 
-We make the choice to be able to choose all the physical and system variables, and to deduce $h_N = \frac{Re \mu_l^2}{Ca\rho_l \gamma}$ and $U_N = \frac{\rho_l g h_N^2 sin(\theta)}{2\mu_l}$ from them. For the numerical simulations, we just need to ensure that the speed doesn't take nonphysical values and that 
+We make the choice to be able to choose all the physical and system variables, and to deduce 
+$h_N = \frac{Re \mu_l^2}{Ca\rho_l \gamma}$ and $U_N = \frac{\rho_l g h_N^2 sin(\theta)}{2\mu_l}$ from them. For the numerical simulations, 
+we just need to ensure that the speed doesn't take nonphysical values and that 
 
 \begin{equation}\label{num_scaling_conditions}
 \epsilon = \frac{h_N}{L_x} \ll 1, \quad Re=O(1),\quad Ca=O(\epsilon^2).
 \end{equation}
 \\
 
-\textbf{The Model: steps and heigth}. The model variables are : 
+\underline{\textbf{The Model: steps and heigth}}. The model variables are : 
 \begin{equation}
-    N_x, N_t, dx = \frac{L}{N_x}, dt=\frac{T}{N_t -1}
+    N_x, N_t, dx = \frac{L}{N_x}, dt=\frac{T}{N_t -1},
 \end{equation}
-i.e the space and time number of point and steps. The expression of dt differs dx because we study a space periodic system so we discretize $[0, L_x-dx]$ with $N_x$ points.  
+i.e the space and time number of point and steps. The expression of dt and dx are different 
+because we study a space periodic system so we discretize $[0, L_x-dx]$ with $N_x$ points.  
 
-We try to have a relation between dx and dt that ensure a good balance between the space and time precision and that the information spreads faster in the grid than h. We set the \underline{Courant-Friedrichs-Lewy (CFL) condition}: 
+We try to have a relation between dx and dt that ensure a good balance between the space and time precision. We set the \underline{Courant-Friedrichs-Lewy (CFL) condition}: 
 
 \begin{equation}\label{CFL_conditions}
     C=\frac{U_N dt}{dx}\leq C_{max}=1.
@@ -810,42 +957,50 @@ We try to have a relation between dx and dt that ensure a good balance between t
 
 We do that to ensure that the information in the space-time grid that we construct can transmit information throughout time faster than the speed of the numerical solution. We take $C_{max}$ as said in the \href{https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition}{Wikipedia page of CFL condition }. However, this condition was constructed for a simple advection partial differential equation where we know exactly the speed of the numerical solution. We took here the speed being the Nusselt speed without much confidence, and we indeed saw that it could lead to problematic values of dt. Indeed, $U_N$ is very small so we would have few number of time points, giving a large dt. Therefore, we replaced that relation by
 \begin{equation}\label{time_step}
-dt=min(dx, \frac{dx}{U_N C_{max}})
+dt=min(dx, \frac{dx}{U_N C_{max}}),
 \end{equation}
 which ensures that we have a decent time stepping precision.
 \\
 
-The numerical equivalent of the function $h:(x,t)\rightarrow h(x,t)$ is the matrix 
+We denote the matrix 
 \begin{equation}
 (h_j^n)_{(n, j)\in [0,N_t-1]\times[0, N_x-1]} \in \mathcal{M}_{N_t, N_x}  \text{ with } h(jdx,ndt) \approx h_j^n.
 \end{equation}
-
+being the discrete numerical equivalent of the function $h:(x,t)\rightarrow h(x,t).$
 We also note the horizontal vector at a fixed time $$\underline{h}^n = (h_j^n)_{j\in[0, N_x-1]}.$$
 At the border, we can check that $$h_{N_t-1}^{N_x-1}=h((N_x-1)dx,(N_t-1)dt)= h(L-dx, T).$$
 
 
 \subsection{Description of the scheme}
 
-The Benney equation with control \eqref{Benney_eq_ctrl} has time and space derivatives, so we need a scheme to approximate the space derivative and another scheme for the time derivative. We could have taken the Fourier series of h to only study ordinal differential equation as we did with the KS equation (\eqref{ODE_KS}). However, the non-linearities in the Benney equation \eqref{Benney_ctrl_flux} are far more complex than the Burgers non-linearities, which were already giving non trivial Fourier coefficients (the $F_j^{c,s}$) entangling the different Fourier coefficient of u. Therefore, we prefer to solve the equation with a time scheme and a space scheme. 
+The Benney equation with control \eqref{Benney_eq_ctrl} has time and space derivatives, so we need a scheme to approximate 
+the space derivative and another scheme for the time derivative. We could have taken the Fourier series of h to only study 
+ordinal differential equation as we did with the KS equation \eqref{ODE_KS}. However, the non-linearities in the Benney 
+equation \eqref{Benney_ctrl_flux} are far more complex than the Burgers non-linearitie, which was already giving non 
+trivial non linearities (the $F_j^{c,s}$), entangling the different Fourier coefficient of u. Therefore, we prefer to 
+solve the equation with a time scheme and a space scheme. 
 
-We decide to take a Backward Differentiation Formula (BDF) for the time solving part. As for the space derivatives, we decide to use two methods separately : finite difference and spectral methods. 
+We decide to take a \textbf{Backward Differentiation Formula (BDF)} for the time solving part. As for the space derivatives, we decide 
+to use two methods separately : \textbf{finite difference and spectral methods}. 
 \\
 
-\textbf{Scheme for the time.}
-As said above, we decide to use a BDF Scheme (cf the \href{https://en.wikipedia.org/wiki/Backward_differentiation_formula}{wikipedia page of BDF schemes}).
+\underline{\textbf{Scheme for the time.}}
+As said above, we decide to use a BDF scheme (cf the \href{https://en.wikipedia.org/wiki/Backward_differentiation_formula}{wikipedia page of BDF schemes}).
 
 An $N_{BDF}\in \mathbb{N}^*$ order BDF scheme can be written as an equation with unknown $h_j^{n+N_{BDF}}$ (implicit scheme in time) :
 
-\begin{equation}
+\begin{equation}\label{eq:BDF_scheme}
     h_{j}^{n+N_{BDF}} + \sum_{i=0}^{N_{BDF}-1} \alpha_{N_{BDF}, i}h_{j}^{n+i} = dtf(h_j^{n+N_{BDF}}, t_{n+N_{BDF}}).
 \end{equation}
 
-Here, $(\alpha_{N_{BDF},i})_{1\leq i \leq N_{BDF}}$ is the coefficients of the $N_{BDF}$-order BDF Scheme, and f is an operator that computes the part of the Benney equation without time derivatives. f will be defined later either with Finite Difference or Spectral methods.
+Here, $(\alpha_{N_{BDF},i})_{1\leq i \leq N_{BDF}}$ is the coefficients of the $N_{BDF}$-order BDF scheme, and f is an operator that computes the part of the 
+Benney equation without time derivatives. f will be defined later either with finite difference or spectral methods.
 
-Here, we consider a BDF order $N_{BDF}\in [|1,6|]$ but not further, as the scheme doesn't work above (cf again the wikipedia page: the scheme wouldn't be zero-stable which roughly means that an arbitrary small perturbation can grow exponentially). We will make tests to see which order to take for our experiments.
+Here, we consider $N_{BDF}\in [|1,6|]$ but not further, as the scheme doesn't work above (cf again the wikipedia page: the scheme
+ wouldn't be zero-stable which roughly means that an arbitrary small perturbation can grow exponentially). We will make tests to see which order to take for our experiments.
 \\
 
-\textbf{Two schemes for the space.}
+\underline{\textbf{Two space schemes.}}
 We use a centered \underline{finite difference scheme} for the space derivative: 
 
 \begin{equation}
@@ -857,7 +1012,9 @@ We use a centered \underline{finite difference scheme} for the space derivative:
 \end{aligned}
 \end{equation}
 
-The precision of the scheme is fixed by the least precise approximation, which would be here the $h_x$. As we take a centered scheme, we have an \textbf{error in }$\boldsymbol{O(dx^2 )}$ and not an error in $O(dx^2)$, which would have arisen with a forward or backward scheme. \\
+The precision of the scheme is fixed by the least precise approximation, which would be here the $h_x$. As we take a 
+centered scheme, we have an \textbf{error in }$\boldsymbol{O(dx^2 )}$ and not an error in $O(dx)$, which would have 
+arisen with a forward or backward scheme. \\
 
 We denote $ mat_{FDper}(N_x, [a, b, c, d,..])$ (matrix for a periodic finite difference scheme) a matrix in $\mathcal{M}_n$ with only a in its diagonal, b in its subdiagonal, c in its supdiagonal, d in its 2nd subdiagonal etc... The terms in the sub/sup diagonals are extended as it's a periodic problem. For example, 
 
@@ -876,7 +1033,8 @@ Hence, in python (with a little change in the code notation):
 
 \vspace{0.5cm}
 
-As we suppose h to be L-periodic in space, we also test a \underline{spectral method} as a spatial scheme. Let us decompose h into its Fourier series: $$h(x, t) = \sum_{n\in \mathbb{Z}} c_n(t)e^{inx}$$
+As we suppose h to be L-periodic in space, we also test a \underline{spectral method} as a spatial scheme. Let
+ us decompose h into its Fourier series: $$h(x, t) = \sum_{n\in \mathbb{Z}} c_n(t)e^{inx},$$
 with $$\forall n \in \mathbb{Z}, \quad c_n(t) = \frac{1}{2\pi}\int_{-\pi}^{\pi}h(x,t) e^{-inx}dx.$$
 
 Hence $$\forall d \in \mathbb{N},\quad \frac{\partial^d h}{\partial x^d} = \sum_{n\in \mathbb{Z}} (in)^dc_n(t)e^{inx}$$ 
@@ -890,10 +1048,13 @@ Therefore, we compute the derivatives this way:
     h_xxx= np.fft.irfft( (1j *fq_tab)**3*np.fft.rfft(h_arr))
     h_xxxx= np.fft.irfft( (1j *fq_tab)**4*np.fft.rfft(h_arr))
 \end{verbatim}
-We prefer to use that method over the Finite Difference one as it is \underline{significantly faster} (surely due to the efficiency of the fft package). However, in opposite to the Finite Difference method, we don't know the precision of the scheme. Nevertheless, the finite difference scheme will still be useful as we will compare both method to evaluate the accuracy of the numerical scheme. 
+with \textit{fq\_tab} being the table of all the frequencies used by the Fast Fourier Transform. 
+We prefer to use that method over the finite difference one as it is \underline{significantly faster} (surely due to the efficiency of the fft package). However, in opposite to the finite difference method, we don't know the precision of the scheme. 
+Nevertheless, the finite difference scheme will still be useful as we will compare both method to evaluate the accuracy of the numerical scheme. 
 \\
 
-\textbf{Total scheme.} As said in the BDF scheme description, we have to solve a non linear system at each time step. In the code, we call \textit{'F\_time'} (resp. \textit{'F\_space'}) the function which gives the BDF from all previous $(\underline{h}^{n+1-i})_{i\in [|1, N_{BDF}|]}$  (resp. the function that computes the derivatives with the current height to find $\underline{h}^{n+1}$ ).
+\underline{\textbf{Total scheme.}} As said in the BDF scheme description, we have to solve a non linear system at each time step. In the code, we call \textit{'F\_time'} (resp. \textit{'F\_space'}) the function which computes the BDF part 
+of the scheme (i.e the left part of \eqref{eq:BDF_scheme}) using all the previous $(\underline{h}^{n+1-i})_{i\in [|1, N_{BDF}|]}$  (resp. the function that computes the space derivatives with the current height to find $\underline{h}^{n+1}$ ).
 We finally solve this implicit non linear problem in $\underline{h}^{n+1}$  by interpreting it as a \underline{root finding problem} of a function $f:\mathbb{R}\rightarrow \mathbb{R}^{N_x}$. The problem to solve is then 
 
 \begin{equation}
@@ -907,18 +1068,20 @@ We use the \textbf{scipy.optimize.root} function which chooses a root finding so
 
 
 \subsection{Verification and validation of the schemes}
-In this section, we check the validity of the numerical schemes. More concretely, we test the finite difference and spectral methods separately, and we also compare them based on the time and space stepping and BDF order $N_{BDF}$. Finally, we check properties from linear theory and mass conservation.
+In this section, we check the validity of the numerical schemes. More concretely, we test the finite difference and spectral methods separately, and we also 
+compare them based on the time and space stepping and BDF order $N_{BDF}$. Finally, we check some physical properties.
 \\
 
 We denote 
 \begin{equation}
-    h_{FD}^{(N_x, N_{BDF})}, h_{Sp}^{(N_x, N_{BDF})}, h^{(N_x, N_{BDF})}    
+    h_{FD}^{(N_x, N_{BDF})}, h_{Sp}^{(N_x, N_{BDF})}, h^{(N_x, N_{BDF})}, 
 \end{equation} 
 
 the numerical result of the algorithm described above with a Finite Difference (resp. Spectral, resp. not precised) method, with a number of space point $N_x$ (the number of time point $N_t$ can be deduced with \eqref{time_step}), and a BDF method of order $N_{BDF}$.
 \\
 
-We want to test our schemes on growing regimes and not dampening one as we will compare the schemes with the last time evaluation. Hence, we don't want it close to 0. We take these parameters for all the verifications except for the linear theory :
+We want to test our schemes on growing regimes and not dampening one as we will compare the schemes with the last time evaluation. We take these parameters for 
+all the verifications :
 \begin{equation}\label{eq_value_variables_num_verif}
 \boxed{
     T = 160, L=30, Re=5, Ca= 0.01, \theta = \frac{\pi}{3}, \delta = 1.10^{-3}
@@ -929,13 +1092,13 @@ with initial conditions
     \underline{h}^{0, (N_x, N_{BDF})} = \delta sin(k\nu x), \quad k=1.
 \end{equation}
 
-With these parameters, we verify the conditions \eqref{num_scaling_conditions}. Moreover, $k_0\approx 1,2$ here so taking the first mode k=1 gives us a growing regimes according to the linear theory, which was indeed observed in the simulations. Finally, we took $\delta$ small enough and T large enough so that we can have the final amplitude of the system very large compared to $\delta$ without the scheme to blow up (which happens for larger $\delta$). For example, with these parameters, we know that the numerical scheme get stuck at $t\approx180$ (we tested with $N_x=512$ and $N_x=1024$) so we took T a bit lower than that to have a significant final amplitude. 
+With these parameters, we verify the conditions \eqref{num_scaling_conditions}. Moreover, the critical wave number $\eqref{eq:k_0_critical_wave_number}$ $k_0\approx 1.2$ here so taking the first mode k=1 gives us a growing regimes according to the linear theory, which was indeed observed in the simulations. Finally, we took $\delta$ small enough and T large enough so that we can have the final amplitude of the system very large compared to $\delta$ without the scheme to blow up (which happens for larger $\delta$). For example, with these parameters, we know that the numerical scheme get stuck at $t\approx180$ (we tested with $N_x=512$ and $N_x=1024$) so we took T a bit lower than that to have a significant final amplitude. 
 \\
 
-\textbf{BDF scheme benchmarking}
+\underline{\textbf{BDF scheme benchmarking}}
 We solve numerically equation \eqref{Benney_eq} for different orders of schemes and display the different dynamics of the height on a video (can be found on the \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github page}). We didn't make any quantitative criteria (like norm analysis) and just judged by the visible difference in the dynamics. We tried that for $N_x \in \{128, 256, 512, 1024\}.$
 
-We find that all the orders give close dynamics as of $\underline{N_x=512}$ except $N_{BDF}=1, 2$. 
+We find that all the orders give close dynamics as of $\underline{N_x=512}$ except for $N_{BDF}=1, 2$. 
 We can see in figure \eqref{fig:BDF_plot_128_512}  and \eqref{fig:BDF_plot_1024} at the final time t=T at $N_x = 128$ and $N_x = 512$ and $N_x=1024$ with the Finite Difference method (the results are exactly the same with the spectral method). We notice that the 2 first orders are not precise at all, the third order takes too large values, and that the fourth, fifth, and sixth order are quite close too each other. For $N_x = 1024$, we see in \eqref{fig:BDF_plot_1024} that the orders 3, 4, 5 and 6 are quite close at the final time with a peak at the normalized height $1.3$. It seems that order 3 to 6 are quite similar for $N_x=1024$, same for the order 4 to 6 for $N_x=512.$
 
 
@@ -956,14 +1119,17 @@ We can see in figure \eqref{fig:BDF_plot_128_512}  and \eqref{fig:BDF_plot_1024}
         \caption{$N_x=512$}
         \label{fig:image2}
     \end{minipage}
-    \caption{Plot at the final time of solutions computed with  several BDF Schemes from 1 to 6, and fixed space step. The case $N_x=128$ gives very different solution for different $N_{BDF}$ whereas we can make out a common behaviour among the schemes for the case $N_x512.$  }
+    \caption{Plot at the final time of $h_{FD}^{N_x, N_{BDF}}(t=T)$ with $N_{BDF} \in \{1, 2, 3, 4, 5, 6\}$ and
+    fixed space step. The case $N_x=128$ gives very different solution for different $N_{BDF}$ whereas we 
+    can make out a common behaviour among the schemes for the case $N_x=512.$  }
     \label{fig:BDF_plot_128_512}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{Verif_scheme/plot_FD_BDF_Nx_1024.png}
-\caption{We observe that the third, fourth, fifth and sixth order BDF schemes are quite close for $N_x = 1024.$ The second order is still quite difference while the first order solution doesn't have the same crest amplitude at all. }
+\caption{Plot of $h_{FD}^{1024, N_{BDF}}$ for $N_{BDF} \in \{1, 2, 3, 4, 5, 6\}$.
+We observe that the third, fourth, fifth and sixth order BDF schemes are quite close for $N_x = 1024.$ The second order is still quite difference while the first order solution doesn't have the same crest amplitude at all. }
 \label{fig:BDF_plot_1024}
 \end{figure}
 
@@ -974,17 +1140,24 @@ We don't take risk and prefer to keep a high order. Therefore, for the control e
     N_x=512
     },
 \end{equation}
-as $N_x=1024$ is quite long to compute ( 1200s for the spectral scheme and 10000s for the Finite Difference scheme). We will choose $N_{BDF}$ with the next study of the convergence of the schemes.
+as $N_x=1024$ is quite long to compute (1200s for the spectral scheme and 10000s for the Finite Difference scheme). 
+We will choose $N_{BDF}$ with the next study of the convergence of the schemes.
 
-\textbf{Convergence study of the schemes}
-We compute $h^{(N_x, N_{BDF})}$ for different time steps and compare in $L^2$ and $L^{\infty}$ difference to the methods at the final time. We set the maximum number of points as $$N_x^{max} = 1024.$$ We take that specific number because it was high enough to have good results and can be divided $\{128, 256, 512\}$ so we won't need to make any interpolation when we do the difference between the arrays (which don't have the same shape).
+\underline{\textbf{Convergence study of the schemes}}
+We solve numerically the equation to find $h^{(N_x, N_{BDF})}$for different time steps, then we compute $L^2$ and $L^{\infty}$ differences to the methods at the final time. 
+We set the maximum number of points as $$N_x^{max} = 1024.$$ We take that specific number because it was high enough to have good results and can be divided $\{128, 256, 512\}$ 
+so we won't need to make any interpolation when we do the difference between the arrays (which don't have the same shape).
  
 So what we compute is 
 \begin{equation}\label{h_diff_convergence_rate}
-    ||h^{(N_x^{max}, 2)}(T)-h^{(n, 2)}(T)||_{L^{p}([0,L])}
+    ||h^{(N_x^{max}, N_{BDF})}(T)-h^{(n, N_{BDF})}(T)||_{L^{p}([0,L])}
 \end{equation}
 with $p\in \{2, +\infty\},n\in \{1024/i, i\in \{2, 4, 8\}\} = \{512, 256, 128\}.$
-We test with the settings \eqref{eq_value_variables_num_verif} which give an exponentially growing regimes. The fact that the system forms an exponentially growing wave allows us to probably have all the discrepancy during the transitional regime amplified at the final time. Therefore, it justifies in a sense why we test the numerical scheme this way\footnote{We test exponentially growing regimes so differences during the transitional regime would be probably amplified at the final time.}.
+We test with the settings \eqref{eq_value_variables_num_verif} which give an exponentially growing regime. The fact that
+ the system forms an exponentially growing wave allows us to probably have all the discrepancy during the transitional
+  regime amplified at the final time. Therefore, it justifies in a sense why we test the numerical scheme this 
+  way\footnote{We test exponentially growing regimes so discrepancies during the transitional regime would be probably
+   amplified at the final time.}.
 \\
 
 Among the $12=6\times2$ graphs (one for each methods and for each $N_{BDF}$) that we computed, we find that difference in $L^2$ and $L^{\infty}$ norm are decreasing exponentially, with a higher rate at $N_{BDF}=3$ and $4$. We show in figure \eqref{fig:Convergence_plot_BDF_4_Sp} a plot of \eqref{h_diff_convergence_rate} for the spectral method with $N_{BDF}=4.$
@@ -994,7 +1167,7 @@ Among the $12=6\times2$ graphs (one for each methods and for each $N_{BDF}$) tha
     \begin{center}
         \includegraphics[width=\linewidth]{Verif_scheme/Convergence_graph_Sp_method.png}
     \end{center}
-    \caption{Spectral method, $N_{BDF}=4$: Convergence plot at t=T in a log-log plot. }
+    \caption{Plot in a log-log graph of $||h_{Sp}^{1024,4}(T)-h_{Sp}^{N_x, 4}(T)||_{L^p}$, for $N_x \in \{128, 256, 512\}$ and $p \in \{2, +\infty\}$.}
     \label{fig:Convergence_plot_BDF_4_Sp}
 \end{figure}
 
@@ -1009,17 +1182,21 @@ for the experimentation in the upcoming control part.
 \\
 
 
-\textbf{Comparison of the schemes.} We also compared the finite difference and spectral scheme to check if they match. We obtain a good matching of the schemes, with increasingly small errors with smaller space steps dx for $N_{BDF} \geq 3.$. In figure $N_{BDF}=4$, we have the error at $N_x = 512$ between $10^{-2}$ and ${10^{-3}}$ which is very small compared to the final amplitude of the regime, which is of $3.10^{-1}$.
+\underline{\textbf{Comparison of the schemes.}} We also compared the finite difference and spectral scheme to check if would give the same results.
+ We obtain a good matching of the schemes, with increasingly small errors with smaller space steps $dx$ for $N_{BDF} \geq 3.$In figure \ref{fig:plot_comparison_FD_Sp_methods},
+ $N_{BDF}=4$,
+  we have the error at $N_x = 512$ between $10^{-2}$ and ${10^{-3}}$ which is very small compared to the final amplitude of the regime, which is of $3.10^{-1}$.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Verif_scheme/Comparison_scheme_BDF4.png}
-    \caption{Comparison between the Spectral and FD methods with $N_{BDF}=4.$ We see that the $L^{\infty}$ norm of the difference when $N_x=512$ is around $1.10^{-2}$ and $1.10^{-3}$ which is satisfactory for a final state of amplitude $3.10^{-1}$. }
-    \label{fig:enter-label}
+    \caption{Plot of $||h_{FD}^{N_x, 4}(T)-h_{Sp}^{N_x,4}||_{L^p}$ with $N_x \in \{128, 256, 512\}$ and $p \in \{2, +\infty\}.$
+     We see that the $L^{\infty}$ norm of the difference when $N_x=512$ is around $1.10^{-2}$ and $1.10^{-3}$ which is satisfactory for a final state of amplitude $3.10^{-1}$. }
+    \label{fig:plot_comparison_FD_Sp_methods}
 \end{figure}
 \vspace{0.5cm}
 
-\textbf{Physical properties.}
+\underline{\textbf{Physical properties.}}
 We check here some physical properties.
 \\
 
@@ -1039,7 +1216,11 @@ Finally, as h is L-periodic:
 M_{,t} = \frac{h^3(0,t)}{3}(N_{s,x}(L)-N_{s,x}(0)).
 \end{equation}
 Therefore, the mass variation depends on the discontinuity gap of the derivative. 
-We check this equality numerically by using actuators of the form $$N_s: x\in [0,L] \rightarrow \sum_{j=1}^{k}u_j(t)d(x-x_j),$$ with k being the number of air jets and d a gaussian with a significant standard deviation (i.e quite diffused), and we indeed see the height change according to the analytical rate with very small relative error ($\approx 1\%$ of the analytical rate \eqref{mass_variation}).  
+We check this equality numerically by using actuators of the form 
+$$N_s: x\in [0,L] \rightarrow \sum_{j=1}^{k}u_j(t)d(x-x_j),$$ with k being the number of air 
+jets and d a gaussian with a significant standard deviation (i.e quite diffused). We
+ see indeed that the variation rate of the height follows to the analytical rate \eqref{mass_variation} with very small relative error
+  ($<1\%$).  
 \\
 
 We also checked other qualitative properties. For example, if we put a higher air jet intensity, we will have deeper trough, or, for the same intensity, if we increase the slope angle $\theta$, we will have a bigger bump. We also played a bit with the viscosity and surface tension coefficient $\mu_l$ and $\gamma$.
@@ -1051,8 +1232,12 @@ We also checked other qualitative properties. For example, if we put a higher ai
 
 \newpage
 \section{Control}\label{Section_Control}
-We use the linearized Benney equation (\ref{Benney_ctrl_linearised}) in order to use different type of control to stabilize the film height towards the Nusselt solution. We will present proportional control and state Feedback Linear Quadratic Regulator (LQR) Control strategies. Both strategies don't put any constraints on the sign of the control which has to be positive in our case (blowing air jets), so we also test if the positive part of these control can stabilize the film. Finally, none of these strategies ensure theoretically that the height and the control stay positive, i.e a positive control system. Hence, we construct an asymptotically stable positive control scheme and try to make it work numerically.  
-
+We use the linearized Benney equation (\ref{Benney_ctrl_linearised}) in order to use different type of control to stabilize the film height towards t
+he Nusselt solution. We will present proportional control and state Feedback Linear Quadratic Regulator (LQR) control strategies. None of these strategies 
+put any constraints on the sign of the control, which has to be positive in our case (blowing air jets), so we also test if the positive part of 
+these control can stabilize the film. Finally, this strategies don't give any proof that the height and the control stay positive, i.e a positive
+control system. Hence, we construct an asymptotically stable positive control scheme and try to make it work numerically. All the control experiments
+are implemented either in the file \textit{main\_benney\_eq\_Ctrl.py} or in \textit{Control\_file.py} (cf \href{https://github.com/Bilal59170/Repo_Warwick_internship}{Github repository}).
 
 
 \subsection{Continuous and discrete Control system }
@@ -1069,7 +1254,9 @@ We want to stabilize the fluid towards the normalized Nusselt solution h(x,t) =1
     \end{aligned}
     \right.
 \end{equation}
-with $x, u, y\in L^{2}(\mathbb{R}_+, L^{\infty}([0,L],\mathbb{R}))$ the state of the system, the control, and the output (or observations) of the system respectively. $\mathcal{A}, \mathcal{B}$, and $\mathcal{C}$ are bounded linear operators that describe respectively the control-free dynamical system, the control impact on the system, and how much we can observe the state x.
+with $x, u, y\in L^{2}(\mathbb{R}_+, L^{\infty}([0,L],\mathbb{R}))$ the state of the system, the control, and the output 
+(or observations) of the system respectively. $\mathcal{A}, \mathcal{B}$, and $\mathcal{C}$ are bounded linear operators 
+that describe respectively the control-free dynamical system, the control impact on the system, and how much we can observe the state x.
 \\ 
 
 The discrete equivalent system which is more tractable for our numerical approach is 
@@ -1082,14 +1269,22 @@ The discrete equivalent system which is more tractable for our numerical approac
     \right.
 \end{equation}
 
-with $\forall t\geq 0, x(t)\in \mathbb{R}^n$, $u(t)\in \mathbb{R}^k$, and $y(t) \in \mathbb{R}^n$, $A \in \mathcal{M}_{n}(\mathbb{R})$, $B \in \mathcal{M}_{n, k}(\mathbb{R})$, $C \in \mathcal{M}_{n}(\mathbb{R})$. Here, $n,k \in  \mathbb{N}^*$ are respectively the number of space discretization point for x and u, and number of actuators for u. \\
+with $\forall t\geq 0, x(t)\in \mathbb{R}^n$, $u(t)\in \mathbb{R}^k$, and $y(t) \in \mathbb{R}^n$, 
+$A \in \mathcal{M}_{n}(\mathbb{R})$, $B \in \mathcal{M}_{n, k}(\mathbb{R})$, $C \in \mathcal{M}_{n}(\mathbb{R})$. 
+Here, $n,k \in  \mathbb{N}^*$ are respectively the number of space discretization the of air jets that you will use. \\
 
 We chose to take 
 
 \begin{equation}
     C = I_d
 \end{equation}
-which means that we have a \underline{ full observation of our state}, which is a strong assumption. Indeed, as we will see later in the next section (\ref{sub_section_link_ctr_FLF}), the state x will be the height of the film. Having full observation means that we can, at all time, measure exactly the height. These kind of assumptions can be realistic with laboratory equipment, like in (\cite{experimental_paper}) where they use precise optical measurements and vision algorithms to measure accurately the height of the liquid film. However, in an industrial framework, it is not sure that this hypothesis is still realistic. It becomes even more difficult in the case of the Weighted Residuals model, another reduced-order model of the Navier-Stokes equations, as one would have to measure exactly the height h and the flux q. 
+which means that we have a \underline{ full observation of our state}, which is a strong assumption. Indeed, as we will 
+see later in the next section \ref{sub_section_link_ctr_FLF}, the state x will be the height of the film. Having full 
+observation means that we can, at all time, measure exactly the height. These kind of assumptions can be realistic with 
+laboratory equipment, like in \cite{experimental_paper} where they use precise optical measurements and vision algorithms 
+to measure accurately the height of the liquid film. However, in an industrial framework, it is not sure that this hypothesis
+ is still realistic. It becomes even more difficult in the case of the Weighted Residuals model, another reduced-order model of 
+ the Navier-Stokes equations, as one would have to measure exactly the height h and the flux q. 
 \\
 
 As we want to use a feedback control strategy, the control is of the form 
@@ -1108,7 +1303,8 @@ Hence, the system can be rewritten as
 \end{equation}
 which is an exponential system with solution $$s:t\mapsto  e^{(A+BK)t}x_0.$$
 
-As we want the system to be stable, all the eigenvectors of the matrix A+BK have to have a negative real part so that their exponential vanish. We call these matrices \underline{Hurwitz matrices}. 
+As we want the system to be stable, all the eigenvectors of the matrix A+BK need to have a 
+negative real part so that their exponential evaluation vanishes. We call these matrices \underline{Hurwitz matrices}. 
 Therefore, the problem can be finally rewritten as a \underline{pole placement problem}: 
 \begin{equation}\label{eq_pole_placement}
 \boxed{
@@ -1128,21 +1324,23 @@ We take
 \tilde{h} = \frac{h-1}{\delta}
 \end{equation}
 
-the "zoomed" perturbation from the perturbed normalized height (\ref{h_linear_decomposition}). We recall linearized Benney equation with air jet control (\ref{Benney_ctrl_linearised}):
+the "zoomed" perturbation from the perturbed normalized height (\ref{h_linear_decomposition}). We recall the linearized Benney equation with air jet control (\ref{Benney_ctrl_linearised}):
 $$\tilde{h}_{,t} = \left[ -2\partial_x + (\frac{2cot(\theta)}{3}-\frac{8Re}{15})\partial_{xx} - \frac{1}{3Ca}\partial_{xxxx}\right]\tilde{h} + \left[ \frac{1}{3}\partial_{xx}\right]\tilde{N}_s.$$
 \\
 
 We take a (scaled) normal stress as a sum of k controlled actuators which represent the air jet: 
-\begin{equation}
+\begin{equation}\label{eq:decomposition_of_the_control}
 \boxed{
     \tilde{N}_s = \sum_{j=1}^ku_j(t)d(x-x_j),
 }
 \end{equation}
 with 
-\begin{equation}
+\begin{equation}\label{eq:shapefunction_for_airjets}
+    \boxed{
     \forall x \in [0,L], \quad d(x)=Aexp\left(\frac{cos(\nu x)-1}{\omega^2}\right).
+    }
 \end{equation}
-A is here chosen such that $\int_0^Ld = 1$, $\nu=\frac{L}{2\pi}$ and $\omega$ to be chosen later in the program.\\
+A is here chosen such that $\int_0^Ld = 1$. $\nu=\frac{L}{2\pi}$ and $\omega$ to be chosen later in the program.\\
 
 
 So the total equation becomes
@@ -1163,9 +1361,11 @@ and
          \end{aligned}
          \right).
 \end{equation*}
-We see the link with the continuous linear control model (\ref{Ctrl_framework_continuous}) with the same notations, except for the state x which is here $\tilde{h}$. We only have a little difference with the control u as we introduced a specific form for the control so the functional space is a bit different, but it will not affect the discrete problem. \\
+We have now linked the Benney system to the continuous linear control model (\ref{Ctrl_framework_continuous}) with the same notations, 
+except for the state x which is here $\tilde{h}$. We only have a little difference with the control u as we introduced a specific
+ form for the control so the functional space is a bit different, but it will not affect the discrete problem. \\
 
- \textbf{The discrete system}
+\underline{\textbf{The discrete system.}}
 We discretise the system and have $N_x$ numbers of ODEs. We add also the feedback control with full observations: 
 
 \begin{equation}\label{eq_discrete_ctrl_FLF}
@@ -1173,7 +1373,7 @@ We discretise the system and have $N_x$ numbers of ODEs. We add also the feedbac
 \frac{d\tilde{h}}{dt} = A\tilde{h} + B u, \quad u = K\tilde{h}.}
  \end{equation}
 
-We directly have the similarity with the discrete linear control framework (\ref{Ctrl_framework_discrete}) with $$n \approx N_x, x \approx \tilde{h} \in \mathbb{R}^{N_x}, A \in \mathcal{M}_{N_x}, B\in \mathcal{M}_{N_x, k} \text{, and }  C= I_d \in \mathcal{M}_{k, N_x}$$.
+We directly have the similarity with the discrete linear control framework (\ref{Ctrl_framework_discrete}) with $$n \approx N_x, x \approx \tilde{h} \in \mathbb{R}^{N_x}, A \in \mathcal{M}_{N_x}, B\in \mathcal{M}_{N_x, k} \text{, and }  C= I_d \in \mathcal{M}_{k, N_x}.$$
 
 The matrices A and B are constructed with a centered finite difference scheme, so using the notations of the finite difference matrices, the matrix A is : 
 
@@ -1200,7 +1400,12 @@ as $$ \forall i \in [|1, N_x|], \quad \sum_{j=1}^MB_{ij}u_j(t) = (B u(t))_i = (\
 
 
 \subsection{LQR Control}
-In this section, we implement Linear Quadratic Regulator (LQR) Control. As its name suggests it, it is a type of linear control linked to a quadratic function. This function will be here a cost that we will going to introduced further. We will see that LQR control succeeds to stabilize the Benney system. In the same spirit as the proportional control, we do blowing air jets only control by taking the positive part of the control at each time steps. Here again, we find that despite being less efficient then the classic LQR, the positive part of the LQR control stabilizes successfully the Benney system. 
+In this section, we implement Linear Quadratic Regulator (LQR) Control. As its name suggests it, it is a type of linear control 
+linked to a quadratic function. This function will be here a quadratic cost that we will introduce later. We will see that LQR 
+control succeeds to stabilize the Benney system. Then, as we want blowing only air jets, we take the positive part of the control
+ at each time steps.We find that despite being less efficient then the classic LQR control,  the positive part of the LQR control 
+ stabilizes successfully the Benney system. Then, we retrive the speed of convergence of the LQR control by multiplying the control
+ by a scalar $\zeta_+ = 2$, which also leads to increase the cost of the control compared to the classic LQR.
 
 \subsubsection{LQR Control and Riccati equation}
 We first deal with the continuous system an introduce the cost function 
@@ -1209,7 +1414,8 @@ We first deal with the continuous system an introduce the cost function
     \kappa(u) = \int_0^{+\infty}\int_0^L \left[\beta (\tilde{h}(t)-\xi(t))^2+ (1-\beta)\tilde{N}_s(x,t)^2\right]dxdt.
 \end{equation}
 
-It is a cost functional whose weight $\beta$ translates the importance given to the distance between the system state x to a goal state $\xi \in L^2(\mathbb{R}_+, L^2([0,L],\mathbb{R}))$ compared to the quadratic cost of the control. As we want to stabilize the system towards the Nusselt solution ($\tilde{h}=0)$, we take naturally $$\xi = 0.$$
+It is a cost functional whose weight $\beta$ translates the importance given to the distance between the system state x to a goal state $\xi \in L^2(\mathbb{R}_+, L^2([0,L],\mathbb{R}))$ compared to the quadratic cost of the control
+$\tilde{N}_s$. As we want to stabilize the system towards the Nusselt solution ($\tilde{h}=0)$, we take naturally $$\xi = 0.$$
 
 
 
@@ -1218,7 +1424,7 @@ Let us define $$D=(d(x_i-x_j))_{(i,j)\in [|1,N_x|]\times [|1,k|]}$$ with d the s
 
 \begin{equation}\label{eq_LQR_discrete_cost}
 \boxed{
-    c = \int_0^{+\infty}(\tilde{h}^TQ\tilde{h}+u^TRu)dt}
+    c = \int_0^{+\infty}(\tilde{h}^TQ\tilde{h}+u^TRu)dt},
 \end{equation}
 with 
 \begin{equation}\label{eq_LQR_discrete_cost_matrices}
@@ -1233,7 +1439,9 @@ and
 
 
 
-\textbf{The Riccati equation.}Now we present how we find the optimal control associated with the discrete cost c by solving a matrix equation. We know from \cite{A_Thompson_FLF_blowing_suction} (part 3.2) for example, that if find a symmetric positive semi-definite matrix P solution to the problem
+\underline{\textbf{The Riccati equation.}} We now present how we find the optimal control associated to the discrete cost c by solving a 
+matrix equation. We know from \cite{A_Thompson_FLF_blowing_suction} (part 3.2) for example, that there exists a symmetric positive semi-definite
+matrix P solution to the problem
 
 \begin{equation}\label{eq_Riccati_eq}
     \text{Find } P\in \mathcal{M}_{N_x}, \quad 0=A^TP+PA+Q-PBR^{-1}B^TP, 
@@ -1244,38 +1452,45 @@ and
     K = -R^{-1}B^TP.
  \end{equation}
  
- The equation \eqref{eq_Riccati_eq} is known as the \underline{Continuous Algebraic Riccati Equation} (CARE). At the opposite of \cite{holroyd2023linearquadraticregulationcontrol}, we don't use a specific method to solve this equation and rather use the python library \textit{python-control} with the function \texttt{control.lqr}. We also didn't check the existence of a solution, but let us remark that in the continuous framework, if the system (A, B) is controlable,  R is positive definite and Q semi-positive definite, then there exists one and only minimizer of the cost functional $\kappa$ which solves the Riccati equation. Here, R and Q are obviously positive semi-definite and we will check numerically that R is positive definite. 
+ The equation \eqref{eq_Riccati_eq} is known as the \underline{Continuous Algebraic Riccati Equation} (CARE). At the opposite of
+  \cite{holroyd2023linearquadraticregulationcontrol}, we do not use a specific method to solve this equation and rather use the python 
+  library \textit{python-control} with the function \texttt{control.lqr}. Moreover, we do not check the existence of a solution, but let us 
+  remark that if the system (A, B) is controlable,  R is positive definite and Q semi-positive definite, then
+   there exists one and only minimizer of the cost functional $c$ which solves the Riccati equation because c would be stritly convex
+   with respect to the cost $\tilde{N}_s$. Here, R and Q are obviously positive 
+   semi-definite and we will check numerically that R is positive definite. 
 
 
  % PUT FIGURE OF A GAIN MATRIX ROW
  
+
 \subsubsection{Numerical experiment}
 We now try to stabilize the growing regime \eqref{eq_value_variables_num_verif} with LQR
-control. We test first classic LQR control, which stabilizes efficiently the system. Then,
+control. We test classic LQR control first, which stabilizes efficiently the system. Then,
 we try to apply only the positive part of the LQR control, to mimic blowing only air jets.
-We find that this control also stabilizes the system, but is less efficient. 
+We find that this control also stabilizes the system, but is less efficient. We finally 'cheat' a little
+by multiplying the positive control by a constant $\zeta_+=2$, which improves the dampening 
+rate but with negative effect on the cost.
 \\
 
-\textbf{Classic LQR Control.} We implement the LQR control by solving the Continuous Algebrai Riccati Equation
+\underline{\textbf{Classic LQR Control.}} We implement the LQR control by solving the Continuous Algebrai Riccati Equation
 (CARE), as described at the end of the previous section. We test several weight parameters (every 5\% of $\beta$)
 \footnote{Let us precise that the program doesn't find a solution for
 Riccati equation for some values of $\beta$ like 0.1 or 0.5. That is why we take here $\beta=0.2$
 as a 'small' $\beta$.} to observe how this parameter affects the stabilization of the system,
-but also the total quadratic cost of the control. Here, we don't take into account the shape functions
- of the actuators and just look at the amplitudes as we just want to compare the cost obtained 
- with different values of $\beta$.: 
+but also the total quadratic cost of the control. Here, we do not take into account the shape functions
+ of the actuators and just look at the amplitudes as we just want to compare the cost 
 \begin{equation}
-    \kappa_u = \int_{0}^{T} \int_{0}^{L}u^2 dx dt,
+    \kappa_u = \int_{0}^{T} \int_{0}^{L}u^2 dx dt
 \end{equation}
 
-or rather its numerical counterpart:
+obtained with different values of $\beta$, or rather its numerical counterpart:
 
 \begin{verbatim}
     quad_cost_ctrl = np.sum(amplitudes_spectral**2)*dx**2*dt**2.
 \end{verbatim}
 
-Here, \textit{"amplitudes\_spectral"} the amplitudes of the shape function with a spectral method 
-numerical scheme.  
+Here, \textit{"amplitudes\_spectral"} the amplitudes of the shape function (i.e the $u_k(t)$ in \eqref{eq:decomposition_of_the_control}) with a spectral method.
 \\
 
 We consider that the system is stabilized when its maximal amplitude is lower than $\delta=1.10^{-3}$, the 
@@ -1733,7 +1948,42 @@ with S such that we minimize the $(z_i)_{i\in[|1,N_x|]}$ to have a small cost fo
 We didn't succeed to find a solution which was Hurwitz and Metzler in the same time, even for small values of $N_x$. Concretely, the first part of the vector $v_{tot}$  outputed by the solver would encode a Hurwitz Matrix, while the second part would encode a Metzler matrix, but never both of the properties. Moreover, the solver would output very small values (around $10^{-14}$) with d being significantly smaller than the $(z_i)_{i\in[|1,N_x|]}$, so the control would be too large and make the numerical scheme bug. 
 
 
+\section{Conclusion}
 
+We studed in this report the stabilization of a falling liquid film with blowing
+only air jets and found controls that could stabilize the Benney equation, a reduced-order
+model for the Navier-Stokes system. 
+
+In part \ref{Section_KS_eq}, we studied numerically the 
+KS equation with different values of the instability parameter $\nu = (2\pi/L)^2$ and tried
+to interpretate the observed behaviour by analysing the Fourier modes of the unkown u. Then, in 
+section \ref{Section_Benney_eq}, we derived the Benney equation \eqref{Benney_eq_ctrl}. More precisely,
+we used the thin film approximation and made an hypothesis on the scale of the Reynolds number $Re$, the Capillary
+number $Ca$, but also on the normal and tangential stress induced by the air jets $N_s$ and $T_s$, where $T_s$ was 
+neglected. Then, in section \ref{Section_Numerical_simu}, we introduced a numerical scheme to solve numerically
+the Benney equations. We carried out test to fix the parameter of the simulation which the order of the 
+Backward Differentiation Formula scheme $N_{BDF}$ and the number of space steps $N_x$ (the number of time 
+steps $N_t$ being deduced from $N_x$ by \eqref{time_step}). We tested the convergence of two spatial method, 
+the finite difference and spectral method, and then compared them to see if they where giving the same results
+which was indeed the case. Finally, in section \ref{Section_Control}, we built two blowing only air jet strategies
+that stabilize successfully the Benney system. The first strategy was to compute the LQR (Linear Quadratic Regulator)
+control for the Benney system and take its postive part multiplied by some scalar $\zeta_+$. The second was to carry out 
+a proportional control and take its positive part too. We found out that proportional control seems to be 
+more costly than LQR control for the same dampening rate in the context of blowing-only actuation. However, if we 
+don't take the positive part, the proportional control seems to be as efficient as the LQR control for some values of the 
+proportional control coefficient $\alpha$. We also tried another control method by changing our system into a positive control
+system which are system with a positive state at all time t. We found from \cite{pos_ctrl_paper} a system of linear inequalities
+that we changed into a QP (Quadratic Programming) optimization problem to solve it. However, we didn't manage to find a solution
+numerically with the solver. 
+
+
+\textbf{Acknoledgement.} Even though it is report and not research paper, I would like to thank my supervisors Dr. Radu
+Cimpeanu and Dr. Susana Gomes for the time they took to talk with me every week, even the busiest ones. Thanks too them, I learnt a lot on the 
+technical side, but also on the life of a researcher. Thank you Susana for having answered to my mails when I was searching 
+for an internship and having giving me the opportunity to work with you. Thank you Radu for having invited me in all the 
+meeting of your computational Fluid Dynamics group, it was a wonderfull experience and I felt totaly included. I would 
+also like to thank Oscar Holroyd for the very interesting talks we had about this project and the help he gave
+me. In general, thank you to whole the CFD group ! 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  12 FEB 2025 16:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  14 FEB 2025 16:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -688,9 +688,6 @@ Package: blx-case-expl3 2024/03/21 v3.20 expl3 case changing code for biblatex
 \@quotereset=\count450
  (main.aux
 
-LaTeX Warning: Label `fig:KS_eq_nu_inf_1' multiply defined.
-
-
 LaTeX Warning: Label `fig:image1' multiply defined.
 
 
@@ -832,19 +829,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 80--87
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--110
+Underfull \hbox (badness 10000) in paragraph at lines 88--113
 
  []
 
 
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 111--114
+Underfull \hbox (badness 10000) in paragraph at lines 114--129
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 115--128
+Underfull \hbox (badness 10000) in paragraph at lines 130--143
 
  []
 
@@ -853,14 +850,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 115--128
 [5]
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 160--162
+Underfull \hbox (badness 10000) in paragraph at lines 186--190
 
  []
 
 
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 217--219
+Underfull \hbox (badness 10000) in paragraph at lines 229--232
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 256--260
 
  []
 
@@ -869,38 +871,38 @@ Underfull \hbox (badness 10000) in paragraph at lines 217--219
 [8]
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 278--280
+Underfull \hbox (badness 10000) in paragraph at lines 330--333
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 293--296
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 300--302
+Underfull \hbox (badness 10000) in paragraph at lines 347--350
 
  []
 
 
 
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 318--320
+Underfull \hbox (badness 10000) in paragraph at lines 359--361
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 379--381
 
  []
 
 
 
 [11]
-Underfull \hbox (badness 10000) in paragraph at lines 366--368
+Underfull \hbox (badness 10000) in paragraph at lines 432--435
 
  []
 
-<KS_eq/plot_dispersion_nu_1_1-4.png, id=335, 929.3922pt x 364.9635pt>
+<KS_eq/plot_dispersion_nu_1_1-4.png, id=339, 929.3922pt x 364.9635pt>
 File: KS_eq/plot_dispersion_nu_1_1-4.png Graphic file (type png)
 <use KS_eq/plot_dispersion_nu_1_1-4.png>
-Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 370.
+Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 437.
 (pdftex.def)             Requested size: 443.57848pt x 174.18922pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -908,87 +910,89 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [12]
-<KS_eq/plot_exp_decay.png, id=345, 456.7464pt x 342.5598pt>
-File: KS_eq/plot_exp_decay.png Graphic file (type png)
-<use KS_eq/plot_exp_decay.png>
-Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 406.
-(pdftex.def)             Requested size: 199.60895pt x 149.70749pt.
-<KS_eq/plot_decay_nu_1_k_1png.png, id=346, 476.982pt x 342.5598pt>
-File: KS_eq/plot_decay_nu_1_k_1png.png Graphic file (type png)
-<use KS_eq/plot_decay_nu_1_k_1png.png>
-Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 414.
-(pdftex.def)             Requested size: 199.60895pt x 143.35664pt.
-
-
-[13 <./KS_eq/plot_dispersion_nu_1_1-4.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 426--429
+Underfull \hbox (badness 10000) in paragraph at lines 452--456
 
  []
 
-<KS_eq/plot_lambda_nu.png, id=352, 424.9476pt x 346.896pt>
-File: KS_eq/plot_lambda_nu.png Graphic file (type png)
-<use KS_eq/plot_lambda_nu.png>
-Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 434.
-(pdftex.def)             Requested size: 221.78923pt x 181.0539pt.
-LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 435.
-(C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/base\omscmr.fd
-File: omscmr.fd 2024/11/19 v2.5n Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 435.
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+[13 <./KS_eq/plot_dispersion_nu_1_1-4.png>]
+<KS_eq/plot_exp_decay.png, id=355, 456.7464pt x 342.5598pt>
+File: KS_eq/plot_exp_decay.png Graphic file (type png)
+<use KS_eq/plot_exp_decay.png>
+Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 491.
+(pdftex.def)             Requested size: 199.60895pt x 149.70749pt.
+<KS_eq/plot_decay_nu_1_k_1png.png, id=356, 476.982pt x 342.5598pt>
+File: KS_eq/plot_decay_nu_1_k_1png.png Graphic file (type png)
+<use KS_eq/plot_decay_nu_1_k_1png.png>
+Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 499.
+(pdftex.def)             Requested size: 199.60895pt x 143.35664pt.
 
-<KS_eq/KS_extrema_Fourier_coef.png, id=353, 903.375pt x 317.988pt>
-File: KS_eq/KS_extrema_Fourier_coef.png Graphic file (type png)
-<use KS_eq/KS_extrema_Fourier_coef.png>
-Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 442.
-(pdftex.def)             Requested size: 443.57848pt x 156.14056pt.
+Underfull \hbox (badness 10000) in paragraph at lines 517--521
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+ []
 
 
 
 [14 <./KS_eq/plot_exp_decay.png> <./KS_eq/plot_decay_nu_1_k_1png.png>]
+<KS_eq/plot_lambda_nu.png, id=366, 424.9476pt x 346.896pt>
+File: KS_eq/plot_lambda_nu.png Graphic file (type png)
+<use KS_eq/plot_lambda_nu.png>
+Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 527.
+(pdftex.def)             Requested size: 221.78923pt x 181.0539pt.
+<KS_eq/KS_extrema_Fourier_coef.png, id=367, 903.375pt x 317.988pt>
+File: KS_eq/KS_extrema_Fourier_coef.png Graphic file (type png)
+<use KS_eq/KS_extrema_Fourier_coef.png>
+Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 537.
+(pdftex.def)             Requested size: 443.57848pt x 156.14056pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
 
 [15 <./KS_eq/plot_lambda_nu.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 476--478
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 480--482
-
- []
-
-
 
 [16 <./KS_eq/KS_extrema_Fourier_coef.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 510--512
+Underfull \hbox (badness 10000) in paragraph at lines 581--585
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 528--529
+Underfull \hbox (badness 10000) in paragraph at lines 587--589
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 552--554
+Underfull \hbox (badness 10000) in paragraph at lines 617--619
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 635--636
 
  []
 
 
 
 [17]
-Underfull \hbox (badness 10000) in paragraph at lines 560--563
+Underfull \hbox (badness 10000) in paragraph at lines 659--661
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 669--673
 
  []
 
 
 
 [18]
+Underfull \hbox (badness 10000) in paragraph at lines 754--757
+
+ []
+
+
 
 [19]
 
@@ -997,218 +1001,216 @@ Underfull \hbox (badness 10000) in paragraph at lines 560--563
 [21]
 
 [22]
-Underfull \hbox (badness 10000) in paragraph at lines 776--778
+Underfull \hbox (badness 10000) in paragraph at lines 915--917
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 789--791
+Underfull \hbox (badness 10000) in paragraph at lines 930--935
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 796--798
+Underfull \hbox (badness 10000) in paragraph at lines 942--944
 
  []
 
 
 
 [23]
-Underfull \hbox (badness 10000) in paragraph at lines 814--817
+Underfull \hbox (badness 10000) in paragraph at lines 961--964
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 831--833
+Underfull \hbox (badness 10000) in paragraph at lines 983--986
 
  []
 
 
 
 [24]
-Underfull \hbox (badness 10000) in paragraph at lines 845--847
+Underfull \hbox (badness 10000) in paragraph at lines 999--1002
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 860--861
+Underfull \hbox (badness 10000) in paragraph at lines 1015--1018
 
  []
 
 
 
 [25]
-Underfull \hbox (badness 10000) in paragraph at lines 893--895
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 910--912
+Underfull \hbox (badness 10000) in paragraph at lines 1051--1055
 
  []
 
 
 
 [26]
-Underfull \hbox (badness 10000) in paragraph at lines 918--920
+Underfull \hbox (badness 10000) in paragraph at lines 1071--1074
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 932--934
+Underfull \hbox (badness 10000) in paragraph at lines 1080--1082
 
  []
 
-<Verif_scheme/plot_FD_BDF_Nx_128.png, id=484, 462.528pt x 346.896pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1095--1097
+
+ []
+
+
+
+[27]
+<Verif_scheme/plot_FD_BDF_Nx_128.png, id=513, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_128.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_128.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 947.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 1110.
 (pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
-<Verif_scheme/plot_FD_BDF_Nx_512.png, id=485, 462.528pt x 346.896pt>
+<Verif_scheme/plot_FD_BDF_Nx_512.png, id=514, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_512.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_512.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 955.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 1118.
 (pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
-<Verif_scheme/plot_FD_BDF_Nx_1024.png, id=486, 462.528pt x 346.896pt>
+<Verif_scheme/plot_FD_BDF_Nx_1024.png, id=515, 462.528pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_1024.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_1024.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 965.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 1130.
 (pdftex.def)             Requested size: 332.68385pt x 249.52672pt.
+
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[27]
-Underfull \hbox (badness 10000) in paragraph at lines 985--989
-
- []
-
-
-
 [28 <./Verif_scheme/plot_FD_BDF_Nx_128.png> <./Verif_scheme/plot_FD_BDF_Nx_512.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 990--992
-
- []
-
-<Verif_scheme/Convergence_graph_Sp_method.png, id=508, 947.4597pt x 359.9046pt>
-File: Verif_scheme/Convergence_graph_Sp_method.png Graphic file (type png)
-<use Verif_scheme/Convergence_graph_Sp_method.png>
-Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 995.
-(pdftex.def)             Requested size: 443.57848pt x 168.50166pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1008--1010
-
- []
-
-<Verif_scheme/Comparison_scheme_BDF4.png, id=509, 952.5186pt x 357.0138pt>
-File: Verif_scheme/Comparison_scheme_BDF4.png Graphic file (type png)
-<use Verif_scheme/Comparison_scheme_BDF4.png>
-Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 1016.
-(pdftex.def)             Requested size: 443.57848pt x 166.26027pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1022--1025
+Underfull \hbox (badness 10000) in paragraph at lines 1154--1162
 
  []
 
 
 
 [29 <./Verif_scheme/plot_FD_BDF_Nx_1024.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1163--1165
 
-[30 <./Verif_scheme/Convergence_graph_Sp_method.png> <./Verif_scheme/Comparison_scheme_BDF4.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1042--1044
+ []
+
+<Verif_scheme/Convergence_graph_Sp_method.png, id=535, 947.4597pt x 359.9046pt>
+File: Verif_scheme/Convergence_graph_Sp_method.png Graphic file (type png)
+<use Verif_scheme/Convergence_graph_Sp_method.png>
+Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 1168.
+(pdftex.def)             Requested size: 443.57848pt x 168.50166pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1181--1183
+
+ []
+
+<Verif_scheme/Comparison_scheme_BDF4.png, id=537, 952.5186pt x 357.0138pt>
+File: Verif_scheme/Comparison_scheme_BDF4.png Graphic file (type png)
+<use Verif_scheme/Comparison_scheme_BDF4.png>
+Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 1192.
+(pdftex.def)             Requested size: 443.57848pt x 166.26027pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1199--1202
 
  []
 
 
 
-[31]
-Underfull \hbox (badness 10000) in paragraph at lines 1071--1074
+[30 <./Verif_scheme/Convergence_graph_Sp_method.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1220--1225
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1085--1086
+
+[31 <./Verif_scheme/Comparison_scheme_BDF4.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1256--1261
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1091--1094
+Underfull \hbox (badness 10000) in paragraph at lines 1272--1275
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1280--1289
 
  []
 
 
 
 [32]
-Overfull \hbox (38.11884pt too wide) in paragraph at lines 1111--1113
-[]$\OT1/cmr/m/n/12 . There-fore, the prob-lem can be fi-nally rewrit-ten as a $[]$: 
- []
-
-LaTeX Font Info:    Trying to load font information for U+euf on input line 1116.
-(C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\ueuf.fd
+LaTeX Font Info:    Trying to load font information for U+euf on input line 1312.
+ (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
-Underfull \hbox (badness 10000) in paragraph at lines 1132--1134
+Underfull \hbox (badness 10000) in paragraph at lines 1328--1330
 
  []
 
 
 
 [33]
-Underfull \hbox (badness 10000) in paragraph at lines 1144--1146
+Underfull \hbox (badness 10000) in paragraph at lines 1342--1344
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1165--1167
+Underfull \hbox (badness 10000) in paragraph at lines 1363--1367
 
  []
 
 
 
 [34]
-Underfull \hbox (badness 10000) in paragraph at lines 1190--1192
+Underfull \hbox (badness 10000) in paragraph at lines 1390--1392
 
  []
 
 
 
 [35]
-Underfull \hbox (badness 10000) in paragraph at lines 1253--1258
-
- []
-
-
 
 [36]
-Underfull \hbox (badness 10000) in paragraph at lines 1277--1280
+Underfull \hbox (badness 10000) in paragraph at lines 1468--1475
 
  []
 
-<Control_experiments/LQR_beta_0.95.png, id=589, 462.528pt x 346.896pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 1493--1495
+
+ []
+
+<Control_experiments/LQR_beta_0.95.png, id=613, 462.528pt x 346.896pt>
 File: Control_experiments/LQR_beta_0.95.png Graphic file (type png)
 <use Control_experiments/LQR_beta_0.95.png>
-Package pdftex.def Info: Control_experiments/LQR_beta_0.95.png  used on input line 1297.
+Package pdftex.def Info: Control_experiments/LQR_beta_0.95.png  used on input line 1512.
 (pdftex.def)             Requested size: 266.14978pt x 199.62244pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1329--1333
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1334--1338
+Underfull \hbox (badness 10000) in paragraph at lines 1544--1548
 
  []
 
 
 
 [37]
+Underfull \hbox (badness 10000) in paragraph at lines 1549--1553
+
+ []
+
+
 
 [38 <./Control_experiments/LQR_beta_0.95.png>]
-<Control_experiments/Pos_part2_LQR_beta_0.95.png, id=611, 462.528pt x 346.896pt>
+<Control_experiments/Pos_part2_LQR_beta_0.95.png, id=634, 462.528pt x 346.896pt>
 File: Control_experiments/Pos_part2_LQR_beta_0.95.png Graphic file (type png)
 <use Control_experiments/Pos_part2_LQR_beta_0.95.png>
-Package pdftex.def Info: Control_experiments/Pos_part2_LQR_beta_0.95.png  used on input line 1389.
+Package pdftex.def Info: Control_experiments/Pos_part2_LQR_beta_0.95.png  used on input line 1604.
 (pdftex.def)             Requested size: 332.68385pt x 249.52672pt.
 
 
@@ -1217,170 +1219,173 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [39]
-Underfull \hbox (badness 10000) in paragraph at lines 1421--1424
+Underfull \hbox (badness 10000) in paragraph at lines 1636--1639
 
  []
 
-<Control_experiments/lambda_k_BS_AJ.png, id=626, 910.602pt x 374.3586pt>
-File: Control_experiments/lambda_k_BS_AJ.png Graphic file (type png)
-<use Control_experiments/lambda_k_BS_AJ.png>
-Package pdftex.def Info: Control_experiments/lambda_k_BS_AJ.png  used on input line 1442.
-(pdftex.def)             Requested size: 443.57848pt x 182.3577pt.
 
 
 [40 <./Control_experiments/Pos_part2_LQR_beta_0.95.png>]
+<Control_experiments/lambda_k_BS_AJ.png, id=656, 910.602pt x 374.3586pt>
+File: Control_experiments/lambda_k_BS_AJ.png Graphic file (type png)
+<use Control_experiments/lambda_k_BS_AJ.png>
+Package pdftex.def Info: Control_experiments/lambda_k_BS_AJ.png  used on input line 1657.
+(pdftex.def)             Requested size: 443.57848pt x 182.3577pt.
+
 
 [41 <./Control_experiments/lambda_k_BS_AJ.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1483--1491
+Underfull \hbox (badness 10000) in paragraph at lines 1698--1706
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1516--1519
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1521--1527
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1528--1533
+Underfull \hbox (badness 10000) in paragraph at lines 1731--1734
 
  []
 
 
 
 [42]
+Underfull \hbox (badness 10000) in paragraph at lines 1736--1742
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1743--1748
+
+ []
+
+
 
 [43]
-Underfull \hbox (badness 10000) in paragraph at lines 1629--1631
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1632--1634
-
- []
-
-
 
 [44]
-Underfull \hbox (badness 10000) in paragraph at lines 1656--1659
+Underfull \hbox (badness 10000) in paragraph at lines 1844--1846
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1687--1689
+Underfull \hbox (badness 10000) in paragraph at lines 1847--1849
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1871--1874
 
  []
 
 
 
 [45]
-Underfull \hbox (badness 10000) in paragraph at lines 1711--1713
+Underfull \hbox (badness 10000) in paragraph at lines 1902--1904
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1728--1729
+Underfull \hbox (badness 10000) in paragraph at lines 1926--1928
 
  []
 
 
 
 [46]
+Underfull \hbox (badness 10000) in paragraph at lines 1943--1944
+
+ []
+
+
 
 [47]
 
 [48]
-Underfull \hbox (badness 10000) in paragraph at lines 1778--1780
-
- []
-
-
-Overfull \hbox (27.51035pt too wide) detected at line 1786
-[][][][]
- []
-
-
-Overfull \hbox (27.75941pt too wide) detected at line 1794
-[][][][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1804--1807
-
- []
-
-
 
 [49]
-Overfull \hbox (0.69704pt too wide) in paragraph at lines 1815--1816
-[]\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
- []
-
-
-LaTeX Warning: Reference `eq DBC1_Normal' on page 50 undefined on input line 1818.
-
-
-LaTeX Warning: Reference `eq DBC_Tangential' on page 50 undefined on input line 1818.
-
-
-Overfull \hbox (24.49733pt too wide) in paragraph at lines 1825--1826
-[]\OT1/cmr/m/n/12 with $\OML/cmm/m/it/12 ^^T \OT1/cmr/m/n/12 = []\OML/cmm/m/it/12 :[]$ \OT1/cmr/m/n/12 and $[] = [](\OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OT1/cmr/m/n/12 1)$ the nor-mal points$[]$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1831--1837
+Underfull \hbox (badness 10000) in paragraph at lines 2028--2030
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1831--1837
-
+Overfull \hbox (27.51035pt too wide) detected at line 2036
+[][][][]
  []
 
 
-Overfull \hbox (90.98366pt too wide) detected at line 1848
-[]
+Overfull \hbox (27.75941pt too wide) detected at line 2044
+[][][][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2054--2057
+
  []
 
 
 
 [50]
-Overfull \hbox (43.28723pt too wide) detected at line 1865
-[][][][][]
+Overfull \hbox (0.69704pt too wide) in paragraph at lines 2065--2066
+[]\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
  []
 
 
-LaTeX Warning: Reference `eq DBC_Normal Control' on page 51 undefined on input line 1867.
+LaTeX Warning: Reference `eq DBC1_Normal' on page 51 undefined on input line 2068.
 
 
-Overfull \hbox (76.92438pt too wide) detected at line 1884
+LaTeX Warning: Reference `eq DBC_Tangential' on page 51 undefined on input line 2068.
+
+
+Overfull \hbox (24.49733pt too wide) in paragraph at lines 2075--2076
+[]\OT1/cmr/m/n/12 with $\OML/cmm/m/it/12 ^^T \OT1/cmr/m/n/12 = []\OML/cmm/m/it/12 :[]$ \OT1/cmr/m/n/12 and $[] = [](\OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OT1/cmr/m/n/12 1)$ the nor-mal points$[]$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2081--2087
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2081--2087
+
+ []
+
+
+Overfull \hbox (90.98366pt too wide) detected at line 2098
 []
  []
 
 
 
 [51]
+Overfull \hbox (43.28723pt too wide) detected at line 2115
+[][][][][]
+ []
+
+
+LaTeX Warning: Reference `eq DBC_Normal Control' on page 52 undefined on input line 2117.
+
+
+Overfull \hbox (76.92438pt too wide) detected at line 2134
+[]
+ []
+
+
 
 [52]
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 1914--1914
-[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
- []
-
-
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 1914--1914
-[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
- []
-
-
 
 [53]
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 2164--2164
+[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
+ []
 
-[54] (main.aux)
+
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 2164--2164
+[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
+ []
+
+
+
+[54]
+
+[55] (main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -1393,26 +1398,26 @@ LaTeX Warning: There were undefined references.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: E134316AE6C47C6EC58BA9497F0ABF88;7933.
+(rerunfilecheck)             Checksum: ABCD5DED7445C7BBFBCAB2CF0CAB58C4;7716.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
  29868 strings out of 473530
- 575374 string characters out of 5710923
- 1370434 words of memory out of 5000000
- 52446 multiletter control sequences out of 15000+600000
+ 575712 string characters out of 5710923
+ 1370072 words of memory out of 5000000
+ 52443 multiletter control sequences out of 15000+600000
  572636 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,16n,91p,1563b,1473s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,16n,91p,1339b,1470s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-pdfTeX warning (dest): name{Hfootnote.6} has been referenced but does not exist, replaced by a fixed one
+pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist, replaced by a fixed one
 
  <C:\Users\Bilal_BM_user\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/euler/eufm10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (55 pages, 1860511 bytes).
+Output written on main.pdf (56 pages, 1880841 bytes).
 PDF statistics:
- 936 PDF objects out of 1000 (max. 8388607)
- 236 named destinations out of 1000 (max. 500000)
+ 977 PDF objects out of 1000 (max. 8388607)
+ 242 named destinations out of 1000 (max. 500000)
  403 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -229,6 +229,50 @@
       \field{type}{phdthesis}
       \field{year}{2016}
     \endentry
+    \entry{gomes2015stabilisingnontrivialsolutionsgeneralised}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=43c71122e6687a27e4c57fe404ab25bd}{%
+           family={Gomes},
+           familyi={G\bibinitperiod},
+           given={Susana\bibnamedelima N.},
+           giveni={S\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=a5c9bf9f1b7d2fb8fc9a9cc0f883b4bf}{%
+           family={Papageorgiou},
+           familyi={P\bibinitperiod},
+           given={Demetrios\bibnamedelima T.},
+           giveni={D\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=5c8b250b9b99abef579f4004b782a21d}{%
+           family={Pavliotis},
+           familyi={P\bibinitperiod},
+           given={Grigorios\bibnamedelima A.},
+           giveni={G\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{c5e19964b4609daeef92e682775bfef3}
+      \strng{fullhash}{c5e19964b4609daeef92e682775bfef3}
+      \strng{fullhashraw}{c5e19964b4609daeef92e682775bfef3}
+      \strng{bibnamehash}{c5e19964b4609daeef92e682775bfef3}
+      \strng{authorbibnamehash}{c5e19964b4609daeef92e682775bfef3}
+      \strng{authornamehash}{c5e19964b4609daeef92e682775bfef3}
+      \strng{authorfullhash}{c5e19964b4609daeef92e682775bfef3}
+      \strng{authorfullhashraw}{c5e19964b4609daeef92e682775bfef3}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{math.OC}
+      \field{eprinttype}{arXiv}
+      \field{title}{Stabilising nontrivial solutions of the generalised Kuramoto-Sivashinsky equation using feedback and optimal control}
+      \field{year}{2015}
+      \verb{eprint}
+      \verb 1505.06086
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/1505.06086
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/1505.06086
+      \endverb
+    \endentry
     \entry{holroyd2023linearquadraticregulationcontrol}{misc}{}{}
       \name{author}{3}{}{%
         {{hash=3ffa27380b17083d54fb5384109b0be5}{%
@@ -317,6 +361,50 @@
       \endverb
       \verb{url}
       \verb https://arxiv.org/abs/2407.06906
+      \endverb
+    \endentry
+    \entry{Kalliadasis2011FallingLF}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=3c46ffd39202817eb7eea28b2a8f2419}{%
+           family={Kalliadasis},
+           familyi={K\bibinitperiod},
+           given={Serafim},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ecfab3b5db35c54e3f942e544e0d0472}{%
+           family={Ruyer-Quil},
+           familyi={R\bibinithyphendelim Q\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+        {{hash=c9125ef4c4b2b9f606ac15d5ee9285af}{%
+           family={Scheid},
+           familyi={S\bibinitperiod},
+           given={Benoit},
+           giveni={B\bibinitperiod}}}%
+        {{hash=5618b5fe80f1888151fef1b0d136156a}{%
+           family={Velarde},
+           familyi={V\bibinitperiod},
+           given={Manuel\bibnamedelima G.},
+           giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{45a7a7a11a68b2a4ea91b284ad525ebc}
+      \strng{fullhash}{2a792f380d802d487684fdcc978096c2}
+      \strng{fullhashraw}{2a792f380d802d487684fdcc978096c2}
+      \strng{bibnamehash}{45a7a7a11a68b2a4ea91b284ad525ebc}
+      \strng{authorbibnamehash}{45a7a7a11a68b2a4ea91b284ad525ebc}
+      \strng{authornamehash}{45a7a7a11a68b2a4ea91b284ad525ebc}
+      \strng{authorfullhash}{2a792f380d802d487684fdcc978096c2}
+      \strng{authorfullhashraw}{2a792f380d802d487684fdcc978096c2}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Falling Liquid Films}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://api.semanticscholar.org/CorpusID:117042076
+      \endverb
+      \verb{url}
+      \verb https://api.semanticscholar.org/CorpusID:117042076
       \endverb
     \endentry
     \entry{Kuramoto_KS_eq}{article}{}{}
