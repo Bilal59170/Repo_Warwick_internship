@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  14 FEB 2025 16:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  28 FEB 2025 16:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -682,10 +682,57 @@ Package biblatex Info: ... and expl3
 Package: xparse 2024-08-16 L3 Experimental document command parser
 )
 Package: blx-case-expl3 2024/03/21 v3.20 expl3 case changing code for biblatex
-))
+)) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/circuitikz\circuitikz.sty
+Package: circuitikz 2025/01/10{} The CircuiTikz circuit drawing package version 1.7.1
+ (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryarrows.meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowinset=\dimen279
+\pgfarrowlength=\dimen280
+\pgfarrowwidth=\dimen281
+\pgfarrowlinewidth=\dimen282
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibrarybending.code.tex
+File: tikzlibrarybending.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulebending.code.tex
+File: pgfmodulebending.code.tex 2023-01-15 v3.1.10 (3.1.10)
+ (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulenonlineartransformations.code.tex
+File: pgfmodulenonlineartransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgftransformnonlinearflatness=\dimen283
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrarycurvilinear.code.tex
+File: pgflibrarycurvilinear.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@curvilinear@time@a=\dimen284
+\pgf@curvilinear@length@a=\dimen285
+\pgf@curvilinear@length@b=\dimen286
+\pgf@curvilinear@length@c=\dimen287
+\pgf@curvilinear@length@d=\dimen288
+)
+\pgf@arrows@the@rigidity=\dimen289
+)) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibraryfpu.code.tex (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibraryfpu.code.tex)) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcirc.defines.tex
+\pgf@circ@count@a=\count449
+\pgf@circ@count@b=\count450
+\pgf@circ@count@c=\count451
+\pgf@circ@res@up=\dimen290
+\pgf@circ@res@down=\dimen291
+\pgf@circ@res@zero=\dimen292
+\pgf@circ@res@left=\dimen293
+\pgf@circ@res@right=\dimen294
+\pgf@circ@res@other=\dimen295
+\pgf@circ@res@step=\dimen296
+\pgf@circ@res@temp=\dimen297
+\pgf@circ@Rlen=\dimen298
+\pgf@circ@scaled@Rlen=\dimen299
+\pgfstartlinewidth=\dimen300
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircutils.tex
+\ctikz@scratchbox=\box66
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircpath.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircshapes.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircmonopoles.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircbipoles.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcirctripoles.tex
+\pgf@circ@res@count=\count452
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircquadpoles.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircmultipoles.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcirclabel.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircvoltage.tex
+\pgfcirc@labelshift=\dimen301
+) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcirccurrent.tex) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/generic/circuitikz\pgfcircflow.tex))
    defining Unicode char U+2212 (decimal 8722)
-\@quotelevel=\count449
-\@quotereset=\count450
+\@quotelevel=\count453
+\@quotereset=\count454
  (main.aux
 
 LaTeX Warning: Label `fig:image1' multiply defined.
@@ -696,24 +743,24 @@ LaTeX Warning: Label `fig:image2' multiply defined.
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 24.
+LaTeX Font Info:    ... okay on input line 24.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -751,16 +798,16 @@ LaTeX Font Info:    ... okay on input line 21.
 
 (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count451
-\scratchdimen=\dimen279
-\scratchbox=\box66
-\nofMPsegments=\count452
-\nofMParguments=\count453
+\scratchcounter=\count455
+\scratchdimen=\dimen302
+\scratchbox=\box67
+\nofMPsegments=\count456
+\nofMParguments=\count457
 \everyMPshowfont=\toks37
-\MPscratchCnt=\count454
-\MPscratchDim=\dimen280
-\MPnumerator=\count455
-\makeMPintoPDFobject=\count456
+\MPscratchCnt=\count458
+\MPscratchDim=\dimen303
+\MPnumerator=\count459
+\makeMPintoPDFobject=\count460
 \everyMPtoPDFconversion=\toks38
 ) (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -771,7 +818,7 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 21.
+Package hyperref Info: Link coloring ON on input line 24.
  (main.out) (main.out)
 \@outlinefile=\write5
 \openout5 = `main.out'.
@@ -789,12 +836,12 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'main.bbl' found.
  (main.bbl)
-Package biblatex Info: Reference section=0 on input line 21.
-Package biblatex Info: Reference segment=0 on input line 21.
-<cartoon_thin_film.png, id=166, 1027.84pt x 1027.84pt>
+Package biblatex Info: Reference section=0 on input line 24.
+Package biblatex Info: Reference segment=0 on input line 24.
+<cartoon_thin_film.png, id=170, 1027.84pt x 1027.84pt>
 File: cartoon_thin_film.png Graphic file (type png)
 <use cartoon_thin_film.png>
-Package pdftex.def Info: cartoon_thin_film.png  used on input line 46.
+Package pdftex.def Info: cartoon_thin_film.png  used on input line 49.
 (pdftex.def)             Requested size: 177.42868pt x 177.42805pt.
 
 
@@ -806,13 +853,13 @@ Package pdftex.def Info: cartoon_thin_film.png  used on input line 46.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.72 \newpage
+l.75 \newpage
               [1] (main.toc
-LaTeX Font Info:    Trying to load font information for U+msa on input line 3.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 2.
  (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 3.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 2.
  (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
@@ -824,24 +871,24 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 80--87
+Underfull \hbox (badness 10000) in paragraph at lines 83--90
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--113
+Underfull \hbox (badness 10000) in paragraph at lines 91--116
 
  []
 
 
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 114--129
+Underfull \hbox (badness 10000) in paragraph at lines 117--132
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--143
+Underfull \hbox (badness 10000) in paragraph at lines 133--146
 
  []
 
@@ -850,19 +897,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 130--143
 [5]
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 186--190
+Underfull \hbox (badness 10000) in paragraph at lines 191--195
 
  []
 
 
 
 [7]
-Underfull \hbox (badness 10000) in paragraph at lines 229--232
+Underfull \hbox (badness 10000) in paragraph at lines 234--237
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 256--260
+Underfull \hbox (badness 10000) in paragraph at lines 261--263
 
  []
 
@@ -871,81 +918,79 @@ Underfull \hbox (badness 10000) in paragraph at lines 256--260
 [8]
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 330--333
+Underfull \hbox (badness 10000) in paragraph at lines 335--338
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 347--350
+Underfull \hbox (badness 10000) in paragraph at lines 352--355
 
  []
 
 
 
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 359--361
+Underfull \hbox (badness 10000) in paragraph at lines 365--367
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 379--381
+Underfull \hbox (badness 10000) in paragraph at lines 385--387
 
  []
 
 
 
 [11]
-Underfull \hbox (badness 10000) in paragraph at lines 432--435
+Underfull \hbox (badness 10000) in paragraph at lines 435--438
 
  []
 
-<KS_eq/plot_dispersion_nu_1_1-4.png, id=339, 929.3922pt x 364.9635pt>
+<KS_eq/plot_dispersion_nu_1_1-4.png, id=345, 933.0057pt x 346.896pt>
 File: KS_eq/plot_dispersion_nu_1_1-4.png Graphic file (type png)
 <use KS_eq/plot_dispersion_nu_1_1-4.png>
-Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 437.
-(pdftex.def)             Requested size: 443.57848pt x 174.18922pt.
+Package pdftex.def Info: KS_eq/plot_dispersion_nu_1_1-4.png  used on input line 440.
+(pdftex.def)             Requested size: 443.57848pt x 164.92021pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
 [12]
-Underfull \hbox (badness 10000) in paragraph at lines 452--456
+Underfull \hbox (badness 10000) in paragraph at lines 455--459
 
  []
 
 
 
 [13 <./KS_eq/plot_dispersion_nu_1_1-4.png>]
-<KS_eq/plot_exp_decay.png, id=355, 456.7464pt x 342.5598pt>
+<KS_eq/plot_exp_decay.png, id=361, 469.0323pt x 332.442pt>
 File: KS_eq/plot_exp_decay.png Graphic file (type png)
 <use KS_eq/plot_exp_decay.png>
-Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 491.
-(pdftex.def)             Requested size: 199.60895pt x 149.70749pt.
-<KS_eq/plot_decay_nu_1_k_1png.png, id=356, 476.982pt x 342.5598pt>
+Package pdftex.def Info: KS_eq/plot_exp_decay.png  used on input line 493.
+(pdftex.def)             Requested size: 199.60895pt x 141.48126pt.
+<KS_eq/plot_decay_nu_1_k_1png.png, id=362, 489.2679pt x 332.442pt>
 File: KS_eq/plot_decay_nu_1_k_1png.png Graphic file (type png)
 <use KS_eq/plot_decay_nu_1_k_1png.png>
-Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 499.
-(pdftex.def)             Requested size: 199.60895pt x 143.35664pt.
+Package pdftex.def Info: KS_eq/plot_decay_nu_1_k_1png.png  used on input line 501.
+(pdftex.def)             Requested size: 199.60895pt x 135.62743pt.
 
+
+[14 <./KS_eq/plot_exp_decay.png> <./KS_eq/plot_decay_nu_1_k_1png.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 517--521
 
  []
 
-
-
-[14 <./KS_eq/plot_exp_decay.png> <./KS_eq/plot_decay_nu_1_k_1png.png>]
-<KS_eq/plot_lambda_nu.png, id=366, 424.9476pt x 346.896pt>
+<KS_eq/plot_lambda_nu.png, id=376, 444.4605pt x 332.442pt>
 File: KS_eq/plot_lambda_nu.png Graphic file (type png)
 <use KS_eq/plot_lambda_nu.png>
 Package pdftex.def Info: KS_eq/plot_lambda_nu.png  used on input line 527.
-(pdftex.def)             Requested size: 221.78923pt x 181.0539pt.
-<KS_eq/KS_extrema_Fourier_coef.png, id=367, 903.375pt x 317.988pt>
+(pdftex.def)             Requested size: 221.78923pt x 165.89085pt.
+<KS_eq/KS_extrema_Fourier_coef.png, id=377, 898.3161pt x 288.3573pt>
 File: KS_eq/KS_extrema_Fourier_coef.png Graphic file (type png)
 <use KS_eq/KS_extrema_Fourier_coef.png>
 Package pdftex.def Info: KS_eq/KS_extrema_Fourier_coef.png  used on input line 537.
-(pdftex.def)             Requested size: 443.57848pt x 156.14056pt.
-
+(pdftex.def)             Requested size: 443.57848pt x 142.3875pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
@@ -954,41 +999,36 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [15 <./KS_eq/plot_lambda_nu.png>]
 
 [16 <./KS_eq/KS_extrema_Fourier_coef.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 581--585
+Underfull \hbox (badness 10000) in paragraph at lines 585--587
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 587--589
+Underfull \hbox (badness 10000) in paragraph at lines 615--617
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 617--619
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 635--636
+Underfull \hbox (badness 10000) in paragraph at lines 633--634
 
  []
 
 
 
 [17]
-Underfull \hbox (badness 10000) in paragraph at lines 659--661
+Underfull \hbox (badness 10000) in paragraph at lines 657--659
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 669--673
+Underfull \hbox (badness 10000) in paragraph at lines 667--671
 
  []
 
 
 
 [18]
-Underfull \hbox (badness 10000) in paragraph at lines 754--757
+Underfull \hbox (badness 10000) in paragraph at lines 752--755
 
  []
 
@@ -1059,28 +1099,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 1080--1082
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1095--1097
+Underfull \hbox (badness 10000) in paragraph at lines 1097--1099
 
  []
 
 
 
 [27]
-<Verif_scheme/plot_FD_BDF_Nx_128.png, id=513, 462.528pt x 346.896pt>
+<Verif_scheme/plot_FD_BDF_Nx_128.png, id=521, 462.528pt x 409.0482pt>
 File: Verif_scheme/plot_FD_BDF_Nx_128.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_128.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 1110.
-(pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
-<Verif_scheme/plot_FD_BDF_Nx_512.png, id=514, 462.528pt x 346.896pt>
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_128.png  used on input line 1112.
+(pdftex.def)             Requested size: 217.35588pt x 192.2277pt.
+<Verif_scheme/plot_FD_BDF_Nx_512.png, id=522, 462.528pt x 393.1488pt>
 File: Verif_scheme/plot_FD_BDF_Nx_512.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_512.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 1118.
-(pdftex.def)             Requested size: 199.60895pt x 149.70757pt.
-<Verif_scheme/plot_FD_BDF_Nx_1024.png, id=515, 462.528pt x 346.896pt>
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_512.png  used on input line 1120.
+(pdftex.def)             Requested size: 217.35588pt x 184.75597pt.
+<Verif_scheme/plot_FD_BDF_Nx_1024.png, id=523, 518.8986pt x 346.896pt>
 File: Verif_scheme/plot_FD_BDF_Nx_1024.png Graphic file (type png)
 <use Verif_scheme/plot_FD_BDF_Nx_1024.png>
-Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 1130.
-(pdftex.def)             Requested size: 332.68385pt x 249.52672pt.
+Package pdftex.def Info: Verif_scheme/plot_FD_BDF_Nx_1024.png  used on input line 1132.
+(pdftex.def)             Requested size: 332.68385pt x 222.41495pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1088,47 +1128,64 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [28 <./Verif_scheme/plot_FD_BDF_Nx_128.png> <./Verif_scheme/plot_FD_BDF_Nx_512.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1154--1162
+Overfull \hbox (6.41689pt too wide) in paragraph at lines 1148--1150
+[]$[]$ \OT1/cmr/m/n/12 We solve nu-mer-i-cally the equa-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1156--1164
 
  []
 
 
 
 [29 <./Verif_scheme/plot_FD_BDF_Nx_1024.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1163--1165
+Underfull \hbox (badness 10000) in paragraph at lines 1165--1167
 
  []
 
-<Verif_scheme/Convergence_graph_Sp_method.png, id=535, 947.4597pt x 359.9046pt>
+<Verif_scheme/Convergence_graph_Sp_method.png, id=544, 968.418pt x 400.3758pt>
 File: Verif_scheme/Convergence_graph_Sp_method.png Graphic file (type png)
 <use Verif_scheme/Convergence_graph_Sp_method.png>
-Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 1168.
-(pdftex.def)             Requested size: 443.57848pt x 168.50166pt.
+Package pdftex.def Info: Verif_scheme/Convergence_graph_Sp_method.png  used on input line 1170.
+(pdftex.def)             Requested size: 532.29282pt x 220.07295pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1181--1183
+Overfull \hbox (62.87268pt too wide) in paragraph at lines 1169--1171
+[]|  [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1183--1185
 
  []
 
-<Verif_scheme/Comparison_scheme_BDF4.png, id=537, 952.5186pt x 357.0138pt>
+<Verif_scheme/Comparison_scheme_BDF4.png, id=548, 1084.05pt x 361.35pt>
 File: Verif_scheme/Comparison_scheme_BDF4.png Graphic file (type png)
 <use Verif_scheme/Comparison_scheme_BDF4.png>
-Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 1192.
-(pdftex.def)             Requested size: 443.57848pt x 166.26027pt.
+Package pdftex.def Info: Verif_scheme/Comparison_scheme_BDF4.png  used on input line 1193.
+(pdftex.def)             Requested size: 532.29282pt x 177.43799pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1199--1202
+Overfull \hbox (34.41992pt too wide) in paragraph at lines 1192--1195
+[]|  [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1200--1203
 
  []
 
 
 
 [30 <./Verif_scheme/Convergence_graph_Sp_method.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1220--1225
+Underfull \hbox (badness 10000) in paragraph at lines 1221--1226
 
  []
 
 
 
 [31 <./Verif_scheme/Comparison_scheme_BDF4.png>]
+
+[32]
 Underfull \hbox (badness 10000) in paragraph at lines 1256--1261
 
  []
@@ -1145,7 +1202,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1280--1289
 
 
 
-[32]
+[33]
 LaTeX Font Info:    Trying to load font information for U+euf on input line 1312.
  (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
@@ -1156,7 +1213,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1328--1330
 
 
 
-[33]
+[34]
 Underfull \hbox (badness 10000) in paragraph at lines 1342--1344
 
  []
@@ -1168,256 +1225,273 @@ Underfull \hbox (badness 10000) in paragraph at lines 1363--1367
 
 
 
-[34]
-Underfull \hbox (badness 10000) in paragraph at lines 1390--1392
+[35]
+Underfull \hbox (badness 10000) in paragraph at lines 1381--1384
 
  []
 
 
+Underfull \hbox (badness 10000) in paragraph at lines 1397--1399
 
-[35]
+ []
+
+
+Overfull \hbox (11.80948pt too wide) detected at line 1406
+\OMS/cmsy/m/n/12 8\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 i; l\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 2 \OT1/cmr/m/n/12 [\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 ; N[]\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 ] \OMS/cmsy/m/n/12 ^^B \OT1/cmr/m/n/12 [\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 ; N[]\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 ]\OML/cmm/m/it/12 ;  [] B[]u[] \OT1/cmr/m/n/12 = (\OML/cmm/m/it/12 Bu[]\OT1/cmr/m/n/12 )[] = ([]\OML/cmm/m/it/12 @[]N[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 l \OMS/cmsy/m/n/12 ^^B \OML/cmm/m/it/12 dt\OT1/cmr/m/n/12 ))[] = [] [] \OML/cmm/m/it/12 u[]d[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x[] \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 x[]\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 :
+ []
+
+
 
 [36]
-Underfull \hbox (badness 10000) in paragraph at lines 1468--1475
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1493--1495
-
- []
-
-<Control_experiments/LQR_beta_0.95.png, id=613, 462.528pt x 346.896pt>
-File: Control_experiments/LQR_beta_0.95.png Graphic file (type png)
-<use Control_experiments/LQR_beta_0.95.png>
-Package pdftex.def Info: Control_experiments/LQR_beta_0.95.png  used on input line 1512.
-(pdftex.def)             Requested size: 266.14978pt x 199.62244pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1544--1548
-
- []
-
-
 
 [37]
-Underfull \hbox (badness 10000) in paragraph at lines 1549--1553
+Underfull \hbox (badness 10000) in paragraph at lines 1473--1480
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1497--1499
 
  []
 
 
 
-[38 <./Control_experiments/LQR_beta_0.95.png>]
-<Control_experiments/Pos_part2_LQR_beta_0.95.png, id=634, 462.528pt x 346.896pt>
+[38]
+<Control_experiments/LQR_beta_0.95.png, id=635, 491.436pt x 316.5426pt>
+File: Control_experiments/LQR_beta_0.95.png Graphic file (type png)
+<use Control_experiments/LQR_beta_0.95.png>
+Package pdftex.def Info: Control_experiments/LQR_beta_0.95.png  used on input line 1516.
+(pdftex.def)             Requested size: 310.50357pt x 200.01215pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1548--1552
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1553--1557
+
+ []
+
+
+
+[39 <./Control_experiments/LQR_beta_0.95.png>]
+<Control_experiments/Pos_part2_LQR_beta_0.95.png, id=651, 482.0409pt x 338.9463pt>
 File: Control_experiments/Pos_part2_LQR_beta_0.95.png Graphic file (type png)
 <use Control_experiments/Pos_part2_LQR_beta_0.95.png>
-Package pdftex.def Info: Control_experiments/Pos_part2_LQR_beta_0.95.png  used on input line 1604.
-(pdftex.def)             Requested size: 332.68385pt x 249.52672pt.
+Package pdftex.def Info: Control_experiments/Pos_part2_LQR_beta_0.95.png  used on input line 1609.
+(pdftex.def)             Requested size: 332.68385pt x 233.9301pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[39]
-Underfull \hbox (badness 10000) in paragraph at lines 1636--1639
+[40]
+Underfull \hbox (badness 10000) in paragraph at lines 1638--1641
 
  []
 
 
 
-[40 <./Control_experiments/Pos_part2_LQR_beta_0.95.png>]
-<Control_experiments/lambda_k_BS_AJ.png, id=656, 910.602pt x 374.3586pt>
+[41]
+<Control_experiments/lambda_k_BS_AJ.png, id=679, 918.5517pt x 344.0052pt>
 File: Control_experiments/lambda_k_BS_AJ.png Graphic file (type png)
 <use Control_experiments/lambda_k_BS_AJ.png>
-Package pdftex.def Info: Control_experiments/lambda_k_BS_AJ.png  used on input line 1657.
-(pdftex.def)             Requested size: 443.57848pt x 182.3577pt.
+Package pdftex.def Info: Control_experiments/lambda_k_BS_AJ.png  used on input line 1659.
+(pdftex.def)             Requested size: 443.57848pt x 166.12318pt.
 
 
-[41 <./Control_experiments/lambda_k_BS_AJ.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1698--1706
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1731--1734
-
- []
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
-[42]
-Underfull \hbox (badness 10000) in paragraph at lines 1736--1742
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1743--1748
+[42 <./Control_experiments/Pos_part2_LQR_beta_0.95.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1697--1704
 
  []
 
 
 
-[43]
+[43 <./Control_experiments/lambda_k_BS_AJ.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1735--1738
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1745--1750
+
+ []
+
+
 
 [44]
-Underfull \hbox (badness 10000) in paragraph at lines 1844--1846
-
+Overfull \hbox (44.43626pt too wide) in paragraph at lines 1761--1783
+[]|  [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1847--1849
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1871--1874
-
+Overfull \hbox (19.17896pt too wide) in paragraph at lines 1791--1807
+[]|  [] 
  []
 
 
 
 [45]
-Underfull \hbox (badness 10000) in paragraph at lines 1902--1904
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1926--1928
-
- []
-
-
 
 [46]
-Underfull \hbox (badness 10000) in paragraph at lines 1943--1944
+Underfull \hbox (badness 10000) in paragraph at lines 1856--1858
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1859--1861
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1883--1886
 
  []
 
 
 
 [47]
+Underfull \hbox (badness 10000) in paragraph at lines 1914--1916
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1938--1940
+
+ []
+
+
 
 [48]
+Underfull \hbox (badness 10000) in paragraph at lines 1955--1956
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1970--1992
+
+ []
+
+
 
 [49]
-Underfull \hbox (badness 10000) in paragraph at lines 2028--2030
-
- []
-
-
-Overfull \hbox (27.51035pt too wide) detected at line 2036
-[][][][]
- []
-
-
-Overfull \hbox (27.75941pt too wide) detected at line 2044
-[][][][]
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2054--2057
-
- []
-
-
 
 [50]
-Overfull \hbox (0.69704pt too wide) in paragraph at lines 2065--2066
-[]\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
- []
-
-
-LaTeX Warning: Reference `eq DBC1_Normal' on page 51 undefined on input line 2068.
-
-
-LaTeX Warning: Reference `eq DBC_Tangential' on page 51 undefined on input line 2068.
-
-
-Overfull \hbox (24.49733pt too wide) in paragraph at lines 2075--2076
-[]\OT1/cmr/m/n/12 with $\OML/cmm/m/it/12 ^^T \OT1/cmr/m/n/12 = []\OML/cmm/m/it/12 :[]$ \OT1/cmr/m/n/12 and $[] = [](\OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OMS/cmsy/m/n/12 ^^@\OML/cmm/m/it/12 h[]; \OT1/cmr/m/n/12 1)$ the nor-mal points$[]$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2081--2087
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2081--2087
-
- []
-
-
-Overfull \hbox (90.98366pt too wide) detected at line 2098
-[]
- []
-
-
 
 [51]
-Overfull \hbox (43.28723pt too wide) detected at line 2115
-[][][][][]
+Underfull \hbox (badness 10000) in paragraph at lines 2042--2044
+
  []
 
 
-LaTeX Warning: Reference `eq DBC_Normal Control' on page 52 undefined on input line 2117.
+Overfull \hbox (36.7938pt too wide) detected at line 2050
+[][][][]
+ []
 
 
-Overfull \hbox (76.92438pt too wide) detected at line 2134
-[]
+Overfull \hbox (37.04286pt too wide) detected at line 2058
+[][][][]
+ []
+
+
+Overfull \hbox (41.94412pt too wide) in paragraph at lines 2068--2072
+\OT1/cmr/m/n/12 We de-note $\OML/cmm/m/it/12 I[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 h\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; t\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; x; t\OT1/cmr/m/n/12 ) := \OML/cmm/m/it/12 q[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; t\OT1/cmr/m/n/12 ) = [][] \OML/cmm/m/it/12 u\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; z; t\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 dz$\OT1/cmr/m/n/12 . Like-wise, $\OML/cmm/m/it/12 I[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 h\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; t\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; x; t\OT1/cmr/m/n/12 ) :=
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2068--2072
+
  []
 
 
 
 [52]
+Overfull \hbox (0.69704pt too wide) in paragraph at lines 2089--2091
+[]\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2115--2120
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2115--2120
+
+ []
+
+
 
 [53]
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 2164--2164
-[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
- []
-
-
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 2164--2164
-[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
- []
-
-
 
 [54]
+Underfull \hbox (badness 10000) in paragraph at lines 2192--2194
 
-[55] (main.aux)
+ []
+
+
+
+[55]
+Underfull \hbox (badness 10000) in paragraph at lines 2229--2231
+
+ []
+
+
+
+[56]
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 2282--2282
+[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
+ []
+
+
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 2282--2282
+[]\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
+ []
+
+
+
+[57]
+
+[58]
+
+[59] (main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 
 
-LaTeX Warning: There were undefined references.
-
-
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: ABCD5DED7445C7BBFBCAB2CF0CAB58C4;7716.
+(rerunfilecheck)             Checksum: 162335790071321CB19B962F41F7F1D2;8009.
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 29868 strings out of 473530
- 575712 string characters out of 5710923
- 1370072 words of memory out of 5000000
- 52443 multiletter control sequences out of 15000+600000
+ 47989 strings out of 473530
+ 1121325 string characters out of 5710923
+ 2168036 words of memory out of 5000000
+ 70475 multiletter control sequences out of 15000+600000
  572636 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,16n,91p,1339b,1470s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,16n,91p,1339b,1468s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist, replaced by a fixed one
+pdfTeX warning (dest): name{Hfootnote.9} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{Hfootnote.8} has been referenced but does not exist, replaced by a fixed one
 
  <C:\Users\Bilal_BM_user\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/euler/eufm10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (56 pages, 1880841 bytes).
+Output written on main.pdf (60 pages, 1873408 bytes).
 PDF statistics:
- 977 PDF objects out of 1000 (max. 8388607)
- 242 named destinations out of 1000 (max. 500000)
- 403 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1049 PDF objects out of 1200 (max. 8388607)
+ 262 named destinations out of 1000 (max. 500000)
+ 411 words of extra memory for PDF output out of 10000 (max. 10000000)
 

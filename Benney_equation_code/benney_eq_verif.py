@@ -92,8 +92,10 @@ bool_solve_save_Sp, bool_load_Sp = False, False
 bool_anim_display_Sp, bool_save_anim_Sp = False, False
 bool_verif_BDF_scheme_Sp, bool_verif_Sp = False, False
 
-
+bool_comparison_FD_Sp = True
 assert not(bool_verif_BDF_scheme_FD and bool_verif_BDF_scheme_Sp), "BDF scheme verif: Can't make 2 verification in the same time"
+
+
 
 ######### Solving & animation #########
 
@@ -266,8 +268,6 @@ for  order_BDF_solve in list_BDF_order:
 ############## Verifications #############
 
 
-
-
 #Load the arrays
 list_h_mat_FD, list_h_mat_Sp = [], [] #list of the Spectral & BDF numerical solution for different space steps
 for space_step in space_steps_array:
@@ -281,10 +281,12 @@ for space_step in space_steps_array:
 
 #Verification for the BDF Scheme
 if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & Graph: Fixed step,  Compare the different BDF Orders
-    N_x_plot = 1024
+    N_x_plot = 512 #Fixed number of space point 
     N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=N_x_plot, _CFL_factor=CFL_factor)
     list_result_BDF_FD_N_x, order_BDF_list = [], [1, 2, 3,4, 5,6]
     index_eval_time = int(N_t)-1
+
+    plt.rc('font', size=18)
 
     for i in range( len(order_BDF_list)):
         if bool_verif_BDF_scheme_FD:
@@ -297,18 +299,20 @@ if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & 
             print("Visualisation of several BDF Scheme solutions for Sp method for fixed step size N_x = ", N_x_plot)
         list_result_BDF_FD_N_x.append(np.loadtxt(file_name))
 
-        if bool_verif_BDF_scheme_FD:
-            label_plot = fr"$h_{{FD}}^{{{N_x_plot},{order_BDF_list[i]}}}(t=T)$" 
-        elif bool_verif_BDF_scheme_Sp:
-            label_plot = fr"$h_{{Sp}}^{{{N_x_plot},{order_BDF_list[i]}}}(t=T)$" 
+        label_plot = fr"$N_{{BDF}} = {order_BDF_list[i]}$"
         plt.plot(domain_x, list_result_BDF_FD_N_x[i][index_eval_time,:], 
                  label=label_plot)
-    plt.xlabel("inclined plane"), plt.ylabel("height h(x, t)")
-    plt.legend()
-    plt.title(full_name_method+ " method with BDF order from 1 to 6 at final time\n" +
-               "T = {T} with N_x = {N_x}".format(T=T, N_x = N_x_plot))
-    plt.savefig('Benney_equation_code\\Schemes_verification\\BDF_order_test\\'+"plot_"+
-            name_method+'_BDF_order_comparison_order_1-6_Nx_{}.png'.format(N_x_plot))
+        
+    plt.xlabel("x axis: inclined plane"), 
+    if bool_verif_BDF_scheme_FD:
+        plt.title(fr"$h_{{FD}}^{{{N_x_plot}, N_{{BDF}}}}(t=T)$", fontsize=20)
+    elif bool_verif_BDF_scheme_Sp:
+        plt.title(fr"$h_{{Sp}}^{{{N_x_plot}, N_{{BDF}}}}(t=T)$", fontsize=20) 
+    plt.legend(fontsize=16, loc="upper center")
+    # plt.title(full_name_method+ " method with BDF order from 1 to 6 at final time\n" +
+    #            "T = {T} with N_x = {N_x}".format(T=T, N_x = N_x_plot))
+    # plt.savefig('Benney_equation_code\\Schemes_verification\\BDF_order_test\\'+"plot_"+
+            # name_method+'_BDF_order_comparison_order_1-6_Nx_{}.png'.format(N_x_plot))
     plt.show()
 
     if False:
@@ -339,8 +343,7 @@ if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & 
 
 #Verification of the pseudo consistency
 
-def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, title_left_graph=None, 
-                          title_right_graph=None, save_plot = False, 
+def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, save_plot = False, 
                           file_name= None, regression_lin=False): #Difference in loglog graph
     '''
     Output: Make a loglog (in log10 scale) graph of the difference of the same method
@@ -352,17 +355,19 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, title_le
         - list_h_mat: list of the numerical solutions computed with INCREASING number of steps. 
         Usually [128, 256, 512, 1024]'''
     
+    plt.rc('font', size=16)
 
-    #Compute the differences : with increasing number of points
+    ##Compute the differences : with increasing number of points
     arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_array)-1), np.zeros(len(space_steps_array)-1)
+    dx_array = L_x/space_steps_array[:-1]
     #remove some part of the array so that they can be substracted: 128=2**7, 1024=2**10 
     for i in range(len(space_steps_array)-1):
-        arr_L2_diff[i] = np.linalg.norm(list_h_mat[-1][-1,0::(2**(3-i))]-list_h_mat[i][-1])
+        #For L2 norm: need to scale with the dx of the compared array
+        arr_L2_diff[i] = np.sqrt(dx_array[i]*np.sum((list_h_mat[-1][-1,0::(2**(3-i))]-list_h_mat[i][-1])**2))
         arr_Linf_diff[i] = np.max(np.absolute((list_h_mat[-1][-1,0::(2**(3-i))]-list_h_mat[i][-1])))
 
     ###Plot
     fig, axs = plt.subplots(1,2, figsize=(15, 5))
-    dx_array = L_x/space_steps_array[:-1]
 
 
     #Make a linear regression
@@ -390,7 +395,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, title_le
     axs[0].scatter(dx_array, arr_L2_diff, label="Scheme differences")
     rescaled_lin_reg_L2 = 10**(Reg_lin_coef_b_L2)*(dx_array**Reg_lin_coef_a_L2)
     axs[0].plot(dx_array,rescaled_lin_reg_L2, 
-                label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+                label="Linear Regression, \n "+r"(a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
                 a=solver_BDF.round_fct(Reg_lin_coef_a_L2, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_L2, 2)
                 , R2=solver_BDF.round_fct(Reg_lin_coef_r2_L2, 4)),
                 color='r')
@@ -406,15 +411,15 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, title_le
             xy=annotation['xy'],
             xytext=(0, 5),
             textcoords= "offset pixels")
-    axs[0].set_xlabel("dx, the biggest step between 2 numerical solutions")
+    axs[0].set_xlabel("dx, space step of the least precise simulation")
     axs[0].set_title(fr"$||h^{{ 1024,{order_BDF}}}-h^{{ N, {order_BDF} }}||_2$"+
         r" for $N \in \{128, 256, 512\}$")
-    axs[0].legend(loc='upper left', fontsize="small")
+    axs[0].legend(loc='upper left', fontsize= 15)
  
     axs[1].scatter(dx_array, arr_Linf_diff, label="Scheme differences")
     rescaled_lin_reg_Linf = 10**(Reg_lin_coef_b_Linf)*(dx_array**Reg_lin_coef_a_Linf)
     axs[1].plot(dx_array,rescaled_lin_reg_Linf, 
-            label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+            label="Linear Regression, \n "+r"(a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
             a=solver_BDF.round_fct(Reg_lin_coef_a_Linf, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_Linf, 2)
             , R2=solver_BDF.round_fct(Reg_lin_coef_r2_Linf, 4)),
             color='r')
@@ -426,12 +431,12 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, title_le
         axs[1].annotate(
             annotation['text'], xy=annotation['xy'], xytext=(0, 5), 
             textcoords = "offset pixels")
-    axs[1].set_xlabel("dx, the biggest step between 2 numerical solutions")
+    axs[1].set_xlabel("dx, space step of the least precise simulation")
     axs[1].set_title(fr"$||h^{{ 1024,{order_BDF}}}-h^{{ N, {order_BDF} }}||_{{\infty}}$"+
         r" for $N \in \{128, 256, 512\}$ ")
-    axs[1].legend(loc='upper left', fontsize="small")
+    axs[1].legend(loc='upper left', fontsize=15)
 
-    fig.suptitle(general_subplot_title)
+    # fig.suptitle(general_subplot_title)
 
     if save_plot:
         assert not(file_name is None), "fct \"plot_difference_graph\": Problem in the save_plot"
@@ -462,7 +467,7 @@ if bool_verif_FD or bool_verif_Sp: #Plot the difference Graph
         list_h_mat_FD, 
         general_subplot_title= general_subplot_title,
         order_BDF=order_BDF_scheme_verif,
-        save_plot=True,
+        save_plot=False,
         regression_lin=True,
         file_name=file_name
         )
@@ -506,16 +511,18 @@ if bool_anim:#Animation of benney numerical solution
 
 
 ##Plot of the Difference between Spectral and FD Method with BDF
-bool_linear_reg = True
-if True: 
+bool_linear_reg = False
+if bool_comparison_FD_Sp: 
+    # plt.rc('font', size=15)
     arr_L2_diff, arr_Linf_diff = np.zeros(len(space_steps_array)), np.zeros(len(space_steps_array))
+    dx_array = L_x/space_steps_array
     for i in range(len(space_steps_array)):
-        arr_L2_diff[i] = np.linalg.norm(list_h_mat_FD[i][-1]-list_h_mat_Sp[i][-1])
+        arr_L2_diff[i] = np.sqrt(dx_array[i]*np.sum((list_h_mat_FD[i][-1]-list_h_mat_Sp[i][-1])**2))
         arr_Linf_diff[i] = np.max(np.absolute(list_h_mat_FD[i][-1]-list_h_mat_Sp[i][-1]))
 
     ##plot
     fig, axs = plt.subplots(1,2, figsize=(15, 5))
-    dx_array = L_x/space_steps_array
+
 
     #Make a linear regression
     if bool_linear_reg:
@@ -536,13 +543,21 @@ if True:
         Reg_lin_coef_a_Linf , Reg_lin_coef_b_Linf= reg.coef_[0][0], reg.intercept_[0]
         Reg_lin_coef_r2_Linf = reg.score(x_lin_reg_array, y_lin_reg_array) 
 
+        rescaled_lin_reg_L2 = 10**(Reg_lin_coef_b_L2)*(dx_array**Reg_lin_coef_a_L2)
+        axs[0].plot(dx_array,rescaled_lin_reg_L2, 
+        label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+        a=solver_BDF.round_fct(Reg_lin_coef_a_L2, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_L2, 2)
+        , R2=solver_BDF.round_fct(Reg_lin_coef_r2_L2, 4)),
+        color='r')
+
+        rescaled_lin_reg_Linf = 10**(Reg_lin_coef_b_Linf)*(dx_array**Reg_lin_coef_a_Linf)
+        axs[1].plot(dx_array,rescaled_lin_reg_Linf, 
+        label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+        a=solver_BDF.round_fct(Reg_lin_coef_a_Linf, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_Linf, 2)
+        , R2=solver_BDF.round_fct(Reg_lin_coef_r2_Linf, 4)),
+        color='r')
+
     axs[0].scatter(dx_array, arr_L2_diff,label="Difference between Spectral & FD")
-    rescaled_lin_reg_L2 = 10**(Reg_lin_coef_b_L2)*(dx_array**Reg_lin_coef_a_L2)
-    axs[0].plot(dx_array,rescaled_lin_reg_L2, 
-            label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
-            a=solver_BDF.round_fct(Reg_lin_coef_a_L2, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_L2, 2)
-            , R2=solver_BDF.round_fct(Reg_lin_coef_r2_L2, 4)),
-            color='r')
     axs[0].set_xscale('log')
     axs[0].set_yscale('log')
     # Adding annotations
@@ -553,18 +568,13 @@ if True:
             annotation['text'],
             xy=annotation['xy'],
             xytext=(0, 5),
-            textcoords= "offset pixels")
-    axs[0].set_xlabel("dx")
-    axs[0].set_title(r"diff in $L^2$ norm at the final time T")
-    axs[0].legend(fontsize="small")
+            textcoords= "offset pixels",
+            fontsize = 15)
+    axs[0].set_xlabel("dx", fontsize = 15)
+    axs[0].set_title(r"$||h_{FD}^{N_x, 4}(T)-h_{Sp}^{N_x,4}||_{L^p}$, $p=2$", fontsize=17)
+    # axs[0].legend(fontsize=15)
 
     axs[1].scatter(dx_array, arr_Linf_diff, label="Difference between FD & Spectral")
-    rescaled_lin_reg_Linf = 10**(Reg_lin_coef_b_Linf)*(dx_array**Reg_lin_coef_a_Linf)
-    axs[1].plot(dx_array,rescaled_lin_reg_Linf, 
-            label=r"Linear Regression, (a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
-            a=solver_BDF.round_fct(Reg_lin_coef_a_Linf, 2), b=solver_BDF.round_fct(Reg_lin_coef_b_Linf, 2)
-            , R2=solver_BDF.round_fct(Reg_lin_coef_r2_Linf, 4)),
-            color='r')
     axs[1].set_xscale('log')
     axs[1].set_yscale('log')
     annotations = [{'text': text_steps[i], 'xy': (dx_array[i], arr_Linf_diff[i])} for i in range(len(text_steps))]
@@ -573,21 +583,17 @@ if True:
             annotation['text'],
             xy=annotation['xy'],
             xytext=(0, 5),
-            textcoords= "offset pixels")
+            textcoords= "offset pixels",
+            fontsize=15)
 
-    axs[1].set_xlabel("dx")
-    axs[1].set_title(r"diff in $L^{\infty}$ norm at the final time T")
-    axs[1].legend(fontsize="small")
+    axs[1].set_xlabel("dx", fontsize=15)
+    axs[1].set_title(r"$||h_{FD}^{N_x, 4}(T)-h_{Sp}^{N_x,4}||_{L^{p}}$, $p = +\infty$", fontsize=17)
+    # axs[1].legend(fontsize=15)
 
     # fig.suptitle("Comparison between the Spectral and FD methods with BDF of order {}".format(order_BDF_scheme_verif))
     plt.savefig("Benney_equation_code\\Schemes_verification\\Comparison_FD_Sp\\"
                 +"Report_Plot_Comparison_Spectral_FD_BDF_order_{}.png".format(order_BDF_scheme_verif))
     plt.show()
-
-
-
-
-
 
 
 

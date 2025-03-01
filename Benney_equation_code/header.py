@@ -1,5 +1,6 @@
-### Sort of header. Regroups all the common variables and functions that are used in several .py files in the same time.
-print("\n\n****  Header: Beginning of the print  *** \n")
+### Header file. Regroups all the global variables and functions that are used in several .py files in the same time.
+print("\n\n****  header.py: Beginning of the print  *** \n")
+
 
 ###Imports
 import numpy as np
@@ -33,7 +34,7 @@ delta = 1e-3
 
 
 
-###Linear stability 
+###Linear stability : Re_0 and k_0
 Re_0 = 5/4/np.tan(theta)
 k_0_sq = Ca*8/5*(Re-Re_0)/(nu**2) #/(nu**2) as k_0**2 not k_0
 
@@ -44,11 +45,11 @@ else:
     print("Linear Stability: Critical wave number k_0:", k_0)
 
 
+# plt.rc('font', size=11) # Set the font size for all the plots 
+
+
 
 ###Some configurations and Usefull fonctions
-
-plt.rc('font', size=11) # Set the font size for all the plots 
-
 
 #Function for setting the time and space steps
 def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
@@ -85,12 +86,7 @@ def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
     '''Function to compute sinusoidal periodic initial condition'''
     return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) 
 
-
-
-
-
-## Animation Functions 
-
+#Function to round 
 def round_fct(r, nb_decimal):
     '''Detect the power of 10 and round the number nb_decimal further. 
     Coded to have titles of animation not to big.

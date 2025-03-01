@@ -29,11 +29,11 @@ bool_FB_Control = True # bool of Feedback Control
 bool_open_loop_control = False # open loop control i.e predicted
 
 ##Control
-bool_pos_part = True
+bool_pos_part = False
 # LQR control & positive part of LQR control
-bool_LQR = False 
+bool_LQR = True 
 #proportionnal control
-bool_prop_ctrl = True
+bool_prop_ctrl = False
 #Positive ctrl with linear system
 bool_positive_Ctrl, bool_solve_save_solus_opti, bool_load_solus_opti = False, False, False
 
@@ -124,6 +124,8 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
                                              actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
                                             N_x=N_x, L_x=N_x*dx)
 
+        R_semi_def = np.all(np.linalg.eigvals(R) > 0)
+        print("R is positive definite: ", np.all(np.linalg.eigvals(R) > 0))
         if bool_pos_part:
             print("### Type of control: Positive part of LQR Control ###")
         else:
@@ -131,8 +133,8 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
 
         print("Solving Riccati equation")
         K, _, _ = ct.lqr(A, B, Q, R) #gain matrix
-        print("Dimension of the gain matrix:", K.shape)
-        print("highest term of K", np.max(K))
+        # print("Dimension of the gain matrix:", K.shape)
+        # print("highest term of K", np.max(K))
 
     elif bool_positive_Ctrl: ### Positive Control with QP optimization problem
         print("Type of control: Positive Linear Control")
@@ -183,11 +185,11 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
             return K
         
         
-        prop_fct = lambda alpha: max(np.linalg.eigvals(A+B@gain_mat_prop_ctrl(alpha)).real)
-        result_prop_ctrl_opti = scipy.optimize.root(fun= prop_fct, x0= file_ctrl.alpha_B_AJ) 
-        alpha_prop_num = result_prop_ctrl_opti["x"][0]
-        root_method_CV = result_prop_ctrl_opti["success"]
-        root_method_errors= np.max(np.absolute(prop_fct(alpha_prop_num)))
+        # prop_fct = lambda alpha: max(np.linalg.eigvals(A+B@gain_mat_prop_ctrl(alpha)).real)
+        # result_prop_ctrl_opti = scipy.optimize.root(fun= prop_fct, x0= file_ctrl.alpha_B_AJ) 
+        # alpha_prop_num = result_prop_ctrl_opti["x"][0]
+        # root_method_CV = result_prop_ctrl_opti["success"]
+        # root_method_errors= np.max(np.absolute(prop_fct(alpha_prop_num)))
 
         if False:
             X_array = np.linspace(file_ctrl.alpha_B_AJ, 3*alpha_prop_num, 10)
@@ -196,12 +198,12 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
             plt.plot(X_array, evaluation_array)
             plt.show()
 
-        print("alpha num, alpha linear theory:", alpha_prop_num, file_ctrl.alpha_B_AJ)
-        print("Method converged: ", root_method_CV)
-        print("error of the method: ", root_method_errors)
+        # print("alpha num, alpha linear theory:", alpha_prop_num, file_ctrl.alpha_B_AJ)
+        # print("Method converged: ", root_method_CV)
+        # print("error of the method: ", root_method_errors)
 
 
-        alpha_prop_ctrl = 11 #Coefficient for the proportional control
+        alpha_prop_ctrl = 100 #Coefficient for the proportional control
         K = gain_mat_prop_ctrl(-alpha_prop_ctrl)
 
     if bool_pos_part:
@@ -252,8 +254,8 @@ bool_solve_save_FD, bool_load_FD = False, False
 bool_anim_display_FD, bool_save_anim_FD = False, False
 
 #Spectral method
-bool_solve_save_Sp, bool_load_Sp = True, False
-bool_anim_display_Sp, bool_save_anim_Sp = False, True
+bool_solve_save_Sp, bool_load_Sp = False, True
+bool_anim_display_Sp, bool_save_anim_Sp = False, False
 
 
 
@@ -446,7 +448,10 @@ if bool_anim_display_Sp or bool_save_anim_Sp:#Animation of benney numerical solu
 
 print("******** Tests & Experiments& Control theory verification ***********")
 
-bool_reg_lin = True
+
+### Boolean variables to control what action to do. Watch out to load the good file.
+bool_plot = False
+bool_reg_lin = False
 
 def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _alpha, _beta, _coef_pos_part_ctrl):
     '''Function to write automatically the file names to avoid making typos. 
@@ -514,37 +519,37 @@ if bool_reg_lin:
     Reg_lin_coef_r2 = reg.score(x_lin_reg_array, y_lin_reg_array)
     rescaled_lin_reg = 10**(Reg_lin_coef_b)*(array_t_reg_lin**Reg_lin_coef_a)
 
+    print("LIN REG: ", Reg_lin_coef_a, Reg_lin_coef_b, Reg_lin_coef_r2)
 
-print("LIN REG: ", Reg_lin_coef_a, Reg_lin_coef_b, Reg_lin_coef_r2)
+if bool_plot:
+    plt.plot(domain_t, h_amplitude)
+    if bool_reg_lin:
+        plt.plot(array_t_reg_lin, rescaled_lin_reg, 
+            label="Linear Regression, \n "+r"(a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
+            a=solver_BDF.round_fct(Reg_lin_coef_a, 2), b=solver_BDF.round_fct(Reg_lin_coef_b, 2)
+            , R2=solver_BDF.round_fct(Reg_lin_coef_r2, 4)),
+            color='r')
+    # plt.xscale("log")
+    plt.yscale('log')
+    plt.xlabel("time t", fontsize=15)
+    plt.ylabel(r"$h_{max}$", fontsize=15)
 
-plt.plot(domain_t, h_amplitude)
-if bool_reg_lin:
-    plt.plot(array_t_reg_lin, rescaled_lin_reg, 
-        label="Linear Regression, \n "+r"(a, b, R²) $\approx$ ({a}, {b}, {R2})".format(
-        a=solver_BDF.round_fct(Reg_lin_coef_a, 2), b=solver_BDF.round_fct(Reg_lin_coef_b, 2)
-        , R2=solver_BDF.round_fct(Reg_lin_coef_r2, 4)),
-        color='r')
-# plt.xscale("log")
-plt.yscale('log')
-plt.xlabel("time t")
-plt.ylabel(r"$log(max_{x\in[0,L_x]}|h(x,t)-1|)$")
 
+    if bool_FB_Control:
+        title_plot_file, title_plot = title_plot_ctrl(
+            method='Sp', Ctrl_name= Ctrl_name, pos_part=bool_pos_part, _N_x=N_x, _order_BDF=order_BDF_scheme,
+                _alpha = round_fct(alpha_prop_ctrl,3), _beta=beta, _coef_pos_part_ctrl=coef_pos_part_ctrl)
+        # plt.title(title_plot)
+        plt.axvline(x=time_start_ctrl, color='k')
 
-if bool_FB_Control:
-    title_plot_file, title_plot = title_plot_ctrl(
-        method='Sp', Ctrl_name= Ctrl_name, pos_part=bool_pos_part, _N_x=N_x, _order_BDF=order_BDF_scheme,
-            _alpha = round_fct(alpha_prop_ctrl,3), _beta=beta, _coef_pos_part_ctrl=coef_pos_part_ctrl)
-    plt.title(title_plot)
-    plt.axvline(x=time_start_ctrl, color='k')
-
-plt.legend()
-plt.savefig(title_plot_file)
-plt.show()
+    plt.legend(fontsize=15, framealpha=1)
+    # plt.savefig(title_plot_file)
+    plt.show()
 
 
 ## Computation of the quadratic cost of the control
-
-
+max_ampl_ctrl = np.max(np.absolute(amplitudes_spectral))
+print("infinite norm of the control:", max_ampl_ctrl)
 quad_cost_ctrl = np.sum(amplitudes_spectral**2)*dx**2*dt**2
 print("Total cost before the control starts (expected to be 0): ",
        np.sum(amplitudes_spectral[0:idx_time_start_ctrl, :]**2))
