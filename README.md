@@ -12,12 +12,17 @@ For the description of the Mathematics, Physics or the code, see the sections be
 
 All this work is about studying Reduced-order models (ROM) of the Navier-Stokes equations. 
 
-The first part of the visit (part II of the report) is an introduction work. It focuses on the KS (Kuramoto-Sivashinski) equation: $$u_{,t} + u_{,xxxx} + u_{xx} + uu_{,x} = 0,$$ on the domain $[0, L)$, supposing u L-periodic. This equation is a PDE (Partial Differential Equation) a quite simple non linearity: we say that it is a weakly non-linear PDE. This is one of the simplest ROM of the Navier-Stokes equation. We solved it numerically using a specific scheme (cf report) and observed the behaviour of the solution which can be quite diverse depending on the parameter $\nu = (\frac{2\pi}{L})^2.$
+The first part of the visit (part II of the report) is an introduction work. It focuses on the KS (Kuramoto-Sivashinski) equation: 
+
+$$u_{,t} + u_{,xxxx} + u_{xx} + uu_{,x} = 0,$$
+
+ on the domain $[0, L)$, supposing u L-periodic. This equation is a PDE (Partial Differential Equation) a quite simple non linearity: we say that it is a weakly non-linear PDE. This is one of the simplest ROM of the Navier-Stokes equation. We solved it numerically using a specific scheme (cf report) and observed the behaviour of the solution which can be quite diverse depending on the parameter 
+ $$\nu = \Big( \frac{2\pi}{L} \Big)^2.$$
 
 The main part of the visit (part III to V of the report) focuses on the study the Benney equation, another ROM of the Navier-Stokes equations with more complex non-linearities. We added to this equation a term of normal stress $N_s$ of the air jet component, neglecting the tangential component. The Benney equation is a mass conservation equation with $h$ being the interfacial height of the fluid, and $q(x,t) = \int_0^{h(x,t)} u(x,y,t)dy$ the horizontal flux of the falling liquid:   
 
 $$\begin{equation}
-    \left\{
+\left\lbrace
 \begin{aligned}
     h_{,t}+q_{,x} &= 0,\\
     q(x, t) &= \frac{h^3}{3}(2-p_{l0,x})+Re\frac{8h^6h_{x,}}{15}\\
@@ -38,17 +43,28 @@ $$\begin{equation}
 
 
 ## Control Strategies
-We designed two main control strategies to stabilize the Benney system. Let  $$\tilde{h} = \frac{h-1}{\delta}$$ the zoomed discrepancy of h around its stable normalized state $h=1$.
+We designed two main control strategies to stabilize the Benney system. Let  
 
-Proportional Control: All the air jets blow/suck the same way proportionaly to the size of the gap $\tilde{h}$. Which gives  $$N_s = \alpha \tilde{h}, \quad \alpha >0.$$ 
-As we just wanted blowing only air jets, we did $$N_s = \alpha |\tilde{h}|^+.$$ 
+$$\tilde{h} = \frac{h-1}{\delta}$$ 
 
-LQR Control: We linearized the Benney equation into : $$\tilde{h}_{,t} = A\tilde{h} + BN_s = A\tilde{h} + BK\tilde{h}$$ 
+the zoomed discrepancy of h around its stable normalized state $h=1$.
+
+**Proportional Control**: All the air jets blow/suck the same way proportionaly to the size of the gap $\tilde{h}$. Which gives  $$N_s = \alpha \tilde{h}, \quad \alpha >0.$$ 
+As we just wanted blowing only air jets, we did 
+
+$$N_s = \alpha |\tilde{h}|^+.$$ 
+
+**LQR Control**: We linearized the Benney equation into : $$\tilde{h}_{,t} = A\tilde{h} + BN_s = A\tilde{h} + BK\tilde{h}$$ 
 and we minimized the quadratic cost 
 $$\begin{equation}
-    \kappa(u) = \int_0^{+\infty}\int_0^L \left[\beta (\tilde{h}(x,t)-\xi(x))^2+ (1-\beta)\tilde{N}_s(x,t)^2\right]dxdt.
+    \kappa(u) = \int_0^{+\infty}\int_0^L \left[\beta\tilde{h}(x,t)^2+ (1-\beta)\tilde{N}_s(x,t)^2\right]dxdt.
 \end{equation}.$$
+As we just wanted blowing only air jets, we took the control 
 
+$$u = |KN_s|^+$$
+and actualized the system 
+
+$$\tilde{h}_{,t} = A\tilde{h} + Bu.$$ 
 ## The Code
 Here is a brief description of each python file. The output of each file and its structure is detailed at the beginning of each of the code files.
 
