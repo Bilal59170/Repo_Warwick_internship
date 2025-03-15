@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  28 FEB 2025 16:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (MiKTeX 24.4) (preloaded format=pdflatex 2025.2.8)  15 MAR 2025 16:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1207,36 +1207,36 @@ LaTeX Font Info:    Trying to load font information for U+euf on input line 1312
  (C:\Users\Bilal_BM_user\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\ueuf.fd
 File: ueuf.fd 2013/01/14 v3.01 Euler Fraktur
 )
-Underfull \hbox (badness 10000) in paragraph at lines 1328--1330
+Underfull \hbox (badness 10000) in paragraph at lines 1329--1331
 
  []
 
 
 
 [34]
-Underfull \hbox (badness 10000) in paragraph at lines 1342--1344
+Underfull \hbox (badness 10000) in paragraph at lines 1343--1345
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1363--1367
+Underfull \hbox (badness 10000) in paragraph at lines 1364--1368
 
  []
 
 
 
 [35]
-Underfull \hbox (badness 10000) in paragraph at lines 1381--1384
+Underfull \hbox (badness 10000) in paragraph at lines 1382--1385
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1397--1399
+Underfull \hbox (badness 10000) in paragraph at lines 1398--1400
 
  []
 
 
-Overfull \hbox (11.80948pt too wide) detected at line 1406
+Overfull \hbox (11.80948pt too wide) detected at line 1407
 \OMS/cmsy/m/n/12 8\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 i; l\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 2 \OT1/cmr/m/n/12 [\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 ; N[]\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 ] \OMS/cmsy/m/n/12 ^^B \OT1/cmr/m/n/12 [\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 1\OML/cmm/m/it/12 ; N[]\OMS/cmsy/m/n/12 j\OT1/cmr/m/n/12 ]\OML/cmm/m/it/12 ;  [] B[]u[] \OT1/cmr/m/n/12 = (\OML/cmm/m/it/12 Bu[]\OT1/cmr/m/n/12 )[] = ([]\OML/cmm/m/it/12 @[]N[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 l \OMS/cmsy/m/n/12 ^^B \OML/cmm/m/it/12 dt\OT1/cmr/m/n/12 ))[] = [] [] \OML/cmm/m/it/12 u[]d[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x[] \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 x[]\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 :
  []
 
@@ -1245,40 +1245,40 @@ Overfull \hbox (11.80948pt too wide) detected at line 1406
 [36]
 
 [37]
-Underfull \hbox (badness 10000) in paragraph at lines 1473--1480
+Underfull \hbox (badness 10000) in paragraph at lines 1474--1481
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1497--1499
+Underfull \hbox (badness 10000) in paragraph at lines 1498--1500
 
  []
 
 
 
 [38]
-<Control_experiments/LQR_beta_0.95.png, id=635, 491.436pt x 316.5426pt>
+<Control_experiments/LQR_beta_0.95.png, id=634, 491.436pt x 316.5426pt>
 File: Control_experiments/LQR_beta_0.95.png Graphic file (type png)
 <use Control_experiments/LQR_beta_0.95.png>
-Package pdftex.def Info: Control_experiments/LQR_beta_0.95.png  used on input line 1516.
+Package pdftex.def Info: Control_experiments/LQR_beta_0.95.png  used on input line 1517.
 (pdftex.def)             Requested size: 310.50357pt x 200.01215pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1548--1552
+Underfull \hbox (badness 10000) in paragraph at lines 1549--1553
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1553--1557
+Underfull \hbox (badness 10000) in paragraph at lines 1554--1558
 
  []
 
 
 
 [39 <./Control_experiments/LQR_beta_0.95.png>]
-<Control_experiments/Pos_part2_LQR_beta_0.95.png, id=651, 482.0409pt x 338.9463pt>
+<Control_experiments/Pos_part2_LQR_beta_0.95.png, id=650, 482.0409pt x 338.9463pt>
 File: Control_experiments/Pos_part2_LQR_beta_0.95.png Graphic file (type png)
 <use Control_experiments/Pos_part2_LQR_beta_0.95.png>
-Package pdftex.def Info: Control_experiments/Pos_part2_LQR_beta_0.95.png  used on input line 1609.
+Package pdftex.def Info: Control_experiments/Pos_part2_LQR_beta_0.95.png  used on input line 1610.
 (pdftex.def)             Requested size: 332.68385pt x 233.9301pt.
 
 
@@ -1287,17 +1287,17 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [40]
-Underfull \hbox (badness 10000) in paragraph at lines 1638--1641
+Underfull \hbox (badness 10000) in paragraph at lines 1639--1642
 
  []
 
 
 
 [41]
-<Control_experiments/lambda_k_BS_AJ.png, id=679, 918.5517pt x 344.0052pt>
+<Control_experiments/lambda_k_BS_AJ.png, id=678, 918.5517pt x 344.0052pt>
 File: Control_experiments/lambda_k_BS_AJ.png Graphic file (type png)
 <use Control_experiments/lambda_k_BS_AJ.png>
-Package pdftex.def Info: Control_experiments/lambda_k_BS_AJ.png  used on input line 1659.
+Package pdftex.def Info: Control_experiments/lambda_k_BS_AJ.png  used on input line 1660.
 (pdftex.def)             Requested size: 443.57848pt x 166.12318pt.
 
 
@@ -1306,31 +1306,31 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 [42 <./Control_experiments/Pos_part2_LQR_beta_0.95.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1697--1704
+Underfull \hbox (badness 10000) in paragraph at lines 1698--1705
 
  []
 
 
 
 [43 <./Control_experiments/lambda_k_BS_AJ.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 1735--1738
+Underfull \hbox (badness 10000) in paragraph at lines 1736--1739
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1745--1750
+Underfull \hbox (badness 10000) in paragraph at lines 1746--1751
 
  []
 
 
 
 [44]
-Overfull \hbox (44.43626pt too wide) in paragraph at lines 1761--1783
+Overfull \hbox (44.43626pt too wide) in paragraph at lines 1762--1784
 []|  [] 
  []
 
 
-Overfull \hbox (19.17896pt too wide) in paragraph at lines 1791--1807
+Overfull \hbox (19.17896pt too wide) in paragraph at lines 1792--1808
 []|  [] 
  []
 
@@ -1339,41 +1339,41 @@ Overfull \hbox (19.17896pt too wide) in paragraph at lines 1791--1807
 [45]
 
 [46]
-Underfull \hbox (badness 10000) in paragraph at lines 1856--1858
+Underfull \hbox (badness 10000) in paragraph at lines 1857--1859
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1859--1861
+Underfull \hbox (badness 10000) in paragraph at lines 1860--1862
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1883--1886
+Underfull \hbox (badness 10000) in paragraph at lines 1884--1887
 
  []
 
 
 
 [47]
-Underfull \hbox (badness 10000) in paragraph at lines 1914--1916
+Underfull \hbox (badness 10000) in paragraph at lines 1915--1917
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1938--1940
+Underfull \hbox (badness 10000) in paragraph at lines 1939--1941
 
  []
 
 
 
 [48]
-Underfull \hbox (badness 10000) in paragraph at lines 1955--1956
+Underfull \hbox (badness 10000) in paragraph at lines 1956--1957
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1970--1992
+Underfull \hbox (badness 10000) in paragraph at lines 1971--1993
 
  []
 
@@ -1384,44 +1384,44 @@ Underfull \hbox (badness 10000) in paragraph at lines 1970--1992
 [50]
 
 [51]
-Underfull \hbox (badness 10000) in paragraph at lines 2042--2044
+Underfull \hbox (badness 10000) in paragraph at lines 2046--2048
 
  []
 
 
-Overfull \hbox (36.7938pt too wide) detected at line 2050
+Overfull \hbox (36.7938pt too wide) detected at line 2054
 [][][][]
  []
 
 
-Overfull \hbox (37.04286pt too wide) detected at line 2058
+Overfull \hbox (37.04286pt too wide) detected at line 2062
 [][][][]
  []
 
 
-Overfull \hbox (41.94412pt too wide) in paragraph at lines 2068--2072
+Overfull \hbox (41.94412pt too wide) in paragraph at lines 2072--2076
 \OT1/cmr/m/n/12 We de-note $\OML/cmm/m/it/12 I[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 h\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; t\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; x; t\OT1/cmr/m/n/12 ) := \OML/cmm/m/it/12 q[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; t\OT1/cmr/m/n/12 ) = [][] \OML/cmm/m/it/12 u\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; z; t\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 dz$\OT1/cmr/m/n/12 . Like-wise, $\OML/cmm/m/it/12 I[]\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 h\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; t\OT1/cmr/m/n/12 )\OML/cmm/m/it/12 ; x; t\OT1/cmr/m/n/12 ) :=
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2068--2072
+Underfull \hbox (badness 10000) in paragraph at lines 2072--2076
 
  []
 
 
 
 [52]
-Overfull \hbox (0.69704pt too wide) in paragraph at lines 2089--2091
+Overfull \hbox (0.69704pt too wide) in paragraph at lines 2093--2095
 []\OT1/cmr/m/n/12 Finally (KBC + In-com-press-ibil-ity), $[]\OML/cmm/m/it/12 :[] \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ [][] \OML/cmm/m/it/12 w[]dz \OT1/cmr/m/n/12 = \OML/cmm/m/it/12 w \OMS/cmsy/m/n/12 ^^@ \OML/cmm/m/it/12 h[] \OMS/cmsy/m/n/12 ^^@ \OT1/cmr/m/n/12 (\OML/cmm/m/it/12 w\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x; y; h; t\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^@
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2115--2120
+Underfull \hbox (badness 10000) in paragraph at lines 2119--2124
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2115--2120
+Underfull \hbox (badness 10000) in paragraph at lines 2119--2124
 
  []
 
@@ -1430,26 +1430,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 2115--2120
 [53]
 
 [54]
-Underfull \hbox (badness 10000) in paragraph at lines 2192--2194
+Underfull \hbox (badness 10000) in paragraph at lines 2196--2198
 
  []
 
 
 
 [55]
-Underfull \hbox (badness 10000) in paragraph at lines 2229--2231
+Underfull \hbox (badness 10000) in paragraph at lines 2233--2235
 
  []
 
 
 
 [56]
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 2282--2282
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 2286--2286
 []\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
  []
 
 
-Overfull \hbox (2.07193pt too wide) in paragraph at lines 2282--2282
+Overfull \hbox (2.07193pt too wide) in paragraph at lines 2286--2286
 []\OT1/cmr/m/n/12 Fabian Den-ner et al. ``Soli-tary waves on falling liq-uid films in the inertia-dominated
  []
 
@@ -1475,9 +1475,9 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 47989 strings out of 473530
- 1121325 string characters out of 5710923
- 2168036 words of memory out of 5000000
+ 47988 strings out of 473530
+ 1121313 string characters out of 5710923
+ 2167036 words of memory out of 5000000
  70475 multiletter control sequences out of 15000+600000
  572636 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1489,9 +1489,9 @@ pdfTeX warning (dest): name{Hfootnote.9} has been referenced but does not exist,
 pdfTeX warning (dest): name{Hfootnote.8} has been referenced but does not exist, replaced by a fixed one
 
  <C:\Users\Bilal_BM_user\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm1200.pk><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt12.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/euler/eufm10.pfb><C:/Users/Bilal_BM_user/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (60 pages, 1873408 bytes).
+Output written on main.pdf (60 pages, 1873368 bytes).
 PDF statistics:
- 1049 PDF objects out of 1200 (max. 8388607)
- 262 named destinations out of 1000 (max. 500000)
+ 1048 PDF objects out of 1200 (max. 8388607)
+ 261 named destinations out of 1000 (max. 500000)
  411 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -172,7 +172,8 @@ def round_fct(r, nb_decimal):
 
 
 def func_anim(_time_series, _anim_space_array, _anim_time_array, 
-              title, title_x_axis = None, title_y_axis= None, _legend_list = None):
+              title, title_x_axis = None, title_y_axis= None, _legend_list = None,
+              str_loc_legend = None):
     '''Create the animation to be displayed (does not display it though). 
 
     Inputs:
@@ -181,6 +182,8 @@ def func_anim(_time_series, _anim_space_array, _anim_time_array,
     - _anim_space_array, _anim_time_array: space ad time arrays.
     - title, title_x_axis, title_y_axis: global (resp. xaxis resp. yaxis) title
     - _legend_list (list of string): list of the legend for each time serie 
+    - str_lock_legend (string): to loc the legend to a fixed position (can move when there's a video). Example:
+    "lower left" for lower left. cf https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.legend.html .
     '''
     Nb_time_series =  _time_series.shape[0]
     gap = (_time_series.max()- _time_series.min())/10
@@ -221,7 +224,10 @@ def func_anim(_time_series, _anim_space_array, _anim_time_array,
         axs.set_xlabel(title_x_axis)
         axs.set_ylabel(title_y_axis)
         if not(_legend_list is None):
-            axs.legend()
+            if not(str_loc_legend is None):
+                axs.legend(loc=str_loc_legend)
+            else:
+                axs.legend()
         
         return array_line_analytical,
 

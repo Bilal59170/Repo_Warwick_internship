@@ -14,7 +14,7 @@
 #    - Convergence of the schemes: animations and plots
 #    - Comparison of Finite Difference & Spectral methods schemes
 # - Linear theory verification (obsolete, not in the report)
-# - Check of mass conservation
+# - Check for mass conservation
 
 
 

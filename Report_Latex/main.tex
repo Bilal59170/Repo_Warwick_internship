@@ -1317,14 +1317,15 @@ or
 \end{equation}
 with Sp the notation for spectrum and $\mathfrak{R}$ for the real part of a complex number.
 \subsubsection{Link with the falling liquid system}\label{sub_section_link_ctr_FLF}
-We link here the linear control framework with our physical system.. 
+We link here the linear control framework with our physical system.
 
-We take 
-\begin{equation}
-\tilde{h} = \frac{h-1}{\delta}
-\end{equation}
+Like in  \eqref{h_linear_decomposition}, we take
 
-the "zoomed" perturbation from the perturbed normalized height (\ref{h_linear_decomposition}). We recall the linearized Benney equation with air jet control (\ref{Benney_ctrl_linearised}):
+\begin{equation*}
+    h = 1+\delta \tilde{h},\quad N_s = \delta \tilde{N}_s, 
+\end{equation*}
+
+the "zoomed" height and the "zoomed" air jet perturbation. We recall the linearized Benney equation with air jet control (\ref{Benney_ctrl_linearised}):
 $$\tilde{h}_{,t} = \left[ -2\partial_x + (\frac{2cot(\theta)}{3}-\frac{8Re}{15})\partial_{xx} - \frac{1}{3Ca}\partial_{xxxx}\right]\tilde{h} + \left[ \frac{1}{3}\partial_{xx}\right]\tilde{N}_s.$$
 \\
 
@@ -1991,13 +1992,16 @@ numerically with the solver.
 \\
 
 
-\textbf{Acknoledgement.} Even though it is report and not research paper, I would like to thank my supervisors Dr. Radu
-Cimpeanu and Dr. Susana Gomes for the time they took to talk with me every week, even the busiest ones. Thanks too you, I learnt a lot on the 
-technical side, but also on the life of a researcher. Thank you Susana for having answered to my mails when I was searching 
-for an internship and having giving me the opportunity to work with you. Thank you Radu for having invited me in all the 
-meeting of your computational Fluid Dynamics group, it was a wonderful experience and I felt totally included. I would 
-also like to thank Oscar for the very interesting talks we had about this project and the help he gave
-me. In general, thank you to whole the CFD group ! 
+\textbf{Acknoledgement.} Even though it is a report and not a thesis, I would like
+to thank my supervisors Dr. Radu Cimpeanu and Dr. Susana Gomes for the time they
+took to talk with me every week, even the busiest ones. Thanks to you, I learnt a lot
+on the technical side, but also on the life of a researcher. Thank you Susana for having
+answered to my mail when I was searching for an internship and having given me
+the opportunity to work with you. Thank you Radu for having invited me in all the
+meetings of your computational Fluid Dynamics group, it was a wonderful experience
+and I felt totally included. I would also like to thank Oscar for the very interesting
+talks we had about this project and the help he gave me. In general, thanks to the
+whole CFD group !
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage

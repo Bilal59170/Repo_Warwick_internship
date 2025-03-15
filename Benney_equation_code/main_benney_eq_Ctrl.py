@@ -36,6 +36,7 @@ import control as ct
 import solver_BDF 
 import Control_file as file_ctrl
 from header import * 
+from Control_file import *
 
 import scipy.optimize 
 from sklearn.linear_model import LinearRegression
@@ -61,7 +62,7 @@ bool_FB_Control = True # bool of Feedback Control
 bool_open_loop_control = False # open loop control i.e predicted
 
 ##Control
-bool_pos_part = False
+bool_pos_part = True
 # LQR control & positive part of LQR control
 bool_LQR = True 
 #proportionnal control
@@ -142,14 +143,14 @@ beta, alpha_prop_ctrl, coef_pos_part_ctrl = None, None, None #defined later in t
 if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(x(t))
     
     #Matrix A and B of the linear Control system defined in part IV of the report 
-    A, B = solver_BDF.matrices_ctrl_A_B(list_Re_Ca_theta = [Re, Ca, theta], array_actuators_index= array_used_points,
+    A, B = matrices_ctrl_A_B(list_Re_Ca_theta = [Re, Ca, theta], array_actuators_index= array_used_points,
                               actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
                                 N_x=N_x, L_x=N_x*dx)
     
     if bool_LQR:#LQR Control
         beta = 0.95 #LQR Control parameter
         #LQR matrices
-        Q, R = solver_BDF.matrices_ctrl_Q_R(beta = beta, array_actuators_index= array_used_points,
+        Q, R = matrices_ctrl_Q_R(beta = beta, array_actuators_index= array_used_points,
                                              actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
                                             N_x=N_x, L_x=N_x*dx)
 
@@ -242,7 +243,7 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
     if bool_pos_part:
         #Multiplicative coefficient of the gain matrix (for LQR control, cf part V.2.2 of the report)
         #used when we take the positive part of the LQR control. Try to compense the loss of energy (so should be around 2 maybe).
-        coef_pos_part_ctrl = 1
+        coef_pos_part_ctrl = 2
         K = coef_pos_part_ctrl*K #cf the definition of po_part_coef for explanations
 
 else:  #No Control
@@ -280,7 +281,7 @@ print("\n##### SOLVING #####")
 #solve and save, load the solution respectively
 bool_solve_save_Sp, bool_load_Sp = False, True 
 #display or save the animation of the dynamics of h respectively
-bool_anim_display_Sp, bool_save_anim_Sp = False, False 
+bool_anim_display_Sp, bool_save_anim_Sp = False, True 
 
 
 
@@ -335,6 +336,7 @@ title_file, title_anim = file_anim_name_ctrl('Sp', Ctrl_name=Ctrl_name, pos_part
                                              _N_x=N_x, _order_BDF=order_BDF_scheme, _alpha = alpha_prop_ctrl, _beta=beta,
                                              _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
+title_anim = "Benney_equation_code\\Video_dampening_blowing_air_jet_control_test.mp4"
 #Title of the file with the amplitude of the control, i.e the variable "amplitudes_spectral"
 title_amplitude = title_file[:-4]+"_Ampl.txt" 
 
@@ -401,7 +403,8 @@ if bool_anim_display_Sp or bool_save_anim_Sp:#Animation of benney numerical solu
 
         title_x_axis=r"x axis: horizontal inclined by $\theta$",
         title_y_axis= r"y-axis (inclined by $\theta$)",
-        _legend_list = legend_list)
+        _legend_list = legend_list,
+        str_loc_legend="lower left")
     if bool_anim_display_Sp:
         plt.show()
     else:

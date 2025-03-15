@@ -1,5 +1,5 @@
 ## Explanations & output
-#Code with the variables on function useful for the controls. Also contains some tests for LQR, proportional, and positive 
+#Code with useful variables and functions for the controls. Also contains some tests for LQR, proportional, and positive 
 #controls. The outputs are the results of these tests. 
 # Cf the part V of report Bilal_BM_report.pdf in the Github repository  
 # https://github.com/Bilal59170/Repo_Warwick_internship to know more about the theoretical background 
