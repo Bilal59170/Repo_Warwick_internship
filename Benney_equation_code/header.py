@@ -1,4 +1,19 @@
-### Header file. Regroups all the global variables and functions that are used in several .py files in the same time.
+## Explanations & output
+# Regroups all the global variables and functions that are used in several .py files in the same time. This code 
+#does not output anything.
+## Cf the report Bilal_BM_report.pdf in the Github repository (part III to V)
+# https://github.com/Bilal59170/Repo_Warwick_internship to know more about the theoretical background 
+
+
+#### Structure of the code:
+# - Physical and Mathematical System Variables (e.g viscosity mu_l, thin film parameter epsilon..)
+#     -Physical parameters of the System
+#     - Mathematical (epsilon, delta)
+#     - Linear stability parameter (k_0, Re_0)
+# - Some useful functions (round parameters, display on animations..)
+
+
+
 print("\n\n****  header.py: Beginning of the print  *** \n")
 
 
@@ -6,11 +21,18 @@ print("\n\n****  header.py: Beginning of the print  *** \n")
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from IPython.display import HTML
 
 
 
-#### System VARIABLES: Physics & Mathematics (Values From Oscar's code)
+########################################################
+
+######## Physical and Mathematical System Variables ######
+
+########################################################
+
+
+# (Values From Oscar's code that can be found in his github repo: https://github.com/OaHolroyd/falling-film-control)
+
 L_x = 30    # Dimensionless;  (horizontal length)/h_N;    epsilon=1/L_x;
 nu =  2*np.pi/L_x #Not the nu from the Ks equation
 T = 300   # Dimensionless: end time of the simulation
@@ -49,17 +71,27 @@ else:
 
 
 
-###Some configurations and Usefull fonctions
+
+
+
+
+########################################################
+
+######## ome configurations and Usefull fonctions ######
+
+########################################################
+
 
 #Function for setting the time and space steps
 def set_steps_and_domain(_N_x, _CFL_factor, _N_t=None, T=T):
     """
     Computes dt from dx (or the other way around if _N_t isn't None) using CFL conditions with
     U_N velocity. I take the same step if the CFL conditions give me a less precise step 
-    (i.e dt= _dt = min(_dx, _dx/U_N/_CFL_factor)
+    (i.e _dt = min(_dx, _dx/U_N/_CFL_factor)
 
     Input: 
-    - The name are explicit and _CFL_factor is the factor in the CFL conditions (cf wiki)
+    - The name are explicit and _CFL_factor is the factor in the CFL conditions (cf wikipedia 
+    https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition)
 
     Output:(_N_x, _N_t, _dx, _dt, domain_x, domain_t) 
 """
@@ -86,11 +118,12 @@ def sincos(x, _h_mean, _ampl_c, _ampl_s, _freq_c, _freq_s):
     '''Function to compute sinusoidal periodic initial condition'''
     return _h_mean + _ampl_c*np.cos(_freq_c*x) + _ampl_s*np.sin(_freq_s*x) 
 
-#Function to round 
+
+#Function to round parameters
 def round_fct(r, nb_decimal):
     '''Detect the power of 10 and round the number nb_decimal further. 
     Coded to have titles of animation not to big.
-    Expl: round_fct(0.000123456, 4) = 0.000123 '''
+    Example: round_fct(0.000123456, 4) = 0.000123 '''
 
     if r ==0:
         return 0
@@ -140,8 +173,15 @@ def round_fct(r, nb_decimal):
 
 def func_anim(_time_series, _anim_space_array, _anim_time_array, 
               title, title_x_axis = None, title_y_axis= None, _legend_list = None):
- 
-    #(Nb_tab, N_t, N_x) tab
+    '''Create the animation to be displayed (does not display it though). 
+
+    Inputs:
+    - _time_series (ndarray of shape (N,) of (N_t, N_x) ndarrays): numpy array of different time series. Most of the 
+    time used to plot the animation of the interface of the liquid, but also the control that is used. 
+    - _anim_space_array, _anim_time_array: space ad time arrays.
+    - title, title_x_axis, title_y_axis: global (resp. xaxis resp. yaxis) title
+    - _legend_list (list of string): list of the legend for each time serie 
+    '''
     Nb_time_series =  _time_series.shape[0]
     gap = (_time_series.max()- _time_series.min())/10
 

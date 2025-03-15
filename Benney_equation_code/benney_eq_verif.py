@@ -1,4 +1,22 @@
-#CODE FOR THE BENNEY EQUATION
+## Explanations & output
+#Code to make all the verifications and comparisons for the numerical schemes. This code can output a lot of 
+# annimations and plots for the verification of the schemes.  
+# Cf the part (IV.3) of report Bilal_BM_report.pdf in the Github repository  
+# https://github.com/Bilal59170/Repo_Warwick_internship to know more about the theoretical background 
+
+
+## Structure of the Code
+# -  Simulation SETTINGS 
+#    - System setting
+#    - Choice to make air jets or not
+# - Verification of the Convergence and comparison of the Finite Difference & Spectral scheme 
+#    - Boolean variables to control what to do
+#    - Convergence of the schemes: animations and plots
+#    - Comparison of Finite Difference & Spectral methods schemes
+# - Linear theory verification (obsolete, not in the report)
+# - Check of mass conservation
+
+
 
 
 ###IMPORT
@@ -16,27 +34,26 @@ print("\n\n******  Verification of the Scheme: Beginning of the print *****\n")
 ######## Simulation SETTINGS ######
 
 ##################################### 
+
+
 # Using of air jets or not. Interpretated as open loop control
 bool_open_loop_control = False 
-
-## Check the asumptions
-print("U_N, theta, Re, Ca : ", U_N, theta, Re, Ca )
-print("Value of Re (check if O(1)):", Re)
-print("Value of Ca and Ca/(eps**2) (Check if O(eps**2)):", Ca, Ca/(epsilon**2))
 
 
 
 #########  Simulation details  ############
 ##Simulation constants
 CFL_factor = 1
-# array of the space steps. They are several as we compute several solutions in a for loop.
+# array of the space steps that we compute/use to make the verifications.
+#  They are several as we compute several solutions in a for loop.
 space_steps_array = np.array([128, 256, 512, 1024]) 
-list_BDF_order = [1]  #list for the solving
-order_BDF_scheme_verif = 4 #value for the verification plots
+list_BDF_order = [1]  #Same than above but for the BDF Orders
+order_BDF_scheme_verif = 4 #BDF Order for the verification with a fixed order and varying N_x which are the convergence
+#verification, and comparison between the Finite Difference and Spectral method 
 print("Space steps: ", space_steps_array)
 
 ##Initial Condition
-mode_fq = 1
+mode_fq = 1 # frequency mode of the initial condition.
 h_mean, ampl_c, ampl_s, freq_c, freq_s = 1, 0, delta, mode_fq, mode_fq
 
 if False:#Plot of initial condition
@@ -47,24 +64,23 @@ if False:#Plot of initial condition
 
 
 ## Air jets (Can be seen as a sort of open loop control)
-#External pressure parameters and external normal pressure function
 k_nb_act = 5 ## numbers of actuators
 
-
 #Actuators shape function (the peak function)
-sigma_Ns,omega_Ns = 0.01, 0.1 # width of the air jet for a gaussian (resp. 'cos gaussian') function
+omega_Ns = 0.1 # width of the air jet for the peak function  (funcition "d" defined in part 5.1.2 of the report)
+sigma_Ns =0.01 # width of the air jet for a gaussian peak function 
 
-#To chose a Gaussian shape of actuators. Gives no mass conservation and isn't L-periodic, better to chose the cos-gaussian 
-
+# Choose a gaussian actuatio, gives no mass conservation because it is not L-periodic (cf end of the code),
+#  better to chose the cos-gaussian 
 if bool_open_loop_control:
-    if False: 
+    if False: #Gaussian actuation
         N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
             x, A_Ns=A_Ns, sigma_Ns=sigma_Ns, array_used_points=array_used_points, L=L_x)
-    else:
+    else: # cos gaussian actuation i.e the L-periodic function 
         N_s_function = lambda x, Amplitudes_Ns:solver_BDF.N_s_derivatives_cos_gaussian(
             x, Amplitudes_Ns, omega=omega_Ns, array_used_points=array_used_points, L=L_x)
 
-else:
+else: # No control 
     N_s_function = lambda x, Amplitudes_Ns: np.array([np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)])
 
 
@@ -77,9 +93,12 @@ else:
 
 ##############################################################
 
-######## Pseudo consistency and comparison of the Schemes (Finite Difference & Spectral methods) ######
+######## Verification of the Convergence and comparison of
+#  the Finite Difference & Spectral scheme (Cf report part IV.3) 
 
 ##############################################################
+
+
 
 ### Boolean variables to control what action to do. Watch out to load the good file.
 #FD method 
@@ -99,9 +118,14 @@ assert not(bool_verif_BDF_scheme_FD and bool_verif_BDF_scheme_Sp), "BDF scheme v
 
 ######### Solving & animation #########
 
+#Function to name automatically the file names that will be saved or loaded in the computer
 def file_anim_name(method, _N_x, _order_BDF):
     '''Function to write automatically the file names to avoid making typos. 
-    Returns the names of the animation and the file with numerical values.'''
+    Returns the names of the animation and the file with numerical values.
+    Input: 
+    - Method (string): "FD" or "Sp" for Finite Difference or Spectral method
+    - _N_x, _order_BDF (int) : Space step et BDF order
+    '''
 
     if method == "FD": #Finite differences Method
         title_file = ('Benney_equation_code\\Schemes_verification\\Simulation_values\\'+
@@ -265,6 +289,7 @@ for  order_BDF_solve in list_BDF_order:
 
 
 
+
 ############## Verifications #############
 
 
@@ -279,8 +304,10 @@ for space_step in space_steps_array:
 
 
 
-#Verification for the BDF Scheme
-if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & Graph: Fixed step,  Compare the different BDF Orders
+##Verification for the BDF Scheme: For a fixed N_x we compute the height for all the BDF orders (1 until 6)
+# We make an Animation on the whole time domaine & a plot at the final time
+
+if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp:
     N_x_plot = 512 #Fixed number of space point 
     N_x, N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=N_x_plot, _CFL_factor=CFL_factor)
     list_result_BDF_FD_N_x, order_BDF_list = [], [1, 2, 3,4, 5,6]
@@ -288,6 +315,8 @@ if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & 
 
     plt.rc('font', size=18)
 
+
+    # Plot of the final time for 
     for i in range( len(order_BDF_list)):
         if bool_verif_BDF_scheme_FD:
             name_method, full_name_method = "FD", "Finite Difference"
@@ -309,12 +338,14 @@ if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & 
     elif bool_verif_BDF_scheme_Sp:
         plt.title(fr"$h_{{Sp}}^{{{N_x_plot}, N_{{BDF}}}}(t=T)$", fontsize=20) 
     plt.legend(fontsize=16, loc="upper center")
-    # plt.title(full_name_method+ " method with BDF order from 1 to 6 at final time\n" +
-    #            "T = {T} with N_x = {N_x}".format(T=T, N_x = N_x_plot))
-    # plt.savefig('Benney_equation_code\\Schemes_verification\\BDF_order_test\\'+"plot_"+
-            # name_method+'_BDF_order_comparison_order_1-6_Nx_{}.png'.format(N_x_plot))
+    plt.title(full_name_method+ " method with BDF order from 1 to 6 at final time\n" +
+               "T = {T} with N_x = {N_x}".format(T=T, N_x = N_x_plot))
+    plt.savefig('Benney_equation_code\\Schemes_verification\\BDF_order_test\\'+"plot_"+
+            name_method+'_BDF_order_comparison_order_1-6_Nx_{}.png'.format(N_x_plot))
     plt.show()
 
+
+    # Animation
     if False:
         if bool_verif_BDF_scheme_FD:
             legend_list = [fr"$h_{{FD}}^{{{N_x_plot},{BDF_order}}}$" for BDF_order in order_BDF_list]
@@ -341,19 +372,25 @@ if bool_verif_BDF_scheme_FD or bool_verif_BDF_scheme_Sp: #FD method Animation & 
             name_method+'_BDF_order_comparison_order_1-6_Nx_{}.mp4'.format(N_x_plot))  
 
 
-#Verification of the pseudo consistency
 
+###Verification of the convergence of the schemes: Fixed BDF order and varying N_x
+
+# (Big) function to plot the graphs to study the convergence of the methods 
 def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, save_plot = False, 
-                          file_name= None, regression_lin=False): #Difference in loglog graph
+                          file_name= None, linear_regression=False): #Difference in loglog graph
     '''
-    Output: Make a loglog (in log10 scale) graph of the difference of the same method
-        with different number of space points.The abscis is chosen to be the space bigger 
-        step (i.e dx) between the two method compared. 
+    Output: Make a loglog (in log10 scale) graph of several computed solutions with the solution 
+    that we computed with the most number of space points (in the code, it's N_x=1024). 
 
-    Example: The comparison between (128, 256) would be at dx = L_x/128   
+    Example: The comparison between (128, 1024) would be at dx = L_x/128   
     Input: 
         - list_h_mat: list of the numerical solutions computed with INCREASING number of steps. 
-        Usually [128, 256, 512, 1024]'''
+        Usually [128, 256, 512, 1024]
+        - general_subplot_title: head title of the subplot
+        - order_BDF: order of the BDF scheme used
+        - save_plot (bool): save the plot or not
+        - file_name (string): if save_plot, path of the file to save
+         - linear_regression (bool): to make and display a linear regression on the plot or not '''
     
     plt.rc('font', size=16)
 
@@ -371,7 +408,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, save_plo
 
 
     #Make a linear regression
-    if regression_lin:
+    if linear_regression:
         #Linear regression of the differences
         x_lin_reg_array = np.log10(dx_array).reshape(-1,1) #Necessary reshape for sklearn
 
@@ -436,7 +473,7 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, save_plo
         r" for $N \in \{128, 256, 512\}$ ")
     axs[1].legend(loc='upper left', fontsize=15)
 
-    # fig.suptitle(general_subplot_title)
+    fig.suptitle(general_subplot_title)
 
     if save_plot:
         assert not(file_name is None), "fct \"plot_difference_graph\": Problem in the save_plot"
@@ -444,7 +481,9 @@ def plot_difference_graph(list_h_mat, general_subplot_title, order_BDF, save_plo
 
     plt.show()
 
-if bool_verif_FD or bool_verif_Sp: #Plot the difference Graph
+
+#Plot the convergence graph for either one of the method
+if bool_verif_FD or bool_verif_Sp: 
 
     if bool_verif_FD:
         print("Plot of the difference graphs for Finite Difference method")
@@ -468,7 +507,7 @@ if bool_verif_FD or bool_verif_Sp: #Plot the difference Graph
         general_subplot_title= general_subplot_title,
         order_BDF=order_BDF_scheme_verif,
         save_plot=False,
-        regression_lin=True,
+        linear_regression=True,
         file_name=file_name
         )
 
@@ -477,9 +516,14 @@ if bool_verif_FD or bool_verif_Sp: #Plot the difference Graph
 
 
 
+
+
 ###### Comparison of the FD & Spectral methods  #######
 bool_anim = False
-if bool_anim:#Animation of benney numerical solution
+
+#Animation of the difference between a solution computed with Finite Difference and Spectral method (not in the 
+# report, just by curiosity.)
+if bool_anim:
 
     N_x_plot = 128
     _ , N_t, _, _, domain_x, domain_t = set_steps_and_domain(_N_x=N_x_plot, _CFL_factor=CFL_factor)
@@ -487,16 +531,16 @@ if bool_anim:#Animation of benney numerical solution
     h_mat_FD = np.loadtxt(
             'Benney_equation_code\\Saved_numerical_solutions'
             + '\\FD_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-            BDF_order=order_BDF_scheme, N_x=N_x_plot))
+            BDF_order=order_BDF_scheme_verif, N_x=N_x_plot))
     h_mat_spectral = np.loadtxt(
             'Benney_equation_code\\Saved_numerical_solutions'
             +'\\Spectral_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-            BDF_order=order_BDF_scheme, N_x=N_x_plot))
+            BDF_order=order_BDF_scheme_verif, N_x=N_x_plot))
     
     animation_FD_Spectral = solver_BDF.func_anim(
         _time_series=np.array([h_mat_spectral-h_mat_FD]), _anim_space_array = domain_x,
         _anim_time_array = domain_t,
-        title="Spectral-FD BDF order {}".format(order_BDF_scheme) +
+        title="Spectral-FD BDF order {}".format(order_BDF_scheme_verif) +
              "and (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
             N_x=N_x_plot, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), 
             Ca=solver_BDF.round_fct(Ca, 3)),
@@ -507,7 +551,7 @@ if bool_anim:#Animation of benney numerical solution
     # plt.show()
     animation_FD_Spectral.save(
         'Benney_equation_code\\Spectral-FD_anim_BDF_order{order_BDF}_1236_Nx_{N_x}.mp4'.format(
-            order_BDF=order_BDF_scheme, N_x=N_x_plot))
+            order_BDF=order_BDF_scheme_verif, N_x=N_x_plot))
 
 
 ##Plot of the Difference between Spectral and FD Method with BDF
@@ -607,10 +651,19 @@ if bool_comparison_FD_Sp:
 
 ##############################################################
 
-########  Verification of linear theory ######
+########  Verification of linear theory (obsolete, not in the report)######
 
 ##############################################################
- 
+# The goal of this part was to see if the linear theory was respected or not. We derived analytically
+# the Fourier coefficient in the linear theory and we compared them to the numerical one. The analytical 
+# coefficients have either a dampening or increasing exponential regime. Hence, two parameters characterise 
+# the Fourier coefficient: the frequency of oscillation and the variation rate of the envelop ( i.e the exponential rate)
+
+# What we did: I computed the frequency rate by making a FFT (Fast Fourier Transform) and took the dominant mode.
+# As for the exponential rate, we compute max(log(h-1)) and look make a linear regression on it (sort of exponential
+# regression) and look at the slope coefficient.
+
+## Bool variables to control what to do 
 bool_linear_analysis = False
 bool_solve_save_linear, bool_load_linear = False, False
 bool_anim_linear, bool_save_anim_linear = False, False
@@ -679,14 +732,14 @@ if bool_linear_analysis:
 
     ##loading or computing solutions + Animations
     title_simulation = 'Benney_equation_code\\Linear_verif_Sp_method_BDF_order{BDF_order}_Nx_{N_x}.txt'.format(
-                     BDF_order=order_BDF_scheme, N_x=N_x)
+                     BDF_order=order_BDF_scheme_verif, N_x=N_x)
     if bool_load_linear: ##Loading the solution. Be carefull to take the relevant IC
         h_mat_lin= np.loadtxt(title_simulation) 
         assert ((h_mat_lin.shape[0]==N_t)and(h_mat_lin.shape[1]==N_x)), "Solution loading: Problem of shape "
     if bool_solve_save_linear: #Computing
         h_mat_lin, _ = solver_BDF.solver_Benney_BDF_Spectral(
             N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
-            order_BDF_scheme=order_BDF_scheme, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
+            order_BDF_scheme=order_BDF_scheme_verif, N_s_function=N_s_function, Amplitudes_Ns=A_Ns, 
             LQR_Control=bool_open_loop_control, K=K, 
             idx_time_start_ctrl=idx_time_start_ctrl)
         np.savetxt(title_simulation, h_mat_lin)
@@ -830,7 +883,7 @@ if bool_linear_analysis:
 
 ##############################################################
 
-######## Physical properties check ######
+######## Physical properties check (cf part IV.3 of the report) ######
 
 ##############################################################
 bool_mass_conservation = False

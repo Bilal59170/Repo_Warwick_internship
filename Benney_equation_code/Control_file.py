@@ -1,20 +1,164 @@
-##Construction of a solver for the system.
+## Explanations & output
+#Code with the variables on function useful for the controls. Also contains some tests for LQR, proportional, and positive 
+#controls. The outputs are the results of these tests. 
+# Cf the part V of report Bilal_BM_report.pdf in the Github repository  
+# https://github.com/Bilal59170/Repo_Warwick_internship to know more about the theoretical background 
 
 
+
+
+## Structure of the Code
+# - LQR & proportional Control 
+#    - LQR: Definition of the LQR matrices Q and R and test of the computation of the gain matrix with a toy example
+#    - Proportional ctrl:  Expression and plot of the lambda_k, i.e the exponential coefficient in the linear regime
+# - Positive Linear Control (cf part V.4 of the report)
+#    - Function to solve the QP problem and check its numerical solution
+#    - Tests with different matrices to make the QP solver converge to a Hurwit and Metzler matrix
+#- Proportional control (cf part V.3 of the report)
+
+
+
+
+##Import
 import numpy as np 
 import qpsolvers 
 import time 
 from scipy.sparse import csc_matrix
 from header import *
+import control as ct
+from solver_BDF import mat_FD_periodic
+
 
 print("\n\n****  Control_file.py: beginning of the print ****\n")
 
 
 
+
+
+## Definition of the matrices A and B of the linear control system
+def matrices_ctrl_A_B(list_Re_Ca_theta, array_actuators_index, actuator_fct, N_x, L_x):
+    '''
+    input: 
+    - beta: weight parameter between the target state (h=1) and minimize the ctrl (cf SOR paper) 
+    - list_Re_Ca_theta: the list [Re, Ca, theta] of the parameters.
+    - L_x, N_x: The space length resp. number of points
+    output: The control matrices (A, B, Q, R) corresponding to the LQR system fitting [Re, Ca, theta]'''
+
+    dx, domain_x = L_x/N_x, np.linspace(0, L_x, N_x, endpoint=False) #periodic BC
+    position_actuators = domain_x[array_actuators_index]
+    Re, Ca, theta = list_Re_Ca_theta[0], list_Re_Ca_theta[1], list_Re_Ca_theta[2]
+
+    coef_array = np.array([-2/(2*dx), (2*np.cos(theta)/(3*np.sin(theta))-8*Re/15)/(dx**2), -1/(3*Ca*dx**4)])
+    A_norm_cos_exp_fct = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
+
+    
+    ##Matrixes
+    # A and Q: size (N_x, N_x); B: (N_x, k); R: (k, k)
+    A = (coef_array[0]*mat_FD_periodic(N_x, [0, -1, 1]) + coef_array[1]*mat_FD_periodic(N_x, [-2, 1, 1])
+            + coef_array[2]*mat_FD_periodic(N_x, [6, -4, -4, 1, 1])) 
+    B = 1/3*A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[2] 
+
+
+    return A, B
+
+
+
+
+
+############ LQR & Proportional CONTROL  ################
+
+
+#### LQR Control
+
+# Some test of the LQ control python library
+#Test on the system: x_t = u , x(t=0) = x_0. 
+A, B= 0*np.ones(1),  1*np.ones(1)
+R, Q = 1/2*np.ones(1),  1*np.ones(1)
+K, S, _ = ct.lqr(A, B, Q, R)
+print("Gain matrix (scalar) and the expected solution:", K, R**(-1/2))
+print("Solution of Riccati equation and the expected solution:", S, R**(1/2))
+
+
+def matrices_ctrl_Q_R(beta, array_actuators_index, actuator_fct, N_x, L_x):
+    '''
+    input: 
+    - beta: weight parameter between the target state (h=1) and minimize the ctrl (cf SOR paper) 
+    - list_Re_Ca_theta: the list [Re, Ca, theta] of the parameters.
+    - L_x, N_x: The space length resp. number of points
+    output: The control matrices (A, B, Q, R) corresponding to the LQR system fitting [Re, Ca, theta]'''
+
+    dx, domain_x = L_x/N_x, np.linspace(0, L_x, N_x, endpoint=False) #periodic BC
+    position_actuators = domain_x[array_actuators_index]
+
+    A_norm_cos_exp_fct = 1/np.trapz(y=actuator_fct(domain_x)[0], x=domain_x)#normalization constant
+    mat_D = A_norm_cos_exp_fct*actuator_fct(domain_x[:, None]-position_actuators[None, :])[0] # shape (N_x, k)
+    
+    ##Matrixes
+    # A and Q: size (N_x, N_x); B: (N_x, k); R: (k, k)
+    Q = beta*dx*np.identity(N_x) #cf SOR paper for the discrete cost
+    R =(1-beta)*dx*(mat_D.T)@(mat_D)
+
+    return Q, R
+
+
+
+#### Proportional Control
+
+##Dispersion relation
+def dispersion_benney_air_jets(k, alpha=0):
+    k_L = k*nu
+    return -2*(1.j)*k_L + k_L**2*(8/15*(Re-Re_0)-alpha/3-k_L**2/(3*Ca))
+
+def dispersion_benney_BS(k, alpha=0):
+    k_L = k*nu
+    print("nu: ", nu)
+    return   -alpha*(1+2*Re*k_L/3*(1.j))-2*(1.j)*k_L + (k_L**2)*8/15*((Re-Re_0)-5*(k_L**2)/(8*Ca))
+
+alpha_B_BS = 16*Ca*(Re-Re_0)**2/75
+alpha_B_AJ = 24/15*(Re-Re_0)
+
+#Plot of the Dispersion relation
+if False: 
+    domain_k = np.linspace(0, k_0*2, 100)
+    plt.rc("font", size=15)
+    fig, ax = plt.subplots(1, 2, figsize = (15, 5))
+
+    ax[0].plot(domain_k, dispersion_benney_BS(domain_k).real, label=r"$\alpha = 0$")
+    ax[0].plot(domain_k, dispersion_benney_BS(domain_k, alpha_B_BS).real, label=r"$\alpha = \alpha_{BS}$")
+    ax[0].set_xlabel("linear mode k"), ax[0].set_ylabel(r"$\lambda_k$")
+    ax[0].set_ylim(bottom=-1)
+    ax[0].axhline(y=0 ,color='k'), ax[0].axvline(x=k_0, color='k')
+    ax[0].annotate(r"$k_0$",
+            xy=(k_0, -1),
+            xytext=(0, 5),
+            textcoords= "offset pixels",
+            fontsize = 19)
+    ax[0].legend(fontsize=17), ax[0].set_title("Blowing and Suction Control")
+    # ax[0].show()
+
+    ax[1].plot(domain_k, dispersion_benney_air_jets(domain_k).real, label=r"$\alpha = 0$")
+    ax[1].plot(domain_k, dispersion_benney_air_jets(domain_k, alpha_B_AJ).real, label=r"$\alpha = \alpha_{AJ}$")
+    ax[1].set_xlabel("linear mode k"), ax[1].set_ylabel(r"$\lambda_k$")
+    ax[1].set_ylim(bottom=-1)
+    ax[1].annotate(r"$k_0$",
+        xy=(k_0, -1),
+        xytext=(0, 5),
+        textcoords= "offset pixels",
+        fontsize = 19)
+    ax[1].axhline(y=0 ,color='k'), ax[1].axvline(x=k_0, color='k')
+    ax[1].legend(fontsize=17), plt.title("Air Jets Control")
+
+    plt.show()
+
+
+
+
 ######## Positive Linear Control ############
-print(qpsolvers.available_solvers)
+print(qpsolvers.available_solvers) #print the available solvers. "piqp" converges every time 
 
+### Function for the QP Problem
 
+#Contruction of the matrix of the QP Optimization Problem
 def Mat_QP_problem(M_1, M_2, verbose=False):
     '''
     Function to build the QP optimisation problem.
@@ -69,6 +213,7 @@ def Mat_QP_problem(M_1, M_2, verbose=False):
 
     return P_QP, G_QP, A_QP
 
+# Check the constraints of the QP Problem
 def check_QP_constraints(_G_QP, _A_QP, _v_opti, N, k):
     print("\n**** Checking the QP opti problem constraints ****")
     
@@ -100,8 +245,10 @@ def check_QP_constraints(_G_QP, _A_QP, _v_opti, N, k):
     print("max of diff: ", np.max(np.absolute(_A_QP@_v_opti)) )  #need to check the relative diff instead
     print("min of the diff: ", np.min(np.absolute(_A_QP@_v_opti)))
 
-def is_Metzler_and_Hurwitz_aux(M):
-    ''' Auxiliary function of the fct is_Metzler_and_Hurwitz. M = A+B_delta@K'''
+#Auxiliary function of is_Metzler_and_Hurwitz function below
+def is_Metzler_and_Hurwitz(M):
+    ''' Auxiliary function of the fct is_Metzler_and_Hurwitz. M = A+B_delta@K. 
+    Checks If a matrix M is Metzler and Hurwitz'''
     print("\n**** CHeck if the input matrix is Metzler and Hurwitz ****")
     N = M.shape[0]
 
@@ -123,12 +270,17 @@ def is_Metzler_and_Hurwitz_aux(M):
     eig_v_sorted = np.sort(eigen_values.real)
     
     print("- Hurwitz check:")
-    print("max(Re(eigval)) should be negative. 3 lowest and 3 highest values without the diagonal:", eig_v_sorted[:3], eig_v_sorted[-3:])
-    print("Proportion of eigenvalue with Re(eigv)>0 (supposed to be 0):", np.sum(eig_v_sorted>0)/(eig_v_sorted.shape[0])*100, "%")
+    print("max(Re(eigval)) should be negative. 3 lowest and 3 highest values without the diagonal:",
+           eig_v_sorted[:3], eig_v_sorted[-3:])
+    print("Proportion of eigenvalue with Re(eigv)>0 (supposed to be 0):", 
+          np.sum(eig_v_sorted>0)/(eig_v_sorted.shape[0])*100, "%")
 
-def is_Metzler_and_Hurwitz(M):
-    
-    is_Metzler_and_Hurwitz_aux(M)
+#Function that modifies the matrix M and checks if it's still Hurwitz
+def is_Metzler_and_Hurwitz_modif(M):
+    '''Check if a Matrix M is Metzel and Hurwitz with the auxiliary function, but also modifies the 
+    matrix M by forcing it to be Metzler and checks if it is still Hurwitz.
+    the '''
+    is_Metzler_and_Hurwitz(M)
 
     print("\n\nSame by putting + min")
     Mat = np.copy(M)
@@ -138,16 +290,23 @@ def is_Metzler_and_Hurwitz(M):
 
     pos_mat = (Mat < 0 )*np.absolute(min_M)
     print("Check sum:", np.sum(pos_mat)/np.absolute(min_M))
-    is_Metzler_and_Hurwitz_aux(M+ pos_mat)
-    # is_Metzler_and_Hurwitz_aux(M+ np.absolute(min_M))
+    is_Metzler_and_Hurwitz(M+ pos_mat)
 #Tests of is_Metzler_and_Hurwitz
 if False:
     Test_mat = np.identity(3)
     Test_mat[0,1], Test_mat[2, 1], Test_mat[1, 2] = -1, -5, -3
     is_Metzler_and_Hurwitz(Test_mat)
 
+#Solves the QP problem
 def solve_opti_QP(N_test, k_test, _P_QP, _G_QP, _A_QP, v_init=None, _solver="piqp", reg_h=0, reg_lb=0):
-
+    '''Inputs: 
+        - N_test, k_test: Number of space points and actuators respectively in the control problem. To take small
+        in order to test the solving
+        - _P_QP, _G_QP, _A_QP: Matrices of the QP Problem (cf part V.4 of the report) made by the function Mat_QP_problem.
+        One can take other matrices  (like little random one) to see if the solver is working or not
+        - v_init: initial guess of the solution
+         -solver (str): solver to choose 
+         - reg_h, reg_lb: regularity terms that soften the constraints. '''
     size_v = 2*N_test*(1+k_test)
 
     print("Initial V: ", v_init)
@@ -172,8 +331,10 @@ if False:
     is_Metzler_and_Hurwitz(Test_mat)
 
 
-####Test of different A and Bdelta for the opti algo
+
+####Test of different A and Bdelta to make the optimization algorith work (i.e give a Matriw that is Hurwitz and Metzler)
 if False:
+    # N and k of the initial control problem. Here just variables to test different size of matrices
     N_test = 128
     k_prior = 5
 
@@ -218,54 +379,5 @@ if False:
     print("\nA+Bdelta@K Matrix:\n", A_deltaBK)
     print(A_deltaBK)
 
-
-
-
-############### Proportional Control ###############
-
-##Dispersion relation
-def dispersion_benney_air_jets(k, alpha=0):
-    k_L = k*nu
-    return -2*(1.j)*k_L + k_L**2*(8/15*(Re-Re_0)-alpha/3-k_L**2/(3*Ca))
-
-def dispersion_benney_BS(k, alpha=0):
-    k_L = k*nu
-    print("nu: ", nu)
-    return   -alpha*(1+2*Re*k_L/3*(1.j))-2*(1.j)*k_L + (k_L**2)*8/15*((Re-Re_0)-5*(k_L**2)/(8*Ca))
-
-alpha_B_BS = 16*Ca*(Re-Re_0)**2/75
-alpha_B_AJ = 24/15*(Re-Re_0)
-
-if False: 
-    domain_k = np.linspace(0, k_0*2, 100)
-    plt.rc("font", size=15)
-    fig, ax = plt.subplots(1, 2, figsize = (15, 5))
-
-    ax[0].plot(domain_k, dispersion_benney_BS(domain_k).real, label=r"$\alpha = 0$")
-    ax[0].plot(domain_k, dispersion_benney_BS(domain_k, alpha_B_BS).real, label=r"$\alpha = \alpha_{BS}$")
-    ax[0].set_xlabel("linear mode k"), ax[0].set_ylabel(r"$\lambda_k$")
-    ax[0].set_ylim(bottom=-1)
-    ax[0].axhline(y=0 ,color='k'), ax[0].axvline(x=k_0, color='k')
-    ax[0].annotate(r"$k_0$",
-            xy=(k_0, -1),
-            xytext=(0, 5),
-            textcoords= "offset pixels",
-            fontsize = 19)
-    ax[0].legend(fontsize=17), ax[0].set_title("Blowing and Suction Control")
-    # ax[0].show()
-
-    ax[1].plot(domain_k, dispersion_benney_air_jets(domain_k).real, label=r"$\alpha = 0$")
-    ax[1].plot(domain_k, dispersion_benney_air_jets(domain_k, alpha_B_AJ).real, label=r"$\alpha = \alpha_{AJ}$")
-    ax[1].set_xlabel("linear mode k"), ax[1].set_ylabel(r"$\lambda_k$")
-    ax[1].set_ylim(bottom=-1)
-    ax[1].annotate(r"$k_0$",
-        xy=(k_0, -1),
-        xytext=(0, 5),
-        textcoords= "offset pixels",
-        fontsize = 19)
-    ax[1].axhline(y=0 ,color='k'), ax[1].axvline(x=k_0, color='k')
-    ax[1].legend(fontsize=17), plt.title("Air Jets Control")
-
-    plt.show()
 
 

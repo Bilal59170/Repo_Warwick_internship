@@ -1,4 +1,31 @@
-#CODE FOR THE BENNEY EQUATION
+## Explanations & output
+# Part of the code where we control the Benney equation and observe the behaviour of the solution. This 
+# code outputs animations (in the part "Solving"). It also output a plot of the variation of the height (in the part Tests
+# &Experiments& Control theory verification) and different costs associated to the control. 
+# This code also saves (or loads) the animations and arrays of the dynamics of the interface heigt h and the dynamics of the control
+# used. It is thus important to choose a folder to manage the files that are going to be created 
+
+# Cf the report Bilal_BM_report.pdf in the Github repository (part III to V)
+# https://github.com/Bilal59170/Repo_Warwick_internship to know more about the theoretical background 
+
+
+
+
+## Structure of the code:
+# - Simulation & Control Settings
+#   - Definition of several boolean variable to control what action to do
+# 	- Initial condition stting
+# 	- Choice and construction of the control strategy (4 different)
+# 		- LQR (Linear Quadratic Regulator), proportional, positive system (doesn't work, cf part V.4 of the report)
+# 	- parameters of the model (like N_x), not of the system (like L or T)
+# - Solving
+# 	- solving the equation with Spectral method 
+# 	- display of animations, saving of animations and values of the solutions
+# - Tests & Experiments& Control theory verification
+# 	- plot of log amplitude of h, with or without exponential regression
+#   - Computation of the total cost and maximum value of the cost
+
+
 
 
 ###IMPORT
@@ -14,7 +41,12 @@ import scipy.optimize
 from sklearn.linear_model import LinearRegression
 
 
-print("\n\n****  main_benney_eq_Ctrl.py: beginning of the print ****\n")
+print("\n\n****  main_benney_eq_Ctrl.py: Beginning of the print ****\n")
+
+
+
+
+
 
 
 ###################################
@@ -23,7 +55,7 @@ print("\n\n****  main_benney_eq_Ctrl.py: beginning of the print ****\n")
 
 #####################################
 
-print("\n##### Simulation settings #####")
+print("\n##### Simulation & Control SETTINGS #####")
 ### Boolean variables to control what action to do. Watch out to load the good file.
 bool_FB_Control = True # bool of Feedback Control
 bool_open_loop_control = False # open loop control i.e predicted
@@ -36,8 +68,6 @@ bool_LQR = True
 bool_prop_ctrl = False
 #Positive ctrl with linear system
 bool_positive_Ctrl, bool_solve_save_solus_opti, bool_load_solus_opti = False, False, False
-
-
 
 
 ## Check the asumptions 
@@ -92,7 +122,6 @@ time_start_ctrl = 160 #Time where the control starts
 idx_time_start_ctrl =int(time_start_ctrl/T*N_t)
 
 
-
 #Actuators shape function (the peak function)
 if False: #Gaussian TAKE COS GAUSSIAN FOR THE CONTROL, OTHERWISE ERROR
     N_s_function = lambda x:solver_BDF.N_s_derivatives_gaussian(
@@ -104,39 +133,42 @@ else:
 
 
 ### Choice of control
-#Openloop control: schelduled control, function u(t
+#Openloop control: scheduled control, function u(t)
 
 
 A_Ns = None
 beta, alpha_prop_ctrl, coef_pos_part_ctrl = None, None, None #defined later in their respective control (LQR, proportional..)
 
-
-
 if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(x(t))
     
+    #Matrix A and B of the linear Control system defined in part IV of the report 
     A, B = solver_BDF.matrices_ctrl_A_B(list_Re_Ca_theta = [Re, Ca, theta], array_actuators_index= array_used_points,
                               actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
                                 N_x=N_x, L_x=N_x*dx)
     
-    if bool_LQR:
-        beta = 0.95 #Only matter for LQR Control, not the positive one. 
+    if bool_LQR:#LQR Control
+        beta = 0.95 #LQR Control parameter
+        #LQR matrices
         Q, R = solver_BDF.matrices_ctrl_Q_R(beta = beta, array_actuators_index= array_used_points,
                                              actuator_fct= lambda x: solver_BDF.actuator_fct_cos_gaussian(x, omega_Ns, L_x),
                                             N_x=N_x, L_x=N_x*dx)
 
+        #Check if R is positive definite as said in part V.2.1 of the report
         R_semi_def = np.all(np.linalg.eigvals(R) > 0)
         print("R is positive definite: ", np.all(np.linalg.eigvals(R) > 0))
+        
+        
         if bool_pos_part:
             print("### Type of control: Positive part of LQR Control ###")
         else:
             print("### Type of control: LQR Control ###")
 
         print("Solving Riccati equation")
-        K, _, _ = ct.lqr(A, B, Q, R) #gain matrix
-        # print("Dimension of the gain matrix:", K.shape)
-        # print("highest term of K", np.max(K))
+        K, _, _ = ct.lqr(A, B, Q, R) # Computation of the gain matrix
+        print("Dimension of the gain matrix:", K.shape)
+        print("highest term of K", np.max(K))
 
-    elif bool_positive_Ctrl: ### Positive Control with QP optimization problem
+    elif bool_positive_Ctrl: ### Positive Control with QP optimization problem (cf part )
         print("Type of control: Positive Linear Control")
 
         #Nb of unstable modes:
@@ -184,54 +216,46 @@ if bool_FB_Control:#Linear Feedback Control, closed loop function of the type u(
                 K[i, array_used_points[i]] = alpha
             return K
         
-        
-        # prop_fct = lambda alpha: max(np.linalg.eigvals(A+B@gain_mat_prop_ctrl(alpha)).real)
-        # result_prop_ctrl_opti = scipy.optimize.root(fun= prop_fct, x0= file_ctrl.alpha_B_AJ) 
-        # alpha_prop_num = result_prop_ctrl_opti["x"][0]
-        # root_method_CV = result_prop_ctrl_opti["success"]
-        # root_method_errors= np.max(np.absolute(prop_fct(alpha_prop_num)))
 
-        if False:
-            X_array = np.linspace(file_ctrl.alpha_B_AJ, 3*alpha_prop_num, 10)
-            evaluation_array = np.array([prop_fct(x) for x in X_array])
-            plt.axvline(x= alpha_prop_num, color = 'k')
-            plt.plot(X_array, evaluation_array)
-            plt.show()
+        #Computation of the proportional control coefficient (eigenvalue problem, part V.3.1)
+        prop_fct = lambda alpha: max(np.linalg.eigvals(A+B@gain_mat_prop_ctrl(alpha)).real)
+        result_prop_ctrl_opti = scipy.optimize.root(fun= prop_fct, x0= file_ctrl.alpha_B_AJ) 
+        alpha_prop_num = result_prop_ctrl_opti["x"][0]
+        root_method_CV = result_prop_ctrl_opti["success"]
+        root_method_errors= np.max(np.absolute(prop_fct(alpha_prop_num)))
 
-        # print("alpha num, alpha linear theory:", alpha_prop_num, file_ctrl.alpha_B_AJ)
-        # print("Method converged: ", root_method_CV)
-        # print("error of the method: ", root_method_errors)
+        # if False:
+        #     X_array = np.linspace(file_ctrl.alpha_B_AJ, 3*alpha_prop_num, 10)
+        #     evaluation_array = np.array([prop_fct(x) for x in X_array])
+        #     plt.axvline(x= alpha_prop_num, color = 'k')
+        #     plt.plot(X_array, evaluation_array)
+        #     plt.show()
+
+        print("alpha num, alpha linear theory:", alpha_prop_num, file_ctrl.alpha_B_AJ)
+        print("Method converged: ", root_method_CV)
+        print("error of the method: ", root_method_errors)
 
 
         alpha_prop_ctrl = 100 #Coefficient for the proportional control
         K = gain_mat_prop_ctrl(-alpha_prop_ctrl)
 
     if bool_pos_part:
-        #Multiplicative coefficient of the gain matrix (for LQR and proportional control)
-        #used when we take the positive part of a control. Try to compense the loss of energy (so should be around 2 maybe).
+        #Multiplicative coefficient of the gain matrix (for LQR control, cf part V.2.2 of the report)
+        #used when we take the positive part of the LQR control. Try to compense the loss of energy (so should be around 2 maybe).
         coef_pos_part_ctrl = 1
         K = coef_pos_part_ctrl*K #cf the definition of po_part_coef for explanations
-
 
 else:  #No Control
     idx_time_start_ctrl = None
     A_Ns = np.zeros((N_t, k_nb_act)) #schedule of the amplitudes
     K=None #no feedback matrix
 
+
+
 print("The parameters for the Controls:")
 print("- beta : ", beta)
 print("- alpha_prop_ctrl: ", alpha_prop_ctrl)
 print("- coef_pos_part_ctrl: ", coef_pos_part_ctrl)
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -248,19 +272,21 @@ print("- coef_pos_part_ctrl: ", coef_pos_part_ctrl)
 
 ##########################
 
+print("\n##### SOLVING #####")
+
 ### Boolean variables to control what action to do. Watch out to load the good file.
-#FD method 
-bool_solve_save_FD, bool_load_FD = False, False 
-bool_anim_display_FD, bool_save_anim_FD = False, False
 
-#Spectral method
-bool_solve_save_Sp, bool_load_Sp = False, True
-bool_anim_display_Sp, bool_save_anim_Sp = False, False
-
+##Spectral method
+#solve and save, load the solution respectively
+bool_solve_save_Sp, bool_load_Sp = False, True 
+#display or save the animation of the dynamics of h respectively
+bool_anim_display_Sp, bool_save_anim_Sp = False, False 
 
 
 
 
+
+## Fonction to write the name of the saved files
 def file_anim_name_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _alpha, _beta, _coef_pos_part_ctrl):
     '''Function to write automatically the file names to avoid making typos. 
     Returns the names of the animation and the file with numerical values.'''
@@ -300,62 +326,17 @@ elif bool_positive_Ctrl:
 
 
 
-###### Finite Difference & BDF Scheme ######
-
-### Solving & animation
-title_file, title_anim = file_anim_name_ctrl('FD', Ctrl_name=Ctrl_name, pos_part=bool_pos_part,
-                                             _N_x=N_x, _order_BDF=order_BDF_scheme, _alpha = alpha_prop_ctrl,_beta=beta,
-                                             _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
 
-_, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
-    _N_x=N_x, _CFL_factor = CFL_factor)
-dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
+########## SOLVING #############
 
-if bool_solve_save_FD:
-    h_mat_FD = solver_BDF.solver_Benney_BDF_FD(
-        N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions,
-        theta=theta, order_BDF_scheme=order_BDF_scheme, Ca=Ca, Re=Re, N_s_function=N_s_function,
-        nb_percent=1)
-
-    ##Saving the solution
-    np.savetxt(title_file, h_mat_FD)
-
-
-##Loading the solution
-if bool_load_FD:
-    h_mat_FD= np.loadtxt(title_file)
-    assert ((h_mat_FD.shape[0]==N_t)and(h_mat_FD.shape[1]==N_x)), "Solution loading: Problem of shape"
-
-
-### VISUALISATION 
-##animation function
-
-if bool_anim_display_FD:#Animation of benney numerical solution
-    animation_Benney = solver_BDF.func_anim(_time_series=np.array([h_mat_FD]), 
-        _anim_space_array = domain_x, _anim_time_array = domain_t,
-        title="Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
-            N_x=N_x, N_t=N_t, L_x=L_x, T=T, Re=solver_BDF.round_fct(Re,3), Ca=solver_BDF.round_fct(Ca, 3)), 
-
-        title_x_axis=r"x axis: horizontal inclined by $\theta$",
-        title_y_axis= r"y-axis (inclined by $\theta$)",
-        _legend_list = ["height h(x,t) with FD method and BDF order {}".format(order_BDF_scheme)])
-    # plt.show()
-
-if bool_save_anim_FD:
-    animation_Benney.save(title_anim)  #needs the program ffmpeg installed and in the PATH
-
-
-
-
-
-###### SPECTRAL METHOD #########
-### Solving
+#title of the file with the value of the height and the animation of its dynamics
 title_file, title_anim = file_anim_name_ctrl('Sp', Ctrl_name=Ctrl_name, pos_part=bool_pos_part,
                                              _N_x=N_x, _order_BDF=order_BDF_scheme, _alpha = alpha_prop_ctrl, _beta=beta,
                                              _coef_pos_part_ctrl=coef_pos_part_ctrl)
 
-title_amplitude = title_file[:-4]+"_Ampl.txt"
+#Title of the file with the amplitude of the control, i.e the variable "amplitudes_spectral"
+title_amplitude = title_file[:-4]+"_Ampl.txt" 
 
 
 _, N_t, dx, dt, domain_x, domain_t = set_steps_and_domain(
@@ -364,6 +345,7 @@ dx_2, dx_3, dx_4 = dx**2, dx**3, dx**4
 print("Number of Space and Time points:", (N_x, N_t))
 
 
+###Solves 
 if bool_solve_save_Sp:
     h_mat_spectral, amplitudes_spectral = solver_BDF.solver_Benney_BDF_Spectral(
         N_x=N_x, N_t= N_t, dx=dx, dt=dt, IC=Initial_Conditions, theta=theta, Ca=Ca, Re=Re,
@@ -380,6 +362,7 @@ if bool_solve_save_Sp:
     np.savetxt(title_amplitude, amplitudes_spectral)
 
 
+###Loads an already computed numerical solution
 if bool_load_Sp:
     h_mat_spectral, amplitudes_spectral = np.loadtxt(title_file), np.loadtxt(title_amplitude)
 
@@ -410,7 +393,7 @@ if bool_anim_display_Sp or bool_save_anim_Sp:#Animation of benney numerical solu
         legend_list =  ["h(x,t) with spectral method & BDF order {}".format(order_BDF_scheme),
                             "Ns Open loop Control"]
 
-    animation_Benney = solver_BDF.func_anim(
+    animation_Benney = func_anim(
         _time_series=array_animation_spectral, _anim_space_array = domain_x,
         _anim_time_array = domain_t,
         title= "Benney height for (N_x, N_t, L_x, T, Re, Ca) =({N_x}, {N_t}, {L_x}, {T}, {Re}, {Ca})".format(
@@ -434,25 +417,21 @@ if bool_anim_display_Sp or bool_save_anim_Sp:#Animation of benney numerical solu
 
 
 
-
-
-
-
-
-
 ###################################################
 
 #### Tests & Experiments& Control theory verification
 
 ######################################################
 
-print("******** Tests & Experiments& Control theory verification ***********")
+print("##### Tests & Experiments& Control theory verification #####")
 
 
 ### Boolean variables to control what action to do. Watch out to load the good file.
-bool_plot = False
-bool_reg_lin = False
+bool_plot = False #plot the log of h_max 
+bool_reg_lin = False #Do a exponential regression of this plot after that the control has been switched on
 
+
+#Function to name the plots and title them automatically
 def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _alpha, _beta, _coef_pos_part_ctrl):
     '''Function to write automatically the file names to avoid making typos. 
     Returns the names of the animation and the file with numerical values.'''
@@ -499,10 +478,10 @@ def title_plot_ctrl(method, Ctrl_name, pos_part, _N_x, _order_BDF, _alpha, _beta
 
 
 ### Log amplitude of the Control
-
 h_amplitude = np.max(np.absolute((h_mat_spectral-1)), axis=1) #Eventhough we do a control on (h-1)/delta, we are interested in |h-1|
 
-#Exponential regression to compute the dampening rate  
+
+##Exponential regression to compute the dampening rate  
 if bool_reg_lin: 
     t1, t2 = time_start_ctrl, T
     N1, N2 = int(t1/T*N_t), int(t2/T*N_t)
@@ -547,7 +526,8 @@ if bool_plot:
     plt.show()
 
 
-## Computation of the quadratic cost of the control
+
+## Computation: quadratic cost of the control and maximum value of the control
 max_ampl_ctrl = np.max(np.absolute(amplitudes_spectral))
 print("infinite norm of the control:", max_ampl_ctrl)
 quad_cost_ctrl = np.sum(amplitudes_spectral**2)*dx**2*dt**2
