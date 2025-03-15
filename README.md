@@ -34,7 +34,7 @@ $$\begin{equation}
 which gives: 
 
 $$\begin{equation}
-    h_{,t} + h_{,x}h^2 \Big( 2-N_{s, x}-2h_{,x}cot(\theta) + \frac{h_{,xxx}}{Ca}\Big) - \frac{h^3}{3}\Big(N_{s, xx} + 2h_{,xx}cot(\theta)  - \frac{h_{,xxxx}}{Ca} \Big) + \frac{8Re}{15} \Big( 6h^5 {h_{,x}}^2 + h^6 h_{,xx} \Big) = 0
+    h_{,t} + h_{,x}h^2 \Big( 2-N_{s, x}-2h_{,x}cot(\theta) + \frac{h_{,xxx}}{Ca}\Big) - \frac{h^3}{3}\Big(N_{s, xx} + 2h_{,xx}cot(\theta)  - \frac{h_{,xxxx}}{Ca} \Big) + \frac{8Re}{15} \Big( 6h^5 {h_{,x}}^2 + h^6 h_{,xx} \Big) = 0.
 \end{equation}$$
 
 
@@ -44,7 +44,7 @@ We designed two main control strategies to stabilize the Benney system. Let
 
 $$\tilde{h} = \frac{h-1}{\delta}, \tilde{N}_s = \frac{N_s}{\delta}$$ 
 
-the zoomed discrepancy of h around its stable normalized state $h=1$.
+the zoomed discrepancy of h around its stable normalized state $h=1$ and zoomed air jet perturbation.
 
 - **Proportional Control**: All the air jets blow/suck the same way proportionaly to the size of the gap $\tilde{h}$. Which gives  $$N_s = \alpha \tilde{h}, \quad \alpha >0.$$ 
 As we just wanted blowing only air jets, we did 
