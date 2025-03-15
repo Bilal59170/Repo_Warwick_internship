@@ -4,7 +4,7 @@ Welcome to this repository which contains the python code and the report that I 
 
 The goal of this 5-month visit was to take interest into Control problem on specific fluids systems. More precisely, the problem was to stabilize a wavy thin film falling down an inclined plane with controled air jet pertubations. 
 
-For the description of the Mathematics, Physics or the code, see the sections below. For even more details, feel free to take a look at the report ``Bilal_BM_report.pdf``. There is some videos in the ``KS_equation_code`` and ``Benney_equation_code`` files. 
+For the description of the Mathematics, Physics or the code, see the sections below. For details on the folders, read the ``READ_ME.md`` files of the folders you want (``Benney_equation_code`` or ``KS_equation_code``) . For even more details, feel free to take a look at the report ``Bilal_BM_report.pdf``. 
 
   
 # Physics & Mathematics behind the code
